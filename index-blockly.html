@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <title>Aurelia - Blockly</title>
+    </head>
+
+    <body style="margin: 0;">
+
+        <script src="jspm_packages/system.js"></script>
+        <script src="config.js"></script>
+
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+
+        <script src="js/blockly/blockly_compressed.js"></script>
+        <script src="js/blockly/blocks_compressed.js"></script>
+        <script src="js/blockly/msg/js/en.js"></script>
+        <script src="js/blockly/javascript_compressed.js"></script>
+        
+        <script src="js/app-config.js"></script>
+
+        <script>
+            window.onload = function() {
+                // load aurelia framework
+                System.import('aurelia-bootstrapper');
+            };
+
+        </script>
+
+        <div id="app" aurelia-app="main" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; z-index: 0; visibility: hidden;"></div>
+        <div id="top-loading" style="display: block; margin: auto; position: absolute; top: 0; left: 0; bottom: 0; right: 0; z-index: 500;">
+            <img src="img/loading.svg" style="display: block; position: absolute; margin: auto; top: 0; left: 0; bottom: 0; right: 0;"/>
+        </div>
+        
+    </body>
+</html>

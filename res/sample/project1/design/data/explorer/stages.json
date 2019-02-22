@@ -1,0 +1,24 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "text": "project1",
+            "state": "open",
+            "children":[
+                {
+                    "text": "stage1"
+                },
+                {
+                    "text": "stage2"
+                }
+            ]
+        },
+        {
+            "text": "Node 2"
+        },
+        {
+            "text": "Node 3"
+        }
+    ]
+    
+}

@@ -1,0 +1,40 @@
+<template>
+
+    <require from="controls/property-editor"></require>
+        
+    <div id="inspector" style="width: 100%; height: 100%;">
+
+        <!--
+        <div title="Property">
+            <div as-element="property-editor" editor-id="actor-properties" 
+                    data-source="${mainPath ? mainPath + '/property/display.json' : null}" root-name="rows" 
+                    style="width: 100%; height: 100%;"></div>
+        </div>
+        <div title="Event">
+            tab2
+        </div>
+        -->
+
+        <!--
+        <div title="Property">
+            <div as-element="property-editor" editor-id="${'editor-' + groups[0].group}" 
+                    data-source="${mainPath + '/' + groups[0].content}" root-name="rows" 
+                    style="width: 100%; height: 100%;"></div>
+        </div>
+        <div title="Event">
+            tab2
+        </div>
+        -->
+
+        
+        <div repeat.for="tab of tabs" title="${tab.title}" >
+            <div as-element="property-editor" editor-id="${'editor-' + tab.group}" 
+            data-source="${$parent.mainPath + '/' + tab.content}" root-name="rows"
+            signal-name="${$last ? 'editors-loaded' : ''}"
+            style="width: 100%; height: 100%;"></div>
+        </div>
+        
+
+    </div>
+
+</template>

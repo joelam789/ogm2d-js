@@ -1,0 +1,24 @@
+<template>
+    <require from="controls/tree-view"></require>
+
+    <div id="explorer" style="width: 100%; height: 100%;">
+
+        <!--
+        <div title="Project">
+            <tree-view tree-id="project-tree" data-source="${mainPath && mainFile  ? mainPath + '/' + mainFile : null}" root-name="stages"></tree-view>
+        </div>
+        <div title="Stage">
+            tab2
+        </div>
+        -->
+
+        <div repeat.for="item of groups" title="${item.title}">
+            <div as-element="tree-view" tree-id="${'tree-' + item.group}" 
+            data-source="${$parent.mainPath + '/' + item.content}" 
+            signal-name="${$last ? 'structures-loaded' : ''}"
+            root-name="items"></div>
+        </div>
+
+    </div>
+
+</template>

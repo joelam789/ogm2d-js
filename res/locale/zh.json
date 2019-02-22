@@ -1,0 +1,40 @@
+
+{
+    "app": {
+        "ok": "确定",
+        "cancel": "取消"
+    },
+
+    "ide": {
+        
+        "ok": "确定",
+        "cancel": "取消",
+
+        "welcome": "欢迎",
+
+        "title": {
+            "center": "设计",
+            "east": "检视",
+            "west": "资源"
+        }
+    },
+
+    "designer": {
+        "welcome": "欢迎"
+    },
+
+    "propertygrid": {
+        "name": "属性名",
+        "value": "属性值"
+    },
+
+    "collector": {
+        "sprites": "精灵"
+    },
+
+    "component": {
+        "actor": "角色",
+        "background": "背景"
+    }
+
+}

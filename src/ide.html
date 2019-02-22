@@ -1,0 +1,53 @@
+<template>
+
+    <require from="logger"></require>
+    <require from="designer"></require>
+    <require from="explorer"></require>
+    <require from="collector"></require>
+    <require from="inspector"></require>
+
+    <!-- <require from="popups/blockly"></require> -->
+
+    <div id="ide-layout" style="width: 100%; height: 100%;">
+
+    <div data-options="region:'north',split:true" style="height:50px;">
+    </div>
+
+    <div data-options="${eastSettings}" style="width: 20%;">
+        <div id="east-layout" style="width: 100%; height: 100%;">
+            <div data-options="region:'center', onResize: function() { window.appEvent.publish('ide-resize'); }">
+                <!-- <explorer></explorer> -->
+                <div as-element="explorer" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div data-options="region:'south',split:true" style="height:50%;">
+                <!-- <inspector></inspector> -->
+                <div as-element="inspector" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div data-options="${westSettings}" style="width: 20%; height: 100%;">
+        <!-- <collector></collector> -->
+        <div as-element="collector" style="width: 100%; height: 100%;"></div>
+    </div>
+
+    <div data-options="${centerSettings}">
+        <div id="center-layout" style="width: 100%; height: 100%;">
+            <div data-options="region:'center', onResize: function() { window.appEvent.publish('ide-resize'); }">
+                <!-- <designer></designer> -->
+                <div as-element="designer" style="width: 100%; height: 100%;"></div>
+            </div>
+            <div data-options="region:'south',split:true" style="height:100px;">
+                <!-- <logger></logger> -->
+                <div as-element="logger" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <div id="blockly-dialog" style="width:1024px; height:800px; overflow:hidden;">
+        <iframe id="blockly-window" frameBorder="0" style="width:100%; height:100%; border: 0; overflow:hidden;"></iframe>
+    </div>
+  
+</template>

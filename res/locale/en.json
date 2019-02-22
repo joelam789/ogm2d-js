@@ -1,0 +1,40 @@
+
+{
+    "app": {
+        "ok": "OK",
+        "cancel": "Cancel"
+    },
+
+    "ide": {
+
+        "ok": "OK",
+        "cancel": "Cancel",
+
+        "welcome": "Welcome",
+
+        "title": {
+            "center": "Design",
+            "east": "Inspector",
+            "west": "Resource"
+        }
+    },
+
+    "designer": {
+        "welcome": "Welcome"
+    },
+
+    "propertygrid": {
+        "name": "Name",
+        "value": "Value"
+    },
+
+    "collector": {
+        "sprites": "Sprites"
+    },
+
+    "component": {
+        "actor": "Actors",
+        "background": "Backgrounds"
+    }
+
+}

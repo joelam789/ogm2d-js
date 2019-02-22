@@ -1,0 +1,10 @@
+{
+    "rows": [
+        {
+            "group": "Base", 
+            "name": "onInit", 
+            "value": "",
+            "editor": "text"
+        }
+    ]
+}

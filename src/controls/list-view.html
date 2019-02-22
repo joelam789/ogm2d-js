@@ -1,0 +1,16 @@
+<template>
+    <div>tool bar</div>
+    <div if.bind="items != null && items.length > 0" style="width: 100%; max-height: 100%; display: flex; flex-flow: row wrap;">
+        <div repeat.for="item of items" id="${item.pid}" click.capture="$parent.clickItem($event, item.pid)"
+        css="${'width: ' + item.width + 'px; margin-left: 10px; margin-top: 10px; text-align: center;' + (item.selected ? 'background: radial-gradient(white, yellow);' : '')}" >
+            <div css="${'height: ' + item.height + 'px; line-height: ' + item.height + 'px; vertical-align: middle;'}" >
+                    <img if.bind="$parent.isDraggable === 'true'" id="${item.id}" obj="${item.name}" style="max-width:100%; max-height:100%;" src="${$parent.imagePath + '/' + item.image}" draggable="true" 
+                    ondragstart="event.dataTransfer.setData('text', JSON.stringify({ 'id': event.target.id, 'name': event.target.obj}))"></img>
+                    <img else id="${item.id}" obj="${item.name}" style="max-width:100%; max-height:100%;" src="${$parent.imagePath + '/' + item.image}" draggable="false"></img>
+            </div>
+            <div>${item.name}</div>
+        </div>
+    </div>
+    <div else>no data found</div>
+
+</template>

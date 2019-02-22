@@ -1,0 +1,13 @@
+    
+<template>
+
+  <require from="controls/loading-indicator"></require>
+
+  <loading-indicator loading.bind="router.isNavigating || isBusy"></loading-indicator>
+
+  <div style="width: 100%; height: 100%;">
+    <!-- <router-view style="width: 100%; height: 100%;"></router-view> -->
+    <div as-element="router-view" style="width: 100%; height: 100%;"></div>
+  </div>
+
+</template>
