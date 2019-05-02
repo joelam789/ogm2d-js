@@ -1,5 +1,5 @@
 /**
- * EasyUI for jQuery 1.7.3
+ * EasyUI for jQuery 1.7.6
  * 
  * Copyright (c) 2009-2019 www.jeasyui.com. All rights reserved.
  *
@@ -10,7 +10,7 @@
 (function($){
 var _1=1;
 function _2(_3){
-var _4=$("<span class=\"switchbutton\">"+"<span class=\"switchbutton-inner\">"+"<span class=\"switchbutton-on\"></span>"+"<span class=\"switchbutton-handle\"></span>"+"<span class=\"switchbutton-off\"></span>"+"<input class=\"switchbutton-value\" type=\"checkbox\">"+"</span>"+"</span>").insertAfter(_3);
+var _4=$("<span class=\"switchbutton\">"+"<span class=\"switchbutton-inner\">"+"<span class=\"switchbutton-on\"></span>"+"<span class=\"switchbutton-handle\"></span>"+"<span class=\"switchbutton-off\"></span>"+"<input class=\"switchbutton-value\" type=\"checkbox\" tabindex=\"-1\">"+"</span>"+"</span>").insertAfter(_3);
 var t=$(_3);
 t.addClass("switchbutton-f").hide();
 var _5=t.attr("name");
@@ -82,7 +82,6 @@ var _19=_15.find(".switchbutton-value")._propAttr("checked",_14.checked).attr("i
 _19.unbind(".switchbutton").bind("change.switchbutton",function(e){
 return false;
 });
-_15.removeClass("switchbutton-disabled").addClass(_14.disabled?"switchbutton-disabled":"");
 _15.removeClass("switchbutton-reversed").addClass(_14.reversed?"switchbutton-reversed":"");
 if(_14.label){
 if(typeof _14.label=="object"){
@@ -105,27 +104,28 @@ $(_13.label).remove();
 }
 _10(_12,_14.checked);
 _1a(_12,_14.readonly);
+_1b(_12,_14.disabled);
 $(_12).switchbutton("setValue",_14.value);
 };
-function _10(_1b,_1c,_1d){
-var _1e=$.data(_1b,"switchbutton");
-var _1f=_1e.options;
-var _20=_1e.switchbutton.find(".switchbutton-inner");
-var _21=_20.find(".switchbutton-on");
-var _22=_1f.reversed?(_1c?_1f.marginWidth:0):(_1c?0:_1f.marginWidth);
-var dir=_21.css("float").toLowerCase();
+function _10(_1c,_1d,_1e){
+var _1f=$.data(_1c,"switchbutton");
+var _20=_1f.options;
+var _21=_1f.switchbutton.find(".switchbutton-inner");
+var _22=_21.find(".switchbutton-on");
+var _23=_20.reversed?(_1d?_20.marginWidth:0):(_1d?0:_20.marginWidth);
+var dir=_22.css("float").toLowerCase();
 var css={};
-css["margin-"+dir]=-_22+"px";
-_1d?_20.animate(css,200):_20.css(css);
-var _23=_20.find(".switchbutton-value");
-$(_1b).add(_23)._propAttr("checked",_1c);
-if(_1f.checked!=_1c){
-_1f.checked=_1c;
-_1f.onChange.call(_1b,_1f.checked);
-$(_1b).closest("form").trigger("_change",[_1b]);
+css["margin-"+dir]=-_23+"px";
+_1e?_21.animate(css,200):_21.css(css);
+var _24=_21.find(".switchbutton-value");
+$(_1c).add(_24)._propAttr("checked",_1d);
+if(_20.checked!=_1d){
+_20.checked=_1d;
+_20.onChange.call(_1c,_20.checked);
+$(_1c).closest("form").trigger("_change",[_1c]);
 }
 };
-function _24(_25,_26){
+function _1b(_25,_26){
 var _27=$.data(_25,"switchbutton");
 var _28=_27.options;
 var _29=_27.switchbutton;
@@ -134,10 +134,12 @@ if(_26){
 _28.disabled=true;
 $(_25).add(_2a)._propAttr("disabled",true);
 _29.addClass("switchbutton-disabled");
+_29.removeAttr("tabindex");
 }else{
 _28.disabled=false;
 $(_25).add(_2a)._propAttr("disabled",false);
 _29.removeClass("switchbutton-disabled");
+_29.attr("tabindex",$(_25).attr("tabindex")||"");
 }
 };
 function _1a(_2b,_2c){
@@ -152,6 +154,13 @@ var _32=_31.options;
 _31.switchbutton.unbind(".switchbutton").bind("click.switchbutton",function(){
 if(!_32.disabled&&!_32.readonly){
 _10(_30,_32.checked?false:true,true);
+}
+}).bind("keydown.switchbutton",function(e){
+if(e.which==13||e.which==32){
+if(!_32.disabled&&!_32.readonly){
+_10(_30,_32.checked?false:true,true);
+return false;
+}
 }
 });
 };
@@ -182,11 +191,11 @@ _7(this,_37);
 });
 },enable:function(jq){
 return jq.each(function(){
-_24(this,false);
+_1b(this,false);
 });
 },disable:function(jq){
 return jq.each(function(){
-_24(this,true);
+_1b(this,true);
 });
 },readonly:function(jq,_38){
 return jq.each(function(){
