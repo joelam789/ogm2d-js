@@ -58,9 +58,9 @@ export class Collector {
     }
     
     refresh() {
-        let project = App.project;
-        if (project && project.collector) {
-            let items = JSON.parse(JSON.stringify(project.collector));
+        let ide = App.project.containers;
+        if (ide && ide.collector) {
+            let items = JSON.parse(JSON.stringify(ide.collector));
             let locate = this.i18n.getLocale().toLowerCase();
             for (let item of items) {
                 if (typeof item.title == "object") item.title = item.title[locate];

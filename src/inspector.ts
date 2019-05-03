@@ -81,9 +81,9 @@ export class Inspector {
         if (App.projectPath && App.projectFile) {
             this.mainPath = App.projectPath;
         }
-        let project = App.project;
-        if (project && project.inspector) {
-            let items = JSON.parse(JSON.stringify(project.inspector));
+        let ide = App.project.containers;
+        if (ide && ide.inspector) {
+            let items = JSON.parse(JSON.stringify(ide.inspector));
             let locate = this.i18n.getLocale().toLowerCase();
             for (let item of items) {
                 if (typeof item.title == "object") item.title = item.title[locate];

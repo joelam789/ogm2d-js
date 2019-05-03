@@ -1,92 +1,104 @@
 {
-    "collector": [
-        {
-			"group": "actor",
-			"draggable": true, 
-			"droppable": false,
-			"width": 64,
-			"height": 64,
-            "content": "design/data/collector/actors.json",
-			"title": {
-				"en": "Actors",
-				"zh": "角色"
+	"containers": {
+
+		"collector": [
+			{
+				"group": "actor",
+				"draggable": true, 
+				"droppable": false,
+				"width": 64,
+				"height": 64,
+				"content": "design/data/collector/actors.json",
+				"title": {
+					"en": "Actors",
+					"zh": "角色"
+				},
+				"tools": {
+					"edit": "",
+					"design": ""
+				}
 			},
-			"tools": {
-				"edit": "",
-				"design": ""
+			{
+				"group": "background",
+				"draggable": false, 
+				"droppable": false,
+				"width": 64,
+				"height": 128,
+				"content": "design/data/collector/backgrounds.json",
+				"title": {
+					"en": "Backgrounds",
+					"zh": "背景"
+				},
+				"tools": {
+					"edit": "",
+					"design": ""
+				}
 			}
-        },
-        {
-			"group": "background",
-			"draggable": false, 
-			"droppable": false,
-			"width": 64,
-			"height": 128,
-            "content": "design/data/collector/backgrounds.json",
-			"title": {
-				"en": "Backgrounds",
-				"zh": "背景"
+		],
+		"explorer": [
+			{
+				"group": "stages",
+				"content": "design/data/explorer/stages.json",
+				"title": {
+					"en": "Stages",
+					"zh": "舞台"
+				},
+				"tools": {
+					"edit": "",
+					"design": ""
+				}
 			},
-			"tools": {
-				"edit": "",
-				"design": ""
+			{
+				"group": "layers",
+				"content": "design/data/explorer/layers.json",
+				"title": {
+					"en": "Layers",
+					"zh": "层"
+				},
+				"tools": {
+					"edit": "",
+					"design": ""
+				}
 			}
-        }
-    ],
-    "explorer": [
-        {
-			"group": "stages",
-            "content": "design/data/explorer/stages.json",
-			"title": {
-				"en": "Stages",
-				"zh": "舞台"
+		],
+		"inspector": [
+			{
+				"group": "property",
+				"content": "design/data/inspector/properties.json",
+				"title": {
+					"en": "Properties",
+					"zh": "属性"
+				},
+				"tools": {
+					"edit": "",
+					"design": ""
+				}
 			},
-			"tools": {
-				"edit": "",
-				"design": ""
+			{
+				"group": "event",
+				"content": "design/data/inspector/events.json",
+				"title": {
+					"en": "Events",
+					"zh": "事件"
+				},
+				"tools": {
+					"edit": "",
+					"design": ""
+				}
 			}
-        },
-        {
-			"group": "layers",
-            "content": "design/data/explorer/layers.json",
-			"title": {
-				"en": "Layers",
-				"zh": "层"
-			},
-			"tools": {
-				"edit": "",
-				"design": ""
-			}
-        }
-    ],
-	"inspector": [
-        {
-			"group": "property",
-            "content": "design/data/inspector/properties.json",
-			"title": {
-				"en": "Properties",
-				"zh": "属性"
-			},
-			"tools": {
-				"edit": "",
-				"design": ""
-			}
-        },
-        {
-			"group": "event",
-            "content": "design/data/inspector/events.json",
-			"title": {
-				"en": "Events",
-				"zh": "事件"
-			},
-			"tools": {
-				"edit": "",
-				"design": ""
-			}
-        }
-    ],
-	"designer": {
-		"stage1": "design/data/designer/stage1.json"
+		],
+		"designer": {
+			"stage1": "design/data/designer/stage1.json"
+		}
+
+	},
+
+	"converters": {
+
+	},
+
+	"dialogs": {
+
 	}
     
 }

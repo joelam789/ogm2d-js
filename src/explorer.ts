@@ -61,9 +61,9 @@ export class Explorer {
             this.mainPath = App.projectPath;
             this.mainFile = App.projectFile;
         }
-        let project = App.project;
-        if (project && project.explorer) {
-            let items = JSON.parse(JSON.stringify(project.explorer));
+        let ide = App.project.containers;
+        if (ide && ide.explorer) {
+            let items = JSON.parse(JSON.stringify(ide.explorer));
             let locate = this.i18n.getLocale().toLowerCase();
             for (let item of items) {
                 if (typeof item.title == "object") item.title = item.title[locate];
