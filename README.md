@@ -1,3 +1,6 @@
 # ogm2d-js
-prototype<br>
+prototype
+
+用余生去填。。。坑！
+
 WIP
