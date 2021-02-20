@@ -6,16 +6,32 @@
         <link rel="stylesheet" type="text/css" href="css/easyui/themes/default/easyui.css">
         <link rel="stylesheet" type="text/css" href="css/easyui/themes/icon.css">
         <link rel="stylesheet" type="text/css" href="css/easyui/themes/color.css">
+        <link rel="stylesheet" type="text/css" href="css/easyui/themes/my-icon.css">
         <title>Aurelia - EasyUI</title>
     </head>
 
     <body>
 
+        <script>
+            if (window.Buffer) {
+                window.nodeBuffer = window.Buffer;
+                delete window.Buffer; // disable warning of deprecated usage in system.js
+            }
+        </script>
+
         <script src="jspm_packages/system.js"></script>
         <script src="config.js"></script>
 
+        <script>
+            if (window.nodeBuffer) {
+                window.Buffer = window.nodeBuffer; // restore it after load system.js
+                delete window.nodeBuffer;
+            }
+        </script>
+
         <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+        <script>if (!window.$) window.$ = window.jQuery = require('./js/jquery.min.js');</script>
+        <script src="js/bootstrap.bundle.min.js"></script>
         <script src="js/easyui/jquery.easyui.min.js"></script>
 
         <script src="js/md5.min.js"></script>
@@ -24,6 +40,10 @@
         <script src="js/app-config.js"></script>
 
         <script>
+
+            if (System) System.set('electron', System.newModule(require('electron')));
+            else if (SystemJS) SystemJS.set('electron', SystemJS.newModule(require('electron')));
+
             window.onload = function() {
                 console.warn(navigator.language);
                 // load aurelia framework
@@ -34,6 +54,7 @@
 
         <div id="app" aurelia-app="main" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; z-index: 0; visibility: hidden;"></div>
         <div id="top-loading" style="display: block; margin: auto; position: absolute; top: 0; left: 0; bottom: 0; right: 0; z-index: 500;">
+			<!-- <img src="file://C:/javascript/ogm2d-dev/res/img/loading.svg"/> -->
             <img src="img/loading.svg" style="display: block; position: absolute; margin: auto; top: 0; left: 0; bottom: 0; right: 0;"/>
         </div>
         

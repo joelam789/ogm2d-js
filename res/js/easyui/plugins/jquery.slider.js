@@ -1,7 +1,7 @@
 /**
- * EasyUI for jQuery 1.7.6
+ * EasyUI for jQuery 1.9.12
  * 
- * Copyright (c) 2009-2019 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2021 www.jeasyui.com. All rights reserved.
  *
  * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
  * To use it on other terms please contact us: info@jeasyui.com
@@ -17,7 +17,7 @@ if(_4){
 _3.find("input.slider-value").attr("name",_4);
 t.removeAttr("name").attr("sliderName",_4);
 }
-_3.bind("_resize",function(e,_5){
+_3._bind("_resize",function(e,_5){
 if($(this).hasClass("easyui-fluid")||_5){
 _6(_2);
 }
@@ -112,7 +112,7 @@ _1a.onSlideEnd.call(_18,_1a.value);
 _1a.onComplete.call(_18,_1a.value);
 _19.isDragging=false;
 }});
-_1b.find("div.slider-inner").unbind(".slider").bind("mousedown.slider",function(e){
+_1b.find("div.slider-inner")._unbind(".slider")._bind("mousedown.slider",function(e){
 if(_19.isDragging||_1a.disabled){
 return;
 }

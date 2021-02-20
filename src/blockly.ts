@@ -24,6 +24,8 @@ export class BlocklyPage {
 
     attached(argument) {
 
+        console.log("this is blockly entry...");
+
         console.log(this.ide.appConfig);
 
         if (this.blockly) this.workspace = this.blockly.inject('blocklyDiv', {toolbox: document.getElementById('toolbox')});

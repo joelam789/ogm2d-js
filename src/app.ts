@@ -86,7 +86,13 @@ export class App {
 
 	static loadAppLanguageScript() {
         let langCode = App.lang;
-        if (langCode == "zh-cn") langCode = "zh_CN";
+		if (langCode == "zh") {
+			let dfLang = navigator.language;
+			if (dfLang && dfLang.toString().toLowerCase().startsWith("zh")) {
+				langCode = dfLang.toString().toLowerCase();
+			} else langCode = "zh-cn";
+		}
+		if (langCode == "zh-cn") langCode = "zh_CN";
         else if (langCode == "zh-tw" || langCode == "zh-hk") langCode = "zh_TW";
         else if (langCode == "sv-se") langCode = "sv_SE";
         else if (langCode == "pt-br") langCode = "pt_BR";
@@ -123,11 +129,19 @@ export class App {
 				App._projectFile = url.substr(url.lastIndexOf('/') + 1);
 				App.config.projectPath = App._projectPath;
 				App.config.projectFile = App._projectFile;
+				App.config.projectName = json.name ? json.name : "project";
 				(window as any).appConfig = App.config;
 				if (callback) callback(json);
 			}
 		});
 	}
-	
+
+	//static getStageFilepath(stageName: string): string {
+	//	if (this._stageFilepathMap.has(stageName)) return this._stageFilepathMap.get(stageName);
+	//	return "";
+	//}
+	//static setStageFilepath(stageName: string, filepath: string) {
+	//	if (stageName && filepath) this._stageFilepathMap.set(stageName, filepath);
+	//}
 	
 }

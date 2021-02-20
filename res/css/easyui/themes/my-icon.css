@@ -1,0 +1,14 @@
+
+.my-icon-save{
+	background:url('my-icons/save.png') no-repeat center center;
+}
+.my-icon-run{
+	background:url('my-icons/run.png') no-repeat center center;
+}
+.my-icon-folder{
+	background:url('my-icons/folder.png') no-repeat center center;
+}
+.my-icon-file{
+	background:url('my-icons/file.png') no-repeat center center;
+}
+

@@ -1,7 +1,7 @@
 /**
- * EasyUI for jQuery 1.7.6
+ * EasyUI for jQuery 1.9.12
  * 
- * Copyright (c) 2009-2019 www.jeasyui.com. All rights reserved.
+ * Copyright (c) 2009-2021 www.jeasyui.com. All rights reserved.
  *
  * Licensed under the freeware license: http://www.jeasyui.com/license_freeware.php
  * To use it on other terms please contact us: info@jeasyui.com
@@ -9,7 +9,7 @@
  */
 (function($){
 function _1(){
-$(document).unbind(".messager").bind("keydown.messager",function(e){
+$(document)._unbind(".messager")._bind("keydown.messager",function(e){
 if(e.keyCode==27){
 $("body").children("div.messager-window").children("div.messager-body").each(function(){
 $(this).dialog("close");
@@ -40,7 +40,7 @@ _6(_5,_4.val());
 });
 };
 function _7(){
-$(document).unbind(".messager");
+$(document)._unbind(".messager");
 };
 function _8(_9){
 var _a=$.extend({},$.messager.defaults,{modal:false,shadow:false,draggable:false,resizable:false,closed:true,style:{left:"",top:"",right:0,zIndex:$.fn.window.defaults.zIndex++,bottom:-document.body.scrollTop-document.documentElement.scrollTop},title:"",width:300,height:150,minHeight:0,showType:"slide",showSpeed:600,content:_9.msg,timeout:4000},_9);
@@ -107,7 +107,7 @@ return _8(_12);
 },alert:function(_13,msg,_14,fn){
 var _15=typeof _13=="object"?_13:{title:_13,msg:msg,icon:_14,fn:fn};
 var cls=_15.icon?"messager-icon messager-"+_15.icon:"";
-_15=$.extend({},$.messager.defaults,{content:"<div class=\""+cls+"\"></div>"+"<div>"+_15.msg+"</div>"+"<div style=\"clear:both;\"/>"},_15);
+_15=$.extend({},$.messager.defaults,{content:"<div class=\""+cls+"\"></div>"+"<div>"+_15.msg+"</div>"+"<div style=\"clear:both;\"></div>"},_15);
 if(!_15.buttons){
 _15.buttons=[{text:_15.ok,onClick:function(){
 _6(dlg);
@@ -117,7 +117,7 @@ var dlg=_d(_15);
 return dlg;
 },confirm:function(_16,msg,fn){
 var _17=typeof _16=="object"?_16:{title:_16,msg:msg,fn:fn};
-_17=$.extend({},$.messager.defaults,{content:"<div class=\"messager-icon messager-question\"></div>"+"<div>"+_17.msg+"</div>"+"<div style=\"clear:both;\"/>"},_17);
+_17=$.extend({},$.messager.defaults,{content:"<div class=\"messager-icon messager-question\"></div>"+"<div>"+_17.msg+"</div>"+"<div style=\"clear:both;\"></div>"},_17);
 if(!_17.buttons){
 _17.buttons=[{text:_17.ok,onClick:function(){
 _6(dlg,true);
@@ -129,7 +129,7 @@ var dlg=_d(_17);
 return dlg;
 },prompt:function(_18,msg,fn){
 var _19=typeof _18=="object"?_18:{title:_18,msg:msg,fn:fn};
-_19=$.extend({},$.messager.defaults,{content:"<div class=\"messager-icon messager-question\"></div>"+"<div>"+_19.msg+"</div>"+"<br/>"+"<div style=\"clear:both;\"/>"+"<div><input class=\"messager-input\" type=\"text\"/></div>"},_19);
+_19=$.extend({},$.messager.defaults,{content:"<div class=\"messager-icon messager-question\"></div>"+"<div>"+_19.msg+"</div>"+"<br>"+"<div style=\"clear:both;\"></div>"+"<div><input class=\"messager-input\" type=\"text\"></div>"},_19);
 if(!_19.buttons){
 _19.buttons=[{text:_19.ok,onClick:function(){
 _6(dlg,dlg.find(".messager-input").val());

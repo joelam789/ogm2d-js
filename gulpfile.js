@@ -3,8 +3,7 @@ const fs = require("fs");
 const del = require('del');
 const gulp = require('gulp');
 const sourcemap = require('gulp-sourcemaps');
-const webserver = require('gulp-webserver');
-
+const webserver = require('gulp-connect');
 const transpiler = require('gulp-typescript');
 const tsconfig = transpiler.createProject('tsconfig.json');
 
@@ -93,12 +92,13 @@ gulp.task("build-and-watch", gulp.series(
              'watch')
 );
 
-gulp.task('start', () => {
-  gulp.src('./')
-  .pipe(webserver({
-      host: '0.0.0.0',
-      port: 9090
-    }));
+gulp.task('start', async () => {
+    webserver.server({
+        name: 'WebServer',
+        root: '',
+        port: 9090,
+        livereload: true
+    });
 });
 
 gulp.task('default', gulp.series('build-and-watch'));

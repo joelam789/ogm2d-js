@@ -23,8 +23,10 @@ export function configure(aurelia: Aurelia) {
 					backend: {                                  // <-- configure backend settings
 						loadPath: './locale/{{lng}}.json', // <-- XHR settings for where to get the files from
 					},
-					lng : (window as any).appConfig.ide.lang ? (window as any).appConfig.ide.lang : 
-							(navigator.language ? navigator.language.substr(0, 2) : 'en'),
+					lng : ((window as any).appConfig.ide.lang 
+							&& (window as any).appConfig.ide.lang.toLowerCase() != 'default') 
+							? (window as any).appConfig.ide.lang 
+							: (navigator.language ? navigator.language.toLowerCase().substr(0, 2) : 'en'),
 					attributes : ['t','i18n'],
 					lowerCaseLng: true,
 					fallbackLng : 'en',

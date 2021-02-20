@@ -3,7 +3,7 @@
 
     <div id="collector" style="width: 100%; height: 100%;">
         <div repeat.for="item of groups" title="${item.title}" data-options="${'selected:' + ($first ? 'true' : 'false')}" style="overflow:auto;">
-            <div as-element="list-view" data-source="${$parent.mainPath + '/' + item.content}" image-path="${$parent.mainPath + '/design/image/small'}" 
+            <div as-element="list-view" source-path="${$parent.mainPath + '/' + item.folder}" is-movable="${item.movable === true ? 'true' : 'false'}" 
              is-draggable="${item.draggable === true ? 'true' : 'false'}" is-droppable="${item.droppable === true ? 'true' : 'false'}" 
              item-width="${item.width}" item-height="${item.height}" image-tag="${item.group}" signal-name="${$last ? 'components-loaded' : ''}"></div>
         </div>

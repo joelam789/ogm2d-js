@@ -7,6 +7,7 @@ import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
 import { App } from "./app";
+import { Ipc } from "./ipc";
 
 @autoinject()
 export class Ide {
@@ -106,9 +107,18 @@ export class Ide {
         this.subscribers.push(this.eventChannel.subscribe("display-dblclick", (data) => {
             if (data) {
                 console.log(data);
+                console.log("going to open blockly ??");
                 if (this.blocklyDlg) this.blocklyDlg("open");
                 if (this.blocklyFrame) this.blocklyFrame.src = "index-blockly.html#blockly"; // may reload a new url if necessary
             } 
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("ide-run-current", () => {
+            this.eventChannel.publish("ide-save-current-and-run");
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("ide-run-current-only", (data) => {
+            this.runCurrent(data ? data.stage : "");
         }));
 
         this.subscribers.push(this.eventChannel.subscribe("blockly-close", () => {
@@ -116,7 +126,7 @@ export class Ide {
             if (this.blocklyDlg) this.blocklyDlg("close");
         }));
 
-        App.openProject("sample/project1/main.json", () => {
+        App.openProject("workspace/project2/main.json", () => {
             this.eventChannel.publish('project-reloaded');
             App.busy = false;
         });
@@ -142,5 +152,81 @@ export class Ide {
 			App.loadAppLanguageScript();
         });
 	}
+
+    saveCurrent() {
+        console.log("save current stage");
+    }
+
+    async runCurrent(stageName: string = "") {
+
+        console.log("run current stage", stageName);
+
+        //let tsfiles = [];
+        //tsfiles.push("C:/javascript/ogm2d-dev/dist/workspace/project2/design/template/games/demo.ts");
+        //App.transpileTsFiles(tsfiles, (err) => {
+        //    if (err) console.log("Failed to run current stage - " + err);
+        //    else console.log("Running current stage is done");
+        //});
+
+        let srcDir = App.projectPath + "/runtime/project/res";
+        let destDir = App.projectPath + "/runtime/build/debug";
+
+        let errmsg = Ipc.copyDirContentSync(srcDir, destDir, 0, []);
+        if (errmsg) {
+            console.log("Failed to copy resource - " + errmsg);
+            return;
+        }
+
+        srcDir = App.projectPath + "/design/template";
+        destDir = App.projectPath + "/runtime/build/debug/json";
+
+        errmsg = Ipc.copyDirContentSync(srcDir, destDir, 0, ['.json']);
+        if (errmsg) {
+            console.log("Failed to copy json files - " + errmsg);
+            return;
+        }
+
+        if (stageName) {
+            let rtGameFile = App.projectPath + "/runtime/build/debug/json/games/game.json";
+            let gameJsonStr = await Ipc.readFileAsync(rtGameFile, false);
+            if (gameJsonStr) {
+                let gameJson = JSON.parse(gameJsonStr);
+                if (gameJson) {
+                    
+                    // we should make sure all scenes were generated first ...
+                    //if (!gameJson.scenes) gameJson.scenes = [stageName]
+                    //else {
+                    //    let idx = gameJson.scenes.indexOf(stageName);
+                    //    if (idx < 0) gameJson.scenes.push(stageName);
+                    //    gameJson.first = stageName;
+                    //}
+                    
+                    // since so far we would generate only current stage , 
+                    // so just let it be the only one scene of the game ...
+                    gameJson.scenes = [stageName];
+
+                }
+                await Ipc.writeFileAsync(rtGameFile, JSON.stringify(gameJson, null, 4), false);
+            }
+        }
+
+        let srcFiles = [App.projectPath + "/runtime/project/index.html"];
+        let destFiles = [App.projectPath + "/runtime/build/debug/index.html"];
+
+        errmsg = await Ipc.copyFilesAsync(srcFiles, destFiles, 0);
+
+        if (errmsg) console.log("Failed to copy html or js files - " + errmsg);
+        else {
+            console.log("copying project files done");
+            Ipc.runGame(App.projectPath + "/runtime/build/debug/index.html", (err) => {
+                if (err) console.log("Failed to run the game - " + err);
+                else {
+                    console.log("the game is running");
+                }
+            });
+        }
+        
+
+    }
 
 }

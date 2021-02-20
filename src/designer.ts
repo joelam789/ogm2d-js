@@ -7,6 +7,10 @@ import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
 import { App } from "./app";
+import { Ipc } from "./ipc";
+
+import { HttpClient } from "./http-client";
+import { RuntimeGenerator } from "./generator";
 
 @autoinject()
 export class Designer {
@@ -21,6 +25,7 @@ export class Designer {
     private _currentCanvasTitle: string = "";
     private _canvasMap: Map<string, any> = new Map<string, any>();
     private _containerMap: Map<string, any> = new Map<string, any>();
+    private _counterMap: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
     
     constructor(public router: Router, public eventChannel: EventAggregator, public i18n: I18N, public dialogService: DialogService) {
         this.labelWelcome = this.i18n.tr('designer.welcome');
@@ -49,8 +54,22 @@ export class Designer {
             if (maingui) maingui.style.width = maingui.style.height = "100%";
             if (this.gui) this.gui();
         }));
-        this.subscribers.push(this.eventChannel.subscribe("open-canvas", (title) => {
-            this.openCanvas(title);
+        this.subscribers.push(this.eventChannel.subscribe("open-canvas", (data) => {
+            this.openCanvas(data.title, data.content);
+        }));
+        this.subscribers.push(this.eventChannel.subscribe("ide-save-current", () => {
+            let title = this.getCurrentTitle();
+            if (!title || !this._canvasMap.has(title)) return;
+            this.saveCurrent();
+        }));
+        this.subscribers.push(this.eventChannel.subscribe("ide-save-current-and-run", () => {
+            let title = this.getCurrentTitle();
+            if (!title || !this._canvasMap.has(title)) return;
+            let titleText = this.getCurrentTitleDisplay();
+            if (titleText) {
+                if (titleText.startsWith('*')) this.saveCurrent();
+                this.runCurrent();
+            }
         }));
         this.subscribers.push(this.eventChannel.subscribe("editor-update-ui", (edt) => {
             if (edt.source == 'editor-property') {
@@ -113,45 +132,101 @@ export class Designer {
                 let fabric = (window as any).fabric;
                 if (fabric && canvas && img) {
                     let url = img.src;
-                    url = url.replace("image/small", "image/normal");
+                    url = url.replace(".pv.", ".ds.");
+                    let signPos = url.indexOf(App.projectPath + '/design/collector/');
+                    if (signPos > 0) url = url.substring(signPos);
+                    //url = url.replace("image/small", "image/normal");
                     //console.log(url);
+                    let movable = img.movable && img.movable == "true";
                     fabric.Image.fromURL(url, (oImg) => {
                         let rect = ev.target.getBoundingClientRect();
                         //console.log(rect);
-                        oImg.originX = "center";
-                        oImg.originY = "center";
-                        oImg.centeredRotation = true;
-                        oImg.centeredScaling = true;
-                        oImg.left = ev.clientX - rect.x;
-                        oImg.top = ev.clientY - rect.y;
-                        oImg.name = data.name;
+                        if (movable) {
+                            oImg.originX = "center";
+                            oImg.originY = "center";
+                            oImg.centeredRotation = true;
+                            oImg.centeredScaling = true;
+                            oImg.left = ev.clientX - rect.x;
+                            oImg.top = ev.clientY - rect.y;
+                        } else {
+                            oImg.left = 0;
+                            oImg.top = 0;
+                            oImg.hoverCursor = 'default';
+                        }
+                        oImg.url = url;
+                        oImg.template = data.name;
+                        oImg.selectable = movable;
+
+                        if (oImg.template) {
+                            let counter = this._counterMap.get(key);
+                            if (!counter) this._counterMap.set(key, new Map<string, number>());
+                            counter = this._counterMap.get(key);
+                            if (!counter.has(oImg.template)) {
+                                counter.set(oImg.template, 1);
+                                oImg.name = oImg.template.toString() + 1;
+                            } else {
+                                counter.set(oImg.template, counter.get(oImg.template) + 1);
+                                oImg.name = oImg.template.toString() + counter.get(oImg.template);
+                            }
+                        }
+
                         canvas.add(oImg).renderAll();
+                        if (!movable) canvas.sendToBack(oImg);
                     });
                 }
             }
         });
     }
 
-    requestEditorUpdate(obj, editorName) {
+
+
+    requestEditorUpdate(obj, editorName, updateStageTitle = false) {
+
+        if (updateStageTitle) {
+            let currentPage = this.gui("getSelected");
+            if (currentPage) {
+                let currentTab = currentPage.panel('options');
+                if (currentTab) {
+                    let title: string = currentTab.title.toString();
+                    //if (!title.startsWith('*')) this.setCurrentTitle('*' + title);
+                    if (!title.startsWith('*')) this.updateCurrentTitleDisplay(title, '*' + title);
+                }
+            }
+        }
+        
         let display = obj.target ? obj.target : obj;
         let json = display.toJSON();
+        //console.log(json);
         json.name = display.name;
         this.eventChannel.publish('ui-update-editor', {target: "editor-" + editorName, data: json});
+
     }
     
-    openCanvas(title: string) {
+    openCanvas(title: string, url: string) {
         if (!this.gui) return;
         if (this.gui("getTab", title)) {
             this.gui("select", title);
         } else {
-            let fabric = (window as any).fabric;
-            if (fabric) {
+
+            let dataUrl = App.projectPath + "/" + url;
+
+            HttpClient.getJSON(dataUrl, null, (json) => {
+
+                //console.log(json);
+
+                if (!json) console.error("failed to load json data of fabric canvas");
+                let fabric = (window as any).fabric;
+                if (!fabric) {
+                    console.error("fabric lib not found");
+                    return;
+                }
+
                 let newCanvasId = "fc" + this.getNextTabId();
                 this.gui("add", {
                     title: title,
-                    content: "<div style='border-right: 2px dashed gainsboro; border-bottom: 2px dashed gainsboro;'><canvas id='" + newCanvasId + "' " 
-                            //+ "style='border-right: 2px dashed gainsboro; border-bottom: 2px dashed gainsboro;'"
-                            + "></canvas></div>",
+                    content: "<div style='border-right: 2px dashed gainsboro; border-bottom: 2px dashed gainsboro;'>"
+                            + "<canvas id='" + newCanvasId + "'></canvas>"
+                            +"</div>",
                     closable: true
                 });
                 let originalContainer = document.getElementById(newCanvasId).parentElement;
@@ -160,22 +235,25 @@ export class Designer {
                 
                 //console.log(document.getElementById(newCanvasId));
 
-                newCanvas.on('object:added', (ev) => this.requestEditorUpdate(ev, 'property'));
+                newCanvas.on('object:added', (ev) => this.requestEditorUpdate(ev, 'property', true));
                 newCanvas.on('selection:created', (ev) => this.requestEditorUpdate(ev, 'property'));
                 newCanvas.on('selection:updated', (ev) => this.requestEditorUpdate(ev, 'property'));
                 //newCanvas.on('selection:cleared', (ev) => this.requestEditorUpdate(ev, 'property'));
-                newCanvas.on('object:modified', (ev) => this.requestEditorUpdate(ev, 'property'));
+                newCanvas.on('object:modified', (ev) => this.requestEditorUpdate(ev, 'property', true));
                 
                 newCanvas.imageSmoothingEnabled = false;
                 newCanvas.setWidth(640);
                 newCanvas.setHeight(480);
                 newCanvas.renderAll();
 
+                //console.log(newCanvas.toJSON());
+
                 originalContainer.style.width = newCanvas.getWidth() + "px";
                 originalContainer.style.height = newCanvas.getHeight() + "px";
 
                 let canvasContainer = document.getElementById(newCanvasId).parentElement;
                 this._containerMap.set(title, canvasContainer);
+                if (!this._counterMap.has(title)) this._counterMap.set(title, new Map<string, number>());
                 this._currentCanvasTitle = title;
                 //console.log(canvasContainer);
                 canvasContainer.ondragover = (ev) => ev.preventDefault();
@@ -186,10 +264,173 @@ export class Designer {
                     (window as any).appEvent.publish('display-dblclick', {canvas: this, object: this.getActiveObject()} );
                 }.bind(newCanvas);
 
-            } else {
-                console.error("fabric lib not found");
+                if (json) newCanvas.loadFromJSON(json, function() {
+                    newCanvas.renderAll.bind(newCanvas);
+                    console.log("loaded json data to canvas - ");
+                    //console.log(json);
+                });
+
+            });
+            
+        }
+    }
+
+    getCurrentTitle(): string {
+        let currentPage = this.gui("getSelected");
+        if (currentPage) {
+            let currentTab = currentPage.panel('options');
+            if (currentTab) {
+                return currentTab.title.toString();
             }
         }
+        return "";
+    }
+
+    getCurrentTitleDisplay(): string {
+        let title = this.getCurrentTitle();
+        if (title) {
+            let titlex = '*' + title;
+            let tabHeaders = document.getElementsByClassName("tabs-title tabs-closable");
+            if (tabHeaders) {
+                let headers = Array.from(tabHeaders);
+                for (let header of headers) {
+                    if (header.innerHTML == title) return title;
+                    if (header.innerHTML == titlex) return titlex;
+                }
+            }
+        }
+        return "";
+    }
+
+    updateCurrentTitleDisplay(oldText, newText: string) {
+
+        //let currentPage = this.gui("getSelected");
+        //if (currentPage) {
+        //    this.gui('update', {
+        //        tab: currentPage,
+        //        options: {
+        //            title: newText
+        //        }
+        //    });
+        //}
+
+        //let title = this.getCurrentTitle();
+        //console.log(title);
+        //let container = title ? this._containerMap.get(title) : null;
+        //console.log(container);
+
+        let tabHeaders = document.getElementsByClassName("tabs-title tabs-closable");
+        if (tabHeaders) {
+            let headers = Array.from(tabHeaders);
+            for (let header of headers) {
+                if (header.innerHTML == oldText) {
+                    header.innerHTML = newText;
+                    (header as any).innerText = newText;
+                    break;
+                }
+            }
+        }
+    }
+
+    saveCurrent() {
+
+        console.log("saveCurrent()");
+
+        if (!this.gui) return;
+        let currentPage = this.gui("getSelected");
+        if (!currentPage) return;
+
+        let currentTab = currentPage.panel('options');
+        if (!currentTab) return;
+
+        let title: string = currentTab.title.toString();
+        if (title && title.startsWith('*')) title = title.substr(1);
+
+        //let dtJsonFile = App.getStageFilepath(title);
+        //if (!dtJsonFile) {
+        //    console.error("Failed to get design file of the stage");
+        //    return;
+        //}
+
+        let dtJsonFile = App.projectPath + "/design/explorer/stages/" + title + ".json";
+
+        let canv = title ? this._canvasMap.get(title) : null;
+        if (!canv) {
+            console.error("Failed to get design canvas of the stage");
+            return;
+        }
+
+        let json = canv.toJSON(['name', 'url', 'template']);
+        console.log(json);
+        
+        let output = [];
+        let rtJsonFolder = App.projectPath + "/design/template/scenes/" + title;
+
+        let rtStageJson = RuntimeGenerator.genBasicStageJson();
+
+        if (json && json.objects) {
+            for (let item of json.objects) {
+                // then need to change image src url to be a relative url
+                if (item.type == 'image' && item.src && item.url) {
+                    item.src = item.url;
+                }
+                // gen runtime json for every object
+                if (item.type == 'image' && item.name && item.template) {
+                    let jsonObj = RuntimeGenerator.genBasicStageObjectJson(item.template);
+                    if (jsonObj && jsonObj.components && jsonObj.components.display) {
+                        jsonObj.components.display.x = item.left;
+                        jsonObj.components.display.y = item.top;
+                        jsonObj.components.display.angle = item.angle;
+                        jsonObj.components.display.scale.x = item.scaleX;
+                        jsonObj.components.display.scale.y = item.scaleY;
+                    }
+                    output.push({
+                        text: JSON.stringify(jsonObj, null, 4),
+                        path: rtJsonFolder + "/sprites/" + item.name + ".json"
+                    });
+                    rtStageJson.sprites.push(item.name);
+                }
+            }
+        }
+
+        // need to output runtime stage json
+        output.push({
+            text: JSON.stringify(rtStageJson, null, 4),
+            path: rtJsonFolder + "/" + title + ".json"
+        });
+
+        // need to update design time json file too
+        output.push({
+            text: JSON.stringify(JSON.stringify(json, null, 4)),
+            path: dtJsonFile
+        });
+
+        Ipc.saveText(output, (errs) => {
+            let errmsgs = [];
+            for (let err of errs) {
+                if (err && err.toLocaleLowerCase() != "ok") {
+                    //console.error(err);
+                    errmsgs.push(err);
+                }
+            }
+            if (errmsgs.length == 0) {
+                console.log("Current stage is saved successfully.");
+            } else {
+                console.error("Failed to save some file(s) - ");
+                for (let errmsg of errmsgs) console.error(errmsg);
+            }
+        });
+
+        this.updateCurrentTitleDisplay('*' + title, title);
+
+    }
+
+    async runCurrent() {
+
+        let title = this.getCurrentTitle();
+        if (!title || !this._canvasMap.has(title)) return;
+
+        this.eventChannel.publish("ide-run-current-only" , { stage: title });
     }
 
 }

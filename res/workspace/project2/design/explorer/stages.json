@@ -1,0 +1,31 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "state": "open",
+			"text": "project1",
+			"iconCls": "my-icon-folder",
+            "children":
+			[
+                {
+					"text": "stage1",
+					"iconCls": "my-icon-file",
+					"attributes": 
+					{
+                        "data": "design/explorer/stages/stage1.json"
+                    }
+                },
+				
+				{
+					"text": "stage2",
+					"iconCls": "my-icon-file",
+					"attributes": 
+					{
+                        "data": "design/explorer/stages/stage2.json"
+                    }
+                }
+            ]
+        }
+    ]
+    
+}

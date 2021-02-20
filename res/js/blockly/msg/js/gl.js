@@ -2,10 +2,6 @@
 
 'use strict';
 
-goog.provide('Blockly.Msg.gl');
-
-goog.require('Blockly.Msg');
-
 Blockly.Msg["ADD_COMMENT"] = "Engadir un comentario";
 Blockly.Msg["CANNOT_DELETE_VARIABLE_PROCEDURE"] = "Can't delete the variable '%1' because it's part of the definition of the function '%2'";  // untranslated
 Blockly.Msg["CHANGE_VALUE_TITLE"] = "Cambiar o valor:";
@@ -69,7 +65,7 @@ Blockly.Msg["DELETE_VARIABLE_CONFIRMATION"] = "Delete %1 uses of the '%2' variab
 Blockly.Msg["DELETE_X_BLOCKS"] = "Borrar %1 bloques";
 Blockly.Msg["DISABLE_BLOCK"] = "Desactivar o bloque";
 Blockly.Msg["DUPLICATE_BLOCK"] = "Duplicar";
-Blockly.Msg["DUPLICATE_COMMENT"] = "Duplicate Comment";  // untranslated
+Blockly.Msg["DUPLICATE_COMMENT"] = "Duplicar o comentario";
 Blockly.Msg["ENABLE_BLOCK"] = "Activar o bloque";
 Blockly.Msg["EXPAND_ALL"] = "Expandir os bloques";
 Blockly.Msg["EXPAND_BLOCK"] = "Expandir o bloque";
@@ -288,7 +284,7 @@ Blockly.Msg["MATH_TRIG_TOOLTIP_SIN"] = "Retorna o seno dun grao (non radiano).";
 Blockly.Msg["MATH_TRIG_TOOLTIP_TAN"] = "Retorna a tanxente dun grao (non radiano).";
 Blockly.Msg["NEW_COLOUR_VARIABLE"] = "Create colour variable...";  // untranslated
 Blockly.Msg["NEW_NUMBER_VARIABLE"] = "Create number variable...";  // untranslated
-Blockly.Msg["NEW_STRING_VARIABLE"] = "Create string variable...";  // untranslated
+Blockly.Msg["NEW_STRING_VARIABLE"] = "Crar unha variábel de cadea...";
 Blockly.Msg["NEW_VARIABLE"] = "Crear a variable...";
 Blockly.Msg["NEW_VARIABLE_TITLE"] = "Nome da nova variable:";
 Blockly.Msg["NEW_VARIABLE_TYPE_TITLE"] = "New variable type:";  // untranslated
@@ -393,6 +389,7 @@ Blockly.Msg["TEXT_TRIM_OPERATOR_RIGHT"] = "trim spaces from right side of";  // 
 Blockly.Msg["TEXT_TRIM_TOOLTIP"] = "Return a copy of the text with spaces removed from one or both ends.";  // untranslated
 Blockly.Msg["TODAY"] = "Hoxe";
 Blockly.Msg["UNDO"] = "Desfacer";
+Blockly.Msg["UNNAMED_KEY"] = "innominada";
 Blockly.Msg["VARIABLES_DEFAULT_NAME"] = "elemento";
 Blockly.Msg["VARIABLES_GET_CREATE_SET"] = "Create 'set %1'";  // untranslated
 Blockly.Msg["VARIABLES_GET_HELPURL"] = "https://github.com/google/blockly/wiki/Variables#get";  // untranslated
@@ -403,6 +400,7 @@ Blockly.Msg["VARIABLES_SET_HELPURL"] = "https://github.com/google/blockly/wiki/V
 Blockly.Msg["VARIABLES_SET_TOOLTIP"] = "Sets this variable to be equal to the input.";  // untranslated
 Blockly.Msg["VARIABLE_ALREADY_EXISTS"] = "A variable named '%1' already exists.";  // untranslated
 Blockly.Msg["VARIABLE_ALREADY_EXISTS_FOR_ANOTHER_TYPE"] = "A variable named '%1' already exists for another type: '%2'.";  // untranslated
+Blockly.Msg["WORKSPACE_ARIA_LABEL"] = "Blockly Workspace";  // untranslated
 Blockly.Msg["WORKSPACE_COMMENT_DEFAULT_TEXT"] = "Say something...";  // untranslated
 Blockly.Msg["CONTROLS_FOREACH_INPUT_DO"] = Blockly.Msg["CONTROLS_REPEAT_INPUT_DO"];
 Blockly.Msg["CONTROLS_FOR_INPUT_DO"] = Blockly.Msg["CONTROLS_REPEAT_INPUT_DO"];

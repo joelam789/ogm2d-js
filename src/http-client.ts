@@ -11,6 +11,7 @@ export class HttpClient {
             console.log(jqxhr);
             console.log(textStatus);
             console.error(error);
+            console.error(url);
             if (onerror != null) onerror(textStatus);
         });
     }
@@ -31,7 +32,7 @@ export class HttpClient {
                 try {
                     json = JSON.parse(response);
                 } catch(err) {
-                    console.error("parse json error: ");
+                    console.error("parse json error: " + url);
                     console.error(err);
                 }
                 if (callback) {

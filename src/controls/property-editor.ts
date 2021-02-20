@@ -51,7 +51,7 @@ export class PropertyEditor {
             });
             if (this.gui && this.rootName && this.dataSource && this.dataSource.length > 0) {
                 HttpClient.getJSON(this.dataSource, null, (json) => {
-                    console.log(json);
+                    //console.log(json);
                     if (json) this.gui("loadData", json[this.rootName]);
                 });
             }
@@ -69,10 +69,10 @@ export class PropertyEditor {
     }
 
     private dataSourceChanged(newValue, oldValue) {
-        console.log("dataSourceChanged: [" + oldValue + "] => [" + newValue + "]");
+        //console.log("dataSourceChanged: [" + oldValue + "] => [" + newValue + "]");
         if (this.rootName && this.dataSource && this.dataSource.length > 0) {
             HttpClient.getJSON(this.dataSource, null, (json) => {
-                console.log(json);
+                //console.log(json);
                 if (json) this.gui("loadData", json[this.rootName]);
             });
         }

@@ -7,6 +7,8 @@ import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
 import { App } from "../app";
+import { Ipc } from "../ipc";
+
 import { HttpClient } from "../http-client";
 
 @autoinject()
@@ -16,10 +18,16 @@ export class ListView {
     items: any = null;
 
     @bindable dataSource: string = "";
-    @bindable signalName: string = "";
     @bindable imagePath: string = ".";
+
+    @bindable sourcePath: string = "";
+    @bindable designSign: string = ".ds.";
+    @bindable previewSign: string = ".pv.";
+
+    @bindable signalName: string = "";
     @bindable imageTag: string = "icon";
 
+    @bindable isMovable: string = "true";
     @bindable isDraggable: string = "false";
     @bindable isDroppable: string = "false";
 
@@ -36,7 +44,7 @@ export class ListView {
         this.subscribers = [];
         let signal = this.signalName ? this.signalName : "";
         if (signal.length > 0) this.eventChannel.publish(signal);
-        console.log("isDraggable: " + this.isDraggable);
+        //console.log("isDraggable: " + this.isDraggable);
 	}
 
 	detached(argument) {
@@ -45,7 +53,7 @@ export class ListView {
     }
     
     private dataSourceChanged(newValue, oldValue) {
-        console.log("dataSourceChanged: [" + oldValue + "] => [" + newValue + "]");
+        //console.log("dataSourceChanged: [" + oldValue + "] => [" + newValue + "]");
         if (this.dataSource && this.dataSource.length > 0) {
             HttpClient.getJSON(this.dataSource, null, (json) => {
                 if (json) {
@@ -54,6 +62,7 @@ export class ListView {
                     for (let item of json.items) {
                         count++;
                         item.selected = false;
+                        item.movable = this.isMovable;
                         item.width = this.itemWidth;
                         item.height = this.itemHeight;
                         item.id = "lv-img-" + this.imageTag + "-" + count;
@@ -62,6 +71,37 @@ export class ListView {
                     }
                 }
                 console.log(json);
+            });
+        } 
+    }
+
+    private sourcePathChanged(newValue, oldValue) {
+        //console.log("sourcePathChanged: [" + oldValue + "] => [" + newValue + "]");
+        if (this.sourcePath && this.sourcePath.length > 0) {
+            Ipc.getDirTree(this.sourcePath, (paths) => {
+                //console.log(paths);
+                let count = 0;
+                //let newitems = [];
+                this.items = [];
+                if (paths) for (let filepath of paths) {
+                    let idx = filepath.indexOf(this.previewSign);
+                    if (idx > 0) {
+                        count++;
+                        let item = { 
+                            name: filepath.substring(filepath.lastIndexOf('/') + 1, idx),
+                            image: filepath,
+                            movable: this.isMovable,
+                            selected: false,
+                            width: this.itemWidth,
+                            height: this.itemHeight,
+                            id: "lv-img-" + this.imageTag + "-" + count,
+                            pid: "lv-item-" + this.imageTag + "-" + count
+                        }
+                        //newitems.push(item);
+                        this.items.push(item);
+                    }
+                }
+                //console.log(newitems);
             });
         }
         

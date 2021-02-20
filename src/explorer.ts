@@ -49,6 +49,7 @@ export class Explorer {
         this.subscribers.push(this.eventChannel.subscribe("project-reloaded", () => {
             this.refresh();
         }));
+        
 	}
 
 	detached(argument) {

@@ -8,11 +8,26 @@
 
     <body style="margin: 0;">
 
+        <script>
+            if (window.Buffer) {
+                window.nodeBuffer = window.Buffer;
+                delete window.Buffer; // disable warning of deprecated usage in system.js
+            }
+        </script>
+
         <script src="jspm_packages/system.js"></script>
         <script src="config.js"></script>
 
+        <script>
+            if (window.nodeBuffer) {
+                window.Buffer = window.nodeBuffer; // restore it after load system.js
+                delete window.nodeBuffer;
+            }
+        </script>
+
         <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+        <script>if (!window.$) window.$ = window.jQuery = require('./js/jquery.min.js');</script>
+        <script src="js/bootstrap.bundle.min.js"></script>
 
         <script src="js/blockly/blockly_compressed.js"></script>
         <script src="js/blockly/blocks_compressed.js"></script>
@@ -22,6 +37,12 @@
         <script src="js/app-config.js"></script>
 
         <script>
+
+            //if (System) System.set('electron', System.newModule(require('electron')));
+            //else if (SystemJS) SystemJS.set('electron', SystemJS.newModule(require('electron')));
+
+            console.log("before init au in index-blockly...");
+
             window.onload = function() {
                 // load aurelia framework
                 System.import('aurelia-bootstrapper');

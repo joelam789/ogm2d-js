@@ -1,0 +1,13 @@
+<template>
+    <require from="controls/link-button"></require>
+
+    <div id="topbar" style="width: 100%">
+            <span repeat.for="item of buttons" as-element="link-button" 
+            link-id="${'ide-topbtn-' + item.name}" 
+            icon-css="${item.icon}" is-plain="true" icon-align="top"
+            button-text="${item.text}" button-size="large" 
+            button-name="${item.name}" button-group="${item.group}"
+            ></span>
+    </div>
+
+</template>
