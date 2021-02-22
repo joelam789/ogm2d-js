@@ -63,7 +63,7 @@ export class Collector {
             let items = JSON.parse(JSON.stringify(ide.collector));
             let locate = this.i18n.getLocale().toLowerCase();
             for (let item of items) {
-                if (typeof item.title == "object") item.title = item.title[locate];
+                if (item.title && item.title.indexOf('.') > 0) item.title = this.i18n.tr(item.title);
             }
             this.mainPath = App.projectPath;
             this.groups = items;

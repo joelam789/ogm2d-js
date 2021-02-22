@@ -1,0 +1,18 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "state": "open",
+			"text": "Tilemaps",
+			"iconCls": "my-icon-folder",
+            "children":
+			[
+                {
+					"text": "map",
+					"iconCls": "my-icon-file"
+                }
+            ]
+        }
+    ]
+    
+}

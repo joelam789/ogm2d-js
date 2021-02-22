@@ -325,7 +325,7 @@ ipcMain.on("copy-dir-content-sync", (event, src, dest, absFlag = 0, exts = null)
     let srcpath = (absFlag & 1) != 0 ? src : __dirname + "/" + src;
     let destpath = (absFlag & 2) != 0 ? dest : __dirname + "/" + dest;
     //console.log("copy-dir-content from ", srcpath, ' to ', destpath);
-    if (exts && exts.length > 0) console.log("for ", exts);
+    //if (exts && exts.length > 0) console.log("for ", exts);
     try {
         if (fs.existsSync(srcpath) && fs.existsSync(destpath)) {
             fse.copySync(srcpath, destpath, {

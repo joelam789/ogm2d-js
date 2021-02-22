@@ -1,0 +1,18 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "state": "open",
+			"text": "Spritesheets",
+			"iconCls": "my-icon-folder",
+            "children":
+			[
+                {
+					"text": "plane-a",
+					"iconCls": "my-icon-file"
+                }
+            ]
+        }
+    ]
+    
+}

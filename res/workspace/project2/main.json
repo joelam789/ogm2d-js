@@ -13,16 +13,10 @@
 				"movable": true,
 				"width": 64,
 				"height": 64,
-				"folder": "design/collector/actors",
+				"folder": "design/collector/spritesheets",
 				"content": "",
-				"title": {
-					"en": "Actors",
-					"zh": "角色"
-				},
-				"tools": {
-					"edit": "",
-					"design": ""
-				}
+				"title": "collector.spritesheets",
+				"tools": []
 			},
 			{
 				"group": "background",
@@ -31,16 +25,10 @@
 				"movable": false,
 				"width": 64,
 				"height": 128,
-				"folder": "design/collector/backgrounds",
+				"folder": "design/collector/tilemaps",
 				"content": "",
-				"title": {
-					"en": "Backgrounds",
-					"zh": "背景"
-				},
-				"tools": {
-					"edit": "",
-					"design": ""
-				}
+				"title": "collector.tilemaps",
+				"tools": []
 			}
 		],
 		"explorer": [
@@ -48,55 +36,37 @@
 				"group": "stages",
 				"folder": "design/explorer",
 				"content": "design/explorer/stages.json",
-				"title": {
-					"en": "Stages",
-					"zh": "舞台"
-				},
+				"title": "explorer.stages",
 				"tools": [
 					{
 						"group": "stages",
 						"name": "add-stage",
 						"icon": "my-add-file",
-						"text": {
-							"en": "Add",
-							"zh": "新增"
-						}
+						"text": "toolbar.stages.add"
 					},
 					{
 						"group": "stages",
 						"name": "edit-stage",
 						"icon": "my-edit-file",
-						"text": {
-							"en": "Edit",
-							"zh": "编辑"
-						}
+						"text": "toolbar.stages.edit"
 					},
 					{
 						"group": "stages",
 						"name": "rename-stage",
 						"icon": "my-rename-file",
-						"text": {
-							"en": "Rename",
-							"zh": "重命名"
-						}
+						"text": "toolbar.stages.rename"
 					},
 					{
 						"group": "stages",
 						"name": "remove-stage",
 						"icon": "my-remove-file",
-						"text": {
-							"en": "Remove",
-							"zh": "移除"
-						}
+						"text": "toolbar.stages.remove"
 					},
 					{
 						"group": "stages",
 						"name": "edit-stage-tree",
 						"icon": "my-edit-tree",
-						"text": {
-							"en": "Edit Tree",
-							"zh": "编辑树型"
-						}
+						"text": "toolbar.stages.tree"
 					}
 				]
 			},
@@ -104,10 +74,7 @@
 				"group": "objects",
 				"folder": "design/explorer",
 				"content": "design/explorer/objects.json",
-				"title": {
-					"en": "Objects",
-					"zh": "物件"
-				},
+				"title": "explorer.objects",
 				"tools": [
 				]
 			}
@@ -116,26 +83,14 @@
 			{
 				"group": "property",
 				"content": "design/inspector/properties.json",
-				"title": {
-					"en": "Properties",
-					"zh": "属性"
-				},
-				"tools": {
-					"edit": "",
-					"design": ""
-				}
+				"title": "inspector.properties",
+				"tools": []
 			},
 			{
 				"group": "event",
 				"content": "design/inspector/events.json",
-				"title": {
-					"en": "Events",
-					"zh": "事件"
-				},
-				"tools": {
-					"edit": "",
-					"design": ""
-				}
+				"title": "inspector.events",
+				"tools": []
 			}
 		],
 		"topbar": [
@@ -143,19 +98,13 @@
 				"group": "ide",
 				"name": "save-current",
 				"icon": "my-icon-save",
-				"text": {
-					"en": "Save",
-					"zh": "保存"
-				}
+				"text": "topbar.save-current"
 			},
 			{
 				"group": "ide",
 				"name": "run-current",
 				"icon": "my-icon-run",
-				"text": {
-					"en": "Run",
-					"zh": "运行"
-				}
+				"text": "topbar.run-current"
 			}
 		],
 		"designer": {

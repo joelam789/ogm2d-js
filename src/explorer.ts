@@ -67,10 +67,12 @@ export class Explorer {
             let items = JSON.parse(JSON.stringify(ide.explorer));
             let locate = this.i18n.getLocale().toLowerCase();
             for (let item of items) {
-                if (typeof item.title == "object") item.title = item.title[locate];
+                //if (typeof item.title == "object") item.title = item.title[locate];
+                if (item.title && item.title.indexOf('.') > 0) item.title = this.i18n.tr(item.title);
                 if (item.tools && item.tools.length > 0) {
                     for (let tool of item.tools) {
-                        if (typeof tool.text == "object") tool.text = tool.text[locate];
+                        //if (typeof tool.text == "object") tool.text = tool.text[locate];
+                        if (tool.text && tool.text.indexOf('.') > 0) tool.text = this.i18n.tr(tool.text);
                     }
                 }
             }

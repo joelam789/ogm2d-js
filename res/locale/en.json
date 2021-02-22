@@ -27,14 +27,35 @@
         "name": "Name",
         "value": "Value"
     },
-
-    "collector": {
-        "sprites": "Sprites"
+	
+	"inspector": {
+        "properties": "Properties",
+        "events": "Events"
     },
 
-    "component": {
-        "actor": "Actors",
-        "background": "Backgrounds"
-    }
+    "collector": {
+        "spritesheets": "Spritesheets",
+		"tilemaps": "Tilemaps"
+    },
+
+    "explorer": {
+        "stages": "Stages",
+        "objects": "Objects"
+    },
+	
+	"topbar": {
+		"save-current": "Save",
+		"run-current": "Run"
+	},
+	
+	"toolbar": {
+		"stages": {
+			"add": "Add",
+			"edit": "Edit",
+			"rename": "Rename",
+			"remove": "Remove",
+			"tree": "Edit Tree"
+		}
+	}
 
 }

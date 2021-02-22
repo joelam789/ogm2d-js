@@ -28,13 +28,34 @@
         "value": "属性值"
     },
 
-    "collector": {
-        "sprites": "精灵"
+    "inspector": {
+        "properties": "属性",
+        "events": "事件"
     },
 
-    "component": {
-        "actor": "角色",
-        "background": "背景"
-    }
+    "collector": {
+        "spritesheets": "精灵",
+		"tilemaps": "地图"
+    },
+
+    "explorer": {
+        "stages": "舞台",
+        "objects": "物件"
+    },
+	
+	"topbar": {
+		"save-current": "保存",
+		"run-current": "运行"
+	},
+	
+	"toolbar": {
+		"stages": {
+			"add": "增加",
+			"edit": "编辑",
+			"rename": "重命名",
+			"remove": "移除",
+			"tree": "编辑目录树"
+		}
+	}
 
 }

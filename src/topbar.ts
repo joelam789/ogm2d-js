@@ -64,7 +64,7 @@ export class Topbar {
             let items = JSON.parse(JSON.stringify(ide.topbar));
             let locate = this.i18n.getLocale().toLowerCase();
             for (let item of items) {
-                if (typeof item.text == "object") item.text = item.text[locate];
+                if (item.text && item.text.indexOf('.') > 0) item.text = this.i18n.tr(item.text);
             }
             this.buttons = items;
         }
