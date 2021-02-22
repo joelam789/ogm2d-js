@@ -61,7 +61,7 @@ function createMainWindow() {
     mainWin.loadURL('file://' + __dirname + '/index.html');
 
     // Open the DevTools.
-    mainWin.webContents.openDevTools();
+    mainWin.webContents.openDevTools( {mode: 'detach'} );
 
     // Emitted when the window is closed.
     mainWin.on('closed', () => {

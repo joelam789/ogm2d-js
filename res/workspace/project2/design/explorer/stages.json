@@ -3,7 +3,7 @@
         {
             "id": 1,
             "state": "open",
-			"text": "project1",
+			"text": "project2",
 			"iconCls": "my-icon-folder",
             "children":
 			[

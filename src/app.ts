@@ -22,6 +22,9 @@ export class App {
 	private static _project: any = null;
 	private static _projectPath: string = null;
 	private static _projectFile: string = null;
+	private static _projectName: string = null;
+
+	//private static _stageFilepathMap: Map<string, string> = new Map<string, string>();
 
 	constructor(public i18n: I18N, public eventChannel: EventAggregator, public dialogService: DialogService) {
 		(window as any).appEvent = this.eventChannel;
@@ -57,6 +60,10 @@ export class App {
 
 	static get projectFile(): string {
 		return App._projectFile;
+	}
+
+	static get projectName(): string {
+		return App._projectName;
 	}
 
 	get currentPage(): string {
@@ -127,9 +134,10 @@ export class App {
 				App._project = json;
 				App._projectPath = url.substring(0, url.lastIndexOf('/'));
 				App._projectFile = url.substr(url.lastIndexOf('/') + 1);
+				App._projectName = json.name ? json.name : "project";
 				App.config.projectPath = App._projectPath;
 				App.config.projectFile = App._projectFile;
-				App.config.projectName = json.name ? json.name : "project";
+				App.config.projectName = App._projectName;
 				(window as any).appConfig = App.config;
 				if (callback) callback(json);
 			}

@@ -52,10 +52,53 @@
 					"en": "Stages",
 					"zh": "舞台"
 				},
-				"tools": {
-					"edit": "",
-					"design": ""
-				}
+				"tools": [
+					{
+						"group": "stages",
+						"name": "add-stage",
+						"icon": "my-add-file",
+						"text": {
+							"en": "Add",
+							"zh": "新增"
+						}
+					},
+					{
+						"group": "stages",
+						"name": "edit-stage",
+						"icon": "my-edit-file",
+						"text": {
+							"en": "Edit",
+							"zh": "编辑"
+						}
+					},
+					{
+						"group": "stages",
+						"name": "rename-stage",
+						"icon": "my-rename-file",
+						"text": {
+							"en": "Rename",
+							"zh": "重命名"
+						}
+					},
+					{
+						"group": "stages",
+						"name": "remove-stage",
+						"icon": "my-remove-file",
+						"text": {
+							"en": "Remove",
+							"zh": "移除"
+						}
+					},
+					{
+						"group": "stages",
+						"name": "edit-stage-tree",
+						"icon": "my-edit-tree",
+						"text": {
+							"en": "Edit Tree",
+							"zh": "编辑树型"
+						}
+					}
+				]
 			},
 			{
 				"group": "objects",
@@ -65,10 +108,8 @@
 					"en": "Objects",
 					"zh": "物件"
 				},
-				"tools": {
-					"edit": "",
-					"design": ""
-				}
+				"tools": [
+				]
 			}
 		],
 		"inspector": [

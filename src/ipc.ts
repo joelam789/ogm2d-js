@@ -4,7 +4,6 @@ import { ipcRenderer } from "electron";
 export class Ipc {
 
 	private static _dirtreeReuests: Array<any> = [];
-	//private static _stageFilepathMap: Map<string, string> = new Map<string, string>();
 	
 	private static getDirTreeOneByOne(currentPath: string, callback: (filepaths: Array<string>)=>void) {
 		ipcRenderer.once("get-dir-tree-return", (event, result) => {

@@ -68,6 +68,11 @@ export class Explorer {
             let locate = this.i18n.getLocale().toLowerCase();
             for (let item of items) {
                 if (typeof item.title == "object") item.title = item.title[locate];
+                if (item.tools && item.tools.length > 0) {
+                    for (let tool of item.tools) {
+                        if (typeof tool.text == "object") tool.text = tool.text[locate];
+                    }
+                }
             }
             this.groups = items;
         }

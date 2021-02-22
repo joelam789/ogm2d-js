@@ -12,3 +12,19 @@
 	background:url('my-icons/file.png') no-repeat center center;
 }
 
+
+.my-add-file{
+	background:url('my-icons/add-file.png') no-repeat center center;
+}
+.my-remove-file{
+	background:url('my-icons/remove-file.png') no-repeat center center;
+}
+.my-edit-file{
+	background:url('my-icons/edit-file.png') no-repeat center center;
+}
+.my-rename-file{
+	background:url('my-icons/rename-file.png') no-repeat center center;
+}
+.my-edit-tree{
+	background:url('my-icons/dirtree.png') no-repeat center center;
+}

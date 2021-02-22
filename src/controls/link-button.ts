@@ -17,13 +17,16 @@ export class LinkButton {
 
     @bindable linkId: string = "";
     @bindable buttonName: string = "btn1";
-    @bindable buttonText: string = "btn1";
+    @bindable buttonText: string = "";
     @bindable buttonGroup: string = "ide";
 
     @bindable isPlain: string = "";
     @bindable iconCss: string = "";
     @bindable iconAlign: string = "top";
     @bindable buttonSize: string = "large";
+
+    @bindable toolTip: string = "";
+    @bindable toolTipPos: string = "right";
 
     subscribers: Array<Subscription> = [];
     
@@ -36,6 +39,15 @@ export class LinkButton {
         this.subscribers = [];
 
         if (this.linkId && this.linkId.length > 0) {
+
+            if (this.toolTip) {
+                this.gui = ($('#' + this.linkId) as any).tooltip.bind($('#' + this.linkId));
+                if (this.gui) this.gui({
+                    content: this.toolTip,
+                    position: this.toolTipPos,
+                });
+            }
+
             this.gui = ($('#' + this.linkId) as any).linkbutton.bind($('#' + this.linkId));
             if (this.gui) this.gui({
                 iconCls: this.iconCss,

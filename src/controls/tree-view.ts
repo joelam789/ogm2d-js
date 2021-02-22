@@ -70,7 +70,11 @@ export class TreeView {
         if (this.rootName && this.dataSource && this.dataSource.length > 0) {
             HttpClient.getJSON(this.dataSource, null, (json) => {
                 //console.log(json);
-                if (json) this.gui("loadData", json[this.rootName]);
+                if (json && json[this.rootName]) {
+                    let treeNodes = json[this.rootName];
+                    //if (treeNodes.length == 1) treeNodes[0].text = App.projectName;
+                    this.gui("loadData", treeNodes);
+                }
             });
         }
         

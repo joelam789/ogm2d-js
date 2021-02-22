@@ -1,5 +1,6 @@
 <template>
     <require from="controls/tree-view"></require>
+    <require from="controls/link-button"></require>
 
     <div id="explorer" style="width: 100%; height: 100%;">
 
@@ -13,11 +14,26 @@
         -->
 
         <div repeat.for="item of groups" title="${item.title}">
+
+            <div style="text-align: right; background-color:#efefef">
+                <span repeat.for="btn of item.tools" as-element="link-button" 
+                link-id="${'stage-toolbtn-' + btn.name}" 
+                icon-css="${btn.icon}" is-plain="true"
+                button-size="small" icon-align="left"
+                tool-tip="${btn.text}" tool-tip-pos="bottom"
+                button-name="${btn.name}" button-group="${btn.group}"
+                ></span>
+            </div>
+
             <div as-element="tree-view" tree-id="${'tree-' + item.group}" 
             data-source="${$parent.mainPath + '/' + item.content}" 
             signal-name="${$last ? 'structures-loaded' : ''}"
             root-name="items"></div>
+
+
         </div>
+
+        
 
     </div>
 
