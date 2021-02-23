@@ -50,7 +50,7 @@ export class LinkButton {
 
             this.gui = ($('#' + this.linkId) as any).linkbutton.bind($('#' + this.linkId));
             if (this.gui) this.gui({
-                iconCls: this.iconCss,
+                iconCls: this.iconCss ? this.iconCss : null,
                 plain: this.isPlain && this.isPlain == "true",
                 size: this.buttonSize,
                 iconAlign: this.iconAlign,

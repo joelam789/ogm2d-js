@@ -6,6 +6,8 @@ import { Router } from 'aurelia-router';
 import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
+import { DirTreeDlg } from "./popups/dirtree/dirtree";
+
 import { App } from "./app";
 
 @autoinject()
@@ -49,6 +51,10 @@ export class Explorer {
         this.subscribers.push(this.eventChannel.subscribe("project-reloaded", () => {
             this.refresh();
         }));
+
+        this.subscribers.push(this.eventChannel.subscribe("stages-edit-stage-tree", () => {
+            this.openStageTreeDlg();
+        }));
         
 	}
 
@@ -79,5 +85,29 @@ export class Explorer {
             this.groups = items;
         }
     }
+
+    openStageTreeDlg() {
+
+        console.log("open stages tree editor");
+
+        let param = {
+            file: "",
+            folder: "",
+            tools: App.project.dialogs.dirtree.tools
+        };
+        this.dialogService.open({viewModel: DirTreeDlg, model: param })
+        .whenClosed((response) => {
+            if (!response.wasCancelled) {
+                
+                
+                console.log('Finish editing tree');
+            } else {
+                console.log('Give up editing tree');
+            }
+        });
+
+    }
+
+    
 
 }

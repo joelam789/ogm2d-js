@@ -85,6 +85,16 @@ export class TreeView {
         //this.updateTreeData();
     }
 
+    loadData(treeNodes) {
+        if (!this.gui) return;
+        this.gui("loadData", treeNodes);
+    }
+
+    getSelected() {
+        if (!this.gui) return;
+        return this.gui("getSelected");
+    }
+
     /*
     updateTreeData() {
         if (this.gui && this.sourcePath) {

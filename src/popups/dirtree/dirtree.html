@@ -1,0 +1,49 @@
+<template>
+
+    <require from="../../controls/data-list"></require>
+    <require from="../../controls/tree-view"></require>
+    <require from="../../controls/link-button"></require>
+
+  <ux-dialog class="panel panel-default" style="width: 800px; height: 600px">
+    <ux-dialog-header class="panel-heading">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" click.delegate="controller.cancel()"><span aria-hidden="true">&times;</span></button>
+        <span class="panel-title" style="font-size: 18px;" i18n="dirtree.title">Edit tree structure</span>
+    </ux-dialog-header>
+
+    <ux-dialog-body class="panel-body" style="height: 490px; overflow: hidden;">
+        <div class="row" style="padding-top: 4px; padding-bottom: 4px; background-color:#efefef">
+            <div class="col">
+                <span style="padding-left: 4px;"></span>
+                <span repeat.for="btn of toolButtons" as-element="link-button" 
+                link-id="${'dirtree-toolbtn-' + btn.name}" 
+                icon-css="" is-plain="false" 
+                button-size="small" button-text="${btn.text}"
+                button-name="${btn.name}" button-group="${btn.group}"
+                ></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div as-element="tree-view" tree-id="dirtree-main-tree" 
+                style="height: 446px; width: 100%; margin-left: 4px; margin-top: 4px; border: 1px solid #95B8E7;"
+                root-name="items" signal-name="dirtree-tree-ready"
+                view-model.ref="treeRef"></div>
+            </div>
+            <div class="col">
+                <div as-element="data-list" list-id="dirtree-main-list" 
+                is-plain="true" show-checkbox="true" is-single-select="false"
+                style="height: 450px; width: 99%; padding-top: 4px;"
+                signal-name="dirtree-list-ready"
+                view-model.ref="listRef"
+                ></div>
+            </div>
+        </div>
+
+    </ux-dialog-body>
+    
+    <ux-dialog-footer class="panel-footer">
+        <button class="btn btn-success" click.trigger="controller.ok()" i18n="app.ok">OK</button>
+        <button class="btn btn-danger" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
+    </ux-dialog-footer>
+  </ux-dialog>
+</template>

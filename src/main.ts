@@ -11,8 +11,12 @@ export function configure(aurelia: Aurelia) {
 	.plugin('aurelia-dialog', config => { // offical plug-in, see https://github.com/aurelia/dialog
 		config.useDefaults();
 		config.settings.lock = true;
-		config.settings.centerHorizontalOnly = false;
+		//config.settings.centerHorizontalOnly = false;
 		config.settings.startingZIndex = 10;
+		config.settings.position = (modalContainer, modalOverlay) => {
+			modalContainer.style = "z-index: 10; overflow: hidden;";
+			modalContainer.className = "active";
+		};
 	})
 	.plugin('aurelia-i18n', (instance) => { // offical plug-in, see https://github.com/aurelia/i18n
         // register backend plugin

@@ -113,6 +113,10 @@ export class Ide {
             } 
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("click-link-button", (btn) => {
+            this.handleIdeButtonClick(btn);
+        }));
+
         this.subscribers.push(this.eventChannel.subscribe("ide-run-current", () => {
             this.eventChannel.publish("ide-save-current-and-run");
         }));
@@ -152,6 +156,11 @@ export class Ide {
 			App.loadAppLanguageScript();
         });
 	}
+
+    handleIdeButtonClick(btn) {
+        console.log(btn);
+        this.eventChannel.publish(btn.group + "-" + btn.name);
+    }
 
     saveCurrent() {
         console.log("save current stage");

@@ -43,6 +43,10 @@
         "objects": "Objects"
     },
 	
+	"dirtree": {
+		"title": "Tree Structure"
+	},
+	
 	"topbar": {
 		"save-current": "Save",
 		"run-current": "Run"
@@ -55,6 +59,13 @@
 			"rename": "Rename",
 			"remove": "Remove",
 			"tree": "Edit Tree"
+		},
+		"dirtree": {
+			"add": "Add Folder",
+			"rename": "Rename Folder",
+			"remove": "Remove Folder",
+			"move": "Move Folder",
+			"file": "Move Files"
 		}
 	}
 

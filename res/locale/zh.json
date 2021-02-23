@@ -42,6 +42,10 @@
         "stages": "舞台",
         "objects": "物件"
     },
+
+	"dirtree": {
+		"title": "编辑目录树"
+	},
 	
 	"topbar": {
 		"save-current": "保存",
@@ -55,6 +59,13 @@
 			"rename": "重命名",
 			"remove": "移除",
 			"tree": "编辑目录树"
+		},
+		"dirtree": {
+			"add": "新增目录",
+			"rename": "重命名目录",
+			"remove": "移除目录",
+			"move": "移动目录",
+			"file": "移动文件"
 		}
 	}
 

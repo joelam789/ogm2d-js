@@ -44,9 +44,6 @@ export class Topbar {
         this.subscribers.push(this.eventChannel.subscribe("project-reloaded", () => {
             this.refresh();
         }));
-        this.subscribers.push(this.eventChannel.subscribe("click-link-button", (btn) => {
-            this.handleButtonClick(btn);
-        }));
 	}
 
 	detached(argument) {

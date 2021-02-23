@@ -118,6 +118,36 @@
 	},
 
 	"dialogs": {
+	
+		"dirtree": {
+			"tools": [
+				{
+					"group": "dirtree",
+					"name": "add-folder",
+					"text": "toolbar.dirtree.add"
+				},
+				{
+					"group": "dirtree",
+					"name": "rename-folder",
+					"text": "toolbar.dirtree.rename"
+				},
+				{
+					"group": "dirtree",
+					"name": "remove-folder",
+					"text": "toolbar.dirtree.remove"
+				},
+				{
+					"group": "dirtree",
+					"name": "move-folder",
+					"text": "toolbar.dirtree.move"
+				},
+				{
+					"group": "dirtree",
+					"name": "move-files",
+					"text": "toolbar.dirtree.file"
+				}
+			]
+		}
 
 	}
     
