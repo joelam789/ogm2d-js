@@ -58,8 +58,16 @@ export class JsonEditorPage {
         let AceEditor = (window as any).ace;
         let container = document.getElementById("scripteditor");
         if (AceEditor && container) {
+            
             this.editor = AceEditor.edit(container.id);
             this.editor.session.setValue(tscript); // set script for testing
+
+            //let ret = this.editor.find("return x");
+            //console.log(ret);
+            ////let selection = this.editor.getSelectionRange();
+            ////console.log(selection);
+            //if (ret) this.editor.gotoLine(ret.start.row + 1, ret.end.column + 1, true);
+            //else console.log("not found");
         }
 
         // set editor style

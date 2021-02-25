@@ -1,8 +1,9 @@
 <template>
-  <ux-dialog class="panel panel-default">
-    <ux-dialog-header class="panel-heading">
+  <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 50%;
+  width: 400px; height: 210px; margin-left: -200px; margin-top: -105px;">
+    <ux-dialog-header class="panel-heading" style="border: 1px solid #95B8E7;">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" click.delegate="controller.cancel()"><span aria-hidden="true">&times;</span></button>
-        <h4 class="panel-title" i18n="dirtree.new-folder">Create New Folder</h4>
+        <span class="panel-title" style="font-size: 16px;" i18n="dirtree.new-folder">Create New Folder</span>
     </ux-dialog-header>
 
     <ux-dialog-body class="panel-body">
