@@ -14,8 +14,8 @@ export class Ide {
 
     gui: any = null;
 
-    blocklyDlg: any = null;
-    blocklyFrame: any = null;
+    editorDlg: any = null;
+    editorFrame: any = null;
 
     centerSettings: string = "region:'center',title:'Design'";
     eastSettings: string = "region:'east',title:'Inspector',split:true";
@@ -38,39 +38,42 @@ export class Ide {
     attached(argument) {
         document.getElementById('top-loading').style.display = 'none';
 
-        this.blocklyFrame = document.getElementById('blockly-window');
+        this.editorFrame = document.getElementById('editor-window');
 
-        this.blocklyDlg = ($('#blockly-dialog') as any).dialog.bind($('#blockly-dialog'));
-        if (this.blocklyDlg) this.blocklyDlg({
+        this.editorDlg = ($('#editor-dialog') as any).dialog.bind($('#editor-dialog'));
+        if (this.editorDlg) this.editorDlg({
             modal: true,
             closed: true,
             resizable: true, 
             maximizable: true, 
-            title: "Blockly Dialog",
+            title: this.i18n.tr("editor.dlg-title"),
             iconCls: 'icon-edit',
+            /*
             toolbar: [{
                 text:'Reload',
                 iconCls:'icon-reload',
                 handler: () => {
-                    this.blocklyFrame.contentWindow.appEvent.publish('blockly-reload');
+                    this.editorFrame.contentWindow.appEvent.publish('dlg-editor-reload');
                 }
             },'-',{
                 text:'Save',
                 iconCls:'icon-save',
                 handler: () => {
-                    this.blocklyFrame.contentWindow.appEvent.publish('blockly-save');
+                    this.editorFrame.contentWindow.appEvent.publish('dlg-editor-save');
                 }
             }],
+            */
             buttons: [{
-                text:'Ok',
+                text: this.i18n.tr("ide.ok"),
                 iconCls:'icon-ok',
                 handler: () => {
-                    this.blocklyFrame.contentWindow.appEvent.publish('blockly-save-close');
+                    this.editorFrame.contentWindow.appEvent.publish('dlg-editor-save-close');
                 }
             },{
-                text:'Cancel',
+                text: this.i18n.tr("ide.cancel"),
+                iconCls:'icon-cancel',
                 handler: () => {
-                    if (this.blocklyDlg) this.blocklyDlg("close");
+                    if (this.editorDlg) this.editorDlg("close");
                 }
             }]
         });
@@ -96,7 +99,7 @@ export class Ide {
         
         this.subscribers.push(this.eventChannel.subscribe("ide-resize", () => {
             let mainlayout = document.getElementById('ide-layout');
-            if (this.blocklyDlg) this.blocklyDlg("center");
+            if (this.editorDlg) this.editorDlg("center");
             if (mainlayout) mainlayout.style.width = mainlayout.style.height = "100%";
             let sublayout1 = document.getElementById('center-layout');
             if (sublayout1) sublayout1.style.width = sublayout1.style.height = "100%";
@@ -107,10 +110,9 @@ export class Ide {
         this.subscribers.push(this.eventChannel.subscribe("display-dblclick", (data) => {
             if (data) {
                 console.log(data);
-                console.log("going to open blockly ??");
-                if (this.blocklyDlg) this.blocklyDlg("open");
-                if (this.blocklyFrame) this.blocklyFrame.src = "index-blockly.html#blockly"; // may reload a new url if necessary
-            } 
+                console.log("going to open blockly... ??");
+                this.openEditorDlg("index-blockly.html#blockly", 800, 600);
+            }
         }));
 
         this.subscribers.push(this.eventChannel.subscribe("click-link-button", (btn) => {
@@ -122,12 +124,20 @@ export class Ide {
         }));
 
         this.subscribers.push(this.eventChannel.subscribe("ide-run-current-only", (data) => {
-            this.runCurrent(data ? data.stage : "");
+            this.runCurrent(data ? data.scene : "");
         }));
 
-        this.subscribers.push(this.eventChannel.subscribe("blockly-close", () => {
-            console.log("received: blockly-close");
-            if (this.blocklyDlg) this.blocklyDlg("close");
+        this.subscribers.push(this.eventChannel.subscribe("dlg-editor-open", (data) => {
+            if (data) {
+                console.log(data);
+                console.log("going to open editor dialog...");
+                this.openEditorDlg(data.url, data.width, data.height);
+            }
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-editor-close", () => {
+            console.log("received: dlg-editor-close");
+            this.closeEditorDlg();
         }));
 
         App.openProject("workspace/project2/main.json", () => {
@@ -162,19 +172,39 @@ export class Ide {
         this.eventChannel.publish(btn.group + "-" + btn.name);
     }
 
-    saveCurrent() {
-        console.log("save current stage");
+    openEditorDlg(url: string, w?: number, h?: number) {
+        let dlgWidth = w ? w : 800;
+        let dlgHeight = h ? h : 600;
+        if (this.editorDlg && this.editorFrame) {
+            this.editorDlg('resize',{
+                width: dlgWidth,
+                height: dlgHeight
+            });
+            this.editorDlg('center');
+            this.editorDlg("open");
+            this.editorFrame.src = url;
+        }
     }
 
-    async runCurrent(stageName: string = "") {
+    closeEditorDlg() {
+        if (this.editorDlg && this.editorFrame) {
+            this.editorDlg("close");
+        }
+    }
 
-        console.log("run current stage", stageName);
+    saveCurrent() {
+        console.log("save current scene");
+    }
+
+    async runCurrent(sceneName: string = "") {
+
+        console.log("run current scene", sceneName);
 
         //let tsfiles = [];
         //tsfiles.push("C:/javascript/ogm2d-dev/dist/workspace/project2/design/template/games/demo.ts");
         //App.transpileTsFiles(tsfiles, (err) => {
-        //    if (err) console.log("Failed to run current stage - " + err);
-        //    else console.log("Running current stage is done");
+        //    if (err) console.log("Failed to run current scene - " + err);
+        //    else console.log("Running current scene is done");
         //});
 
         let srcDir = App.projectPath + "/runtime/project/res";
@@ -195,7 +225,7 @@ export class Ide {
             return;
         }
 
-        if (stageName) {
+        if (sceneName) {
             let rtGameFile = App.projectPath + "/runtime/build/debug/json/games/game.json";
             let gameJsonStr = await Ipc.readFileAsync(rtGameFile, false);
             if (gameJsonStr) {
@@ -203,16 +233,16 @@ export class Ide {
                 if (gameJson) {
                     
                     // we should make sure all scenes were generated first ...
-                    //if (!gameJson.scenes) gameJson.scenes = [stageName]
+                    //if (!gameJson.scenes) gameJson.scenes = [sceneName]
                     //else {
-                    //    let idx = gameJson.scenes.indexOf(stageName);
-                    //    if (idx < 0) gameJson.scenes.push(stageName);
-                    //    gameJson.first = stageName;
+                    //    let idx = gameJson.scenes.indexOf(sceneName);
+                    //    if (idx < 0) gameJson.scenes.push(sceneName);
+                    //    gameJson.first = sceneName;
                     //}
                     
-                    // since so far we would generate only current stage , 
+                    // since so far we would generate only current scene , 
                     // so just let it be the only one scene of the game ...
-                    gameJson.scenes = [stageName];
+                    gameJson.scenes = [sceneName];
 
                 }
                 await Ipc.writeFileAsync(rtGameFile, JSON.stringify(gameJson, null, 4), false);

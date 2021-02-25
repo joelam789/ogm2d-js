@@ -42,14 +42,14 @@ function transpileTsFiles(fileNames: string[], options: any = null) {
 }
 
 let mainWin = null;
-let gameWin = null;
+let editorWin = null;
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1'; // ...
 
 function createMainWindow() {
     // Create the browser window.
     mainWin = new BrowserWindow({
-        title: "Editor", width: 1280, height: 720, 
+        title: "Editor", width: 1280, height: 780, 
         autoHideMenuBar: true, darkTheme: true,
         webPreferences: {
             nodeIntegration: true,
@@ -74,7 +74,7 @@ function createMainWindow() {
 
 function createGameWindow(gameUrl) {
     // Create the browser window.
-    gameWin = new BrowserWindow({
+    editorWin = new BrowserWindow({
         title: "Game", width: 680, height: 550, 
         autoHideMenuBar: true, darkTheme: true,
         webPreferences: {
@@ -84,18 +84,45 @@ function createGameWindow(gameUrl) {
     });
 
     // and load the index.html of the app.
-    gameWin.loadURL('file://' + __dirname + '/' + gameUrl);
+    editorWin.loadURL('file://' + __dirname + '/' + gameUrl);
 
     // Open the DevTools.
     //gameWin.webContents.openDevTools();
 
     // Emitted when the window is closed.
-    gameWin.on('closed', () => {
+    editorWin.on('closed', () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        gameWin = null
+        editorWin = null
         console.log("Game window is closed");
+    });
+}
+
+function createJsonEditorWindow(jsonFileUrl) {
+    // Create the browser window.
+    editorWin = new BrowserWindow({
+        title: "Json Editor", width: 800, height: 600, 
+        autoHideMenuBar: true, darkTheme: true,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+
+    // and load the index.html of the app.
+    editorWin.loadURL('file://' + __dirname + '/index-json.html#jsonedt?file=' + jsonFileUrl);
+
+    // Open the DevTools.
+    editorWin.webContents.openDevTools();
+
+    // Emitted when the window is closed.
+    editorWin.on('closed', () => {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        editorWin = null
+        console.log("Json editor window is closed");
     });
 }
 
@@ -318,6 +345,21 @@ ipcMain.on("run-game", (event, gameUrl) => {
     } catch(err) {
         console.error(err);
         event.sender.send('run-game-return', {error: "Failed to run the game"});
+    }
+});
+
+ipcMain.on("run-json-editor", (event, jsonFileUrl) => {
+    console.log("run json editor - ", jsonFileUrl);
+    //if (!fs.existsSync(__dirname + "/" + jsonFileUrl)) {
+    //    event.sender.send('run-json-editor-return', {error: "Json file path is not valid"});
+    //    return;
+    //}
+    try {
+        createJsonEditorWindow(jsonFileUrl);
+        event.sender.send('run-json-editor-return', {error: null});
+    } catch(err) {
+        console.error(err);
+        event.sender.send('run-json-editor-return', {error: "Failed to run json editor"});
     }
 });
 

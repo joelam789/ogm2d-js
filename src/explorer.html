@@ -4,20 +4,11 @@
 
     <div id="explorer" style="width: 100%; height: 100%;">
 
-        <!--
-        <div title="Project">
-            <tree-view tree-id="project-tree" data-source="${mainPath && mainFile  ? mainPath + '/' + mainFile : null}" root-name="stages"></tree-view>
-        </div>
-        <div title="Stage">
-            tab2
-        </div>
-        -->
-
         <div repeat.for="item of groups" title="${item.title}">
 
             <div style="text-align: right; background-color:#efefef">
                 <span repeat.for="btn of item.tools" as-element="link-button" 
-                link-id="${'stage-toolbtn-' + btn.name}" 
+                link-id="${'scene-toolbtn-' + btn.name}" 
                 icon-css="${btn.icon}" is-plain="true"
                 button-size="small" icon-align="left"
                 tool-tip="${btn.text}" tool-tip-pos="bottom"

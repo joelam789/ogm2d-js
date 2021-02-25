@@ -155,6 +155,19 @@ export class Ipc {
 		ipcRenderer.send("run-game", url);
 	}
 
+	static runJsonEditor(jsonFileUrl, callback: (err: string)=>void) {
+		//if (!jsonFileUrl) return;
+		ipcRenderer.once("run-json-editor-return", (event, result) => {
+			if (result.error) {
+				console.error("run-json-editor error", result.error);
+				if (callback) callback(result.error);
+			} else {
+				if (callback) callback("");
+			}
+		});
+		ipcRenderer.send("run-json-editor", jsonFileUrl);
+	}
+
 	static copyDirContentSync(src: string, dest: string, 
 		absFlag: number = 0, exts: Array<string> = null): string {
 		if (!src || !dest) return "invalid src or dest path";

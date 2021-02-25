@@ -7,14 +7,12 @@ import { DialogController, DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
 import { App } from "./app";
-import { HttpClient } from "./http-client";
 
 @autoinject()
-export class BlocklyPage {
+export class JsonEditorPage {
 
     ide: any = null;
-    blockly: any = null;
-    workspace: any = null;
+    editor: any = null;
 
     subscribers: Array<Subscription> = [];
     
@@ -24,19 +22,29 @@ export class BlocklyPage {
 
     attached(argument) {
 
-        console.log("this is blockly entry...");
+        console.log("this is json editor entry...");
 
         this.ide = window.parent;
-        this.blockly = (window as any).Blockly;
 
-        console.log(this.ide.appConfig);
+        // create the json editor
+        let JSONEditor = (window as any).JSONEditor;
+        let container = document.getElementById("jsoneditor");
+        let options = {sortObjectKeys: false, modes: ["tree","code"]};
+        if (JSONEditor && container) this.editor = new JSONEditor(container, options);
 
-        if (this.blockly) this.workspace = this.blockly.inject('blocklyDiv', {toolbox: document.getElementById('toolbox')});
-
-        let defaultBlocks = document.getElementById('blocklyDefault');
-        if (this.blockly && this.workspace && defaultBlocks) {
-            console.log("load blocks");
-            this.blockly.Xml.domToWorkspace(defaultBlocks, this.workspace);
+        // set json for testing
+        const initialJson = {
+            "Array": [1, 2, 3],
+            "Boolean": true,
+            "Null": null,
+            "Number": 123,
+            "String": "Hello World",
+            "Object": {"a": "b", "c": "d"}
+        }
+        if (this.editor) {
+            this.editor.set(initialJson);
+            console.log(App.getUrlParamByName("file"));
+            console.log(this.editor.get());
         }
 
         document.getElementById('top-loading').style.display = 'none';
@@ -45,15 +53,15 @@ export class BlocklyPage {
         this.subscribers = [];
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-editor-reload", () => {
-            console.log("blockly-reload");
+            console.log("json-reload");
         }));
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-editor-save", () => {
-            console.log("blockly-save");
+            console.log("json-save");
         }));
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-editor-save-close", () => {
-            console.log("blockly-save-close");
+            console.log("json-save-close");
             if (this.ide) this.ide.appEvent.publish('dlg-editor-close');
         }));
 

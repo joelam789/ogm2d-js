@@ -162,7 +162,7 @@ export class TreeView {
                             }
                         };
                         currentNode.children.push(newNode);
-                        App.setStageFilepath(newNode.text, newNode.attributes.data);
+                        App.setSceneFilepath(newNode.text, newNode.attributes.data);
                     }
                 }
             }

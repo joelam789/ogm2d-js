@@ -180,9 +180,9 @@ export class Designer {
 
 
 
-    requestEditorUpdate(obj, editorName, updateStageTitle = false) {
+    requestEditorUpdate(obj, editorName, updateSceneTitle = false) {
 
-        if (updateStageTitle) {
+        if (updateSceneTitle) {
             let currentPage = this.gui("getSelected");
             if (currentPage) {
                 let currentTab = currentPage.panel('options');
@@ -346,17 +346,17 @@ export class Designer {
         let title: string = currentTab.title.toString();
         if (title && title.startsWith('*')) title = title.substr(1);
 
-        //let dtJsonFile = App.getStageFilepath(title);
+        //let dtJsonFile = App.getSceneFilepath(title);
         //if (!dtJsonFile) {
-        //    console.error("Failed to get design file of the stage");
+        //    console.error("Failed to get design file of the scene");
         //    return;
         //}
 
-        let dtJsonFile = App.projectPath + "/design/explorer/stages/" + title + ".json";
+        let dtJsonFile = App.projectPath + "/design/explorer/scenes/" + title + ".json";
 
         let canv = title ? this._canvasMap.get(title) : null;
         if (!canv) {
-            console.error("Failed to get design canvas of the stage");
+            console.error("Failed to get design canvas of the scene");
             return;
         }
 
@@ -366,7 +366,7 @@ export class Designer {
         let output = [];
         let rtJsonFolder = App.projectPath + "/design/template/scenes/" + title;
 
-        let rtStageJson = RuntimeGenerator.genBasicStageJson();
+        let rtSceneJson = RuntimeGenerator.genBasicSceneJson();
 
         if (json && json.objects) {
             for (let item of json.objects) {
@@ -376,7 +376,7 @@ export class Designer {
                 }
                 // gen runtime json for every object
                 if (item.type == 'image' && item.name && item.template) {
-                    let jsonObj = RuntimeGenerator.genBasicStageObjectJson(item.template);
+                    let jsonObj = RuntimeGenerator.genBasicSceneObjectJson(item.template);
                     if (jsonObj && jsonObj.components && jsonObj.components.display) {
                         jsonObj.components.display.x = item.left;
                         jsonObj.components.display.y = item.top;
@@ -388,14 +388,14 @@ export class Designer {
                         text: JSON.stringify(jsonObj, null, 4),
                         path: rtJsonFolder + "/sprites/" + item.name + ".json"
                     });
-                    rtStageJson.sprites.push(item.name);
+                    rtSceneJson.sprites.push(item.name);
                 }
             }
         }
 
-        // need to output runtime stage json
+        // need to output runtime scene json
         output.push({
-            text: JSON.stringify(rtStageJson, null, 4),
+            text: JSON.stringify(rtSceneJson, null, 4),
             path: rtJsonFolder + "/" + title + ".json"
         });
 
@@ -414,7 +414,7 @@ export class Designer {
                 }
             }
             if (errmsgs.length == 0) {
-                console.log("Current stage is saved successfully.");
+                console.log("Current scene is saved successfully.");
             } else {
                 console.error("Failed to save some file(s) - ");
                 for (let errmsg of errmsgs) console.error(errmsg);
@@ -430,7 +430,7 @@ export class Designer {
         let title = this.getCurrentTitle();
         if (!title || !this._canvasMap.has(title)) return;
 
-        this.eventChannel.publish("ide-run-current-only" , { stage: title });
+        this.eventChannel.publish("ide-run-current-only" , { scene: title });
     }
 
 }

@@ -33,40 +33,46 @@
 		],
 		"explorer": [
 			{
-				"group": "stages",
+				"group": "scenes",
 				"folder": "design/explorer",
-				"content": "design/explorer/stages.json",
-				"title": "explorer.stages",
+				"content": "design/explorer/scenes.json",
+				"title": "explorer.scenes",
 				"tools": [
 					{
-						"group": "stages",
-						"name": "add-stage",
+						"group": "scenes",
+						"name": "add-scene",
 						"icon": "my-add-file",
-						"text": "toolbar.stages.add"
+						"text": "toolbar.scenes.add"
 					},
 					{
-						"group": "stages",
-						"name": "edit-stage",
-						"icon": "my-edit-file",
-						"text": "toolbar.stages.edit"
+						"group": "scenes",
+						"name": "edit-json",
+						"icon": "my-json-file",
+						"text": "toolbar.scenes.json"
 					},
 					{
-						"group": "stages",
-						"name": "rename-stage",
+						"group": "scenes",
+						"name": "edit-script",
+						"icon": "my-script-file",
+						"text": "toolbar.scenes.script"
+					},
+					{
+						"group": "scenes",
+						"name": "rename-scene",
 						"icon": "my-rename-file",
-						"text": "toolbar.stages.rename"
+						"text": "toolbar.scenes.rename"
 					},
 					{
-						"group": "stages",
-						"name": "remove-stage",
+						"group": "scenes",
+						"name": "remove-scene",
 						"icon": "my-remove-file",
-						"text": "toolbar.stages.remove"
+						"text": "toolbar.scenes.remove"
 					},
 					{
-						"group": "stages",
-						"name": "edit-stage-tree",
+						"group": "scenes",
+						"name": "edit-scene-tree",
 						"icon": "my-edit-tree",
-						"text": "toolbar.stages.tree"
+						"text": "toolbar.scenes.tree"
 					}
 				]
 			},
@@ -108,7 +114,7 @@
 			}
 		],
 		"designer": {
-			"stage1": "design/designer/stage1.json"
+			"scene1": "design/designer/scene1.json"
 		}
 
 	},

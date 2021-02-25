@@ -9,6 +9,7 @@ import { I18N } from 'aurelia-i18n';
 import { DirTreeDlg } from "./popups/dirtree/dirtree";
 
 import { App } from "./app";
+import { Ipc } from "./ipc";
 
 @autoinject()
 export class Explorer {
@@ -52,8 +53,16 @@ export class Explorer {
             this.refresh();
         }));
 
-        this.subscribers.push(this.eventChannel.subscribe("stages-edit-stage-tree", () => {
-            this.openStageTreeDlg();
+        this.subscribers.push(this.eventChannel.subscribe("scenes-edit-scene-tree", () => {
+            this.openSceneTreeDlg();
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("scenes-edit-json", () => {
+            this.openJsonEditor();
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("scenes-edit-script", () => {
+            this.openScriptEditor();
         }));
         
 	}
@@ -86,9 +95,31 @@ export class Explorer {
         }
     }
 
-    openStageTreeDlg() {
+    openJsonEditor() {
+        console.log("open scene json editor");
+        //Ipc.runJsonEditor("scene.json", (err) => {
+        //    if (err) console.error(err);
+        //});
+        let jsonFilepath = "scene.json";
+        this.eventChannel.publish('dlg-editor-open', {
+            url: "index-json.html#jsonedt?file=" + jsonFilepath,
+            width: 640, height: 480
+        });
 
-        console.log("open stages tree editor");
+    }
+
+    openScriptEditor() {
+        console.log("open scene script editor");
+        let scriptFilepath = "scene.ts";
+        this.eventChannel.publish('dlg-editor-open', {
+            url: "index-script.html#scriptedt?file=" + scriptFilepath,
+            width: 800, height: 600
+        });
+    }
+
+    openSceneTreeDlg() {
+
+        console.log("open scenes tree editor");
 
         let param = {
             file: "",
@@ -107,6 +138,7 @@ export class Explorer {
         });
 
     }
+
 
     
 

@@ -8,20 +8,20 @@
             "children":
 			[
                 {
-					"text": "stage1",
+					"text": "scene1",
 					"iconCls": "my-icon-file",
 					"attributes": 
 					{
-                        "data": "design/explorer/stages/stage1.json"
+                        "data": "design/explorer/scenes/scene1.json"
                     }
                 },
 				
 				{
-					"text": "stage2",
+					"text": "scene2",
 					"iconCls": "my-icon-file",
 					"attributes": 
 					{
-                        "data": "design/explorer/stages/stage2.json"
+                        "data": "design/explorer/scenes/scene2.json"
                     }
                 }
             ]

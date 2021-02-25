@@ -17,6 +17,7 @@ export class App {
 	static page: string = "app";
 	static lang: string = "en";
 	static theme: string = "default"; // default theme should be loaded first
+	static entry: string = "index.html";
 	static config: any = (window as any).appConfig;
 
 	private static _project: any = null;
@@ -24,11 +25,15 @@ export class App {
 	private static _projectFile: string = null;
 	private static _projectName: string = null;
 
-	//private static _stageFilepathMap: Map<string, string> = new Map<string, string>();
+	//private static _sceneFilepathMap: Map<string, string> = new Map<string, string>();
 
 	constructor(public i18n: I18N, public eventChannel: EventAggregator, public dialogService: DialogService) {
 		(window as any).appEvent = this.eventChannel;
 		App.busy = true; // start to load stuff
+		let url = window.location.pathname;
+		let idx = url.lastIndexOf('/');
+		if (idx >= 0) App.entry = url.substring(idx+1);
+		console.log("App Entry - " + App.entry);
 	}
 
 	attached(argument) {
@@ -45,7 +50,9 @@ export class App {
 		config.title = 'Editor';
 		config.map([
 			{ route: ['', 'ide'], moduleId: 'ide', name: 'ide', title: 'IDE'},
-			{ route: ['blockly'], moduleId: 'blockly', name: 'blockly', title: 'Blockly'}
+			{ route: ['blockly'], moduleId: 'blockly', name: 'blockly', title: 'Blockly'},
+			{ route: ['jsonedt'], moduleId: 'json-editor', name: 'json-editor', title: 'Json Editor'},
+			{ route: ['scriptedt'], moduleId: 'script-editor', name: 'script-editor', title: 'Script Editor'},
 		]);
 		this.router = router;
 	}
@@ -75,6 +82,10 @@ export class App {
 
 	get isBusy(): boolean {
 		return App.busy;
+	}
+
+	get isDefaultEntry(): boolean {
+		return App.entry == "index.html";
 	}
 
 	openPage(page: string) {
@@ -144,12 +155,23 @@ export class App {
 		});
 	}
 
-	//static getStageFilepath(stageName: string): string {
-	//	if (this._stageFilepathMap.has(stageName)) return this._stageFilepathMap.get(stageName);
+	static getUrlParamByName(name, url = null) {
+		if (!url) url = window.location.href;
+		name = name.replace(/[\[\]]/g, "\\$&");
+		let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+		let results = regex.exec(url);
+		if (!results) return null;
+		if (!results[2]) return '';
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+
+	//static getSceneFilepath(sceneName: string): string {
+	//	if (this._sceneFilepathMap.has(sceneName)) return this._sceneFilepathMap.get(sceneName);
 	//	return "";
 	//}
-	//static setStageFilepath(stageName: string, filepath: string) {
-	//	if (stageName && filepath) this._stageFilepathMap.set(stageName, filepath);
+	//static setSceneFilepath(sceneName: string, filepath: string) {
+	//	if (sceneName && filepath) this._sceneFilepathMap.set(sceneName, filepath);
 	//}
+
 	
 }

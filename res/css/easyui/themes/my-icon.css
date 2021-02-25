@@ -22,6 +22,12 @@
 .my-edit-file{
 	background:url('my-icons/edit-file.png') no-repeat center center;
 }
+.my-json-file{
+	background:url('my-icons/json-file.png') no-repeat center center;
+}
+.my-script-file{
+	background:url('my-icons/script-file.png') no-repeat center center;
+}
 .my-rename-file{
 	background:url('my-icons/rename-file.png') no-repeat center center;
 }

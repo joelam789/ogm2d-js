@@ -67,11 +67,4 @@ export class Topbar {
         }
     }
 
-    handleButtonClick(btn) {
-        console.log(btn);
-        if (btn.group == "ide") {
-            this.eventChannel.publish("ide-" + btn.name);
-        }
-    }
-
 }

@@ -19,12 +19,12 @@ export class RuntimeGenerator {
             },
             packs: [],
             basics: ["display", "stage", "tween", "transition", "mouse", "keyboard", "gamepad", "event"],
-            scenes: ["stage1"]
+            scenes: ["scene1"]
         }
         return json;
     }
 
-    static genBasicStageJson() {
+    static genBasicSceneJson() {
         let json = {
             script: false,
             components:
@@ -47,7 +47,7 @@ export class RuntimeGenerator {
         return json;
     }
 
-    static genBasicStageObjectJson(tpl: string = "") {
+    static genBasicSceneObjectJson(tpl: string = "") {
         let json = {
             active: true,
             script: false,

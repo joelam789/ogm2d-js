@@ -20,8 +20,7 @@ gulp.task('copy-lib', () => {
 
 gulp.task('copy-index', () => {
     return gulp.src([
-        "./index.html",
-        "./index-blockly.html"
+        "./*.html",
         ])
         .pipe(gulp.dest("./dist/"));
 });
@@ -70,7 +69,7 @@ gulp.task("apply-config", async () => {
 });
 
 gulp.task("watch", () => {
-    return gulp.watch(["./index.html", "./index-blockly.html", "./app-config.json", "./src/**/*", "./res/**/*"],
+    return gulp.watch(["./*.html", "./app-config.json", "./src/**/*", "./res/**/*"],
     gulp.series("build-main"));
 });
 

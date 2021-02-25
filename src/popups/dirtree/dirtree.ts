@@ -1,10 +1,12 @@
 
 import { autoinject } from 'aurelia-framework';
-import { DialogController } from 'aurelia-dialog';
+import { DialogService, DialogController } from 'aurelia-dialog';
 import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
 import { I18N } from 'aurelia-i18n';
 
 import { App } from "../../app";
+
+import { CreateNewFolderDlg } from './new-folder';
 
 @autoinject
 export class DirTreeDlg {
@@ -18,7 +20,7 @@ export class DirTreeDlg {
 
     subscribers: Array<Subscription> = [];
 
-    constructor(public i18n: I18N, public eventChannel: EventAggregator, public controller: DialogController) {
+    constructor(public i18n: I18N, public eventChannel: EventAggregator, public dialogService: DialogService, public controller: DialogController) {
         //controller.settings.centerHorizontalOnly = true;
         this.subscribers = [];
     }
@@ -30,7 +32,7 @@ export class DirTreeDlg {
             if (tool.text && tool.text.indexOf('.') > 0) tool.text = this.i18n.tr(tool.text);
         }
         this.toolButtons = param.tools;
-        //this.treeRef.dataSource = App.projectPath +  "/design/explorer/stages.json";
+        //this.treeRef.dataSource = App.projectPath +  "/design/explorer/scenes.json";
         console.log("tree dlg activate");
     }
 
@@ -48,6 +50,10 @@ export class DirTreeDlg {
 
         this.subscribers.push(this.eventChannel.subscribe("dirtree-list-ready", () => {
             this.initFileList();
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dirtree-add-folder", () => {
+            this.addNewFolder();
         }));
 
         this.subscribers.push(this.eventChannel.subscribe("dirtree-move-folder", () => {
@@ -68,13 +74,13 @@ export class DirTreeDlg {
     }
 
     initDirTree() {
-        this.treeRef.dataSource = App.projectPath +  "/design/explorer/stages.json";
+        this.treeRef.dataSource = App.projectPath +  "/design/explorer/scenes.json";
     }
 
     initFileList() {
         let map = new Map<string, string>();
-        map.set("stage1", "stage1.json");
-        map.set("stage2", "stage2.json");
+        map.set("scene1", "scene1.json");
+        map.set("scene2", "scene2.json");
         this.listRef.loadData(map);
     }
     
@@ -86,6 +92,17 @@ export class DirTreeDlg {
     moveFiles() {
         let rows = this.listRef.getSelected();
         console.log(rows);
+    }
+
+    addNewFolder() {
+        this.dialogService.open({viewModel: CreateNewFolderDlg, model: ""})
+        .whenClosed((response) => {
+            if (!response.wasCancelled && response.output) {
+                console.log(response.output);
+            } else {
+                console.log('Give up creating new folder');
+            }
+        });
     }
 
 }

@@ -39,12 +39,18 @@
     },
 
     "explorer": {
-        "stages": "Stages",
+        "scenes": "Scenes",
         "objects": "Objects"
     },
 	
+	"editor": {
+		"dlg-title": "Editor Dialog"
+	},
+	
 	"dirtree": {
-		"title": "Tree Structure"
+		"title": "Tree Structure",
+		"new-folder": "Create New Folder",
+		"folder-name": "Folder Name"
 	},
 	
 	"topbar": {
@@ -53,9 +59,11 @@
 	},
 	
 	"toolbar": {
-		"stages": {
+		"scenes": {
 			"add": "Add",
 			"edit": "Edit",
+			"json": "Json",
+			"script": "Script",
 			"rename": "Rename",
 			"remove": "Remove",
 			"tree": "Edit Tree"

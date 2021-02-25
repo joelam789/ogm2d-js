@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-        <title>Aurelia - Blockly</title>
+        <title>Aurelia - JsonEditor</title>
     </head>
 
     <body style="margin: 0;">
@@ -29,10 +29,13 @@
         <script>if (!window.$) window.$ = window.jQuery = require('./js/jquery.min.js');</script>
         <script src="js/bootstrap.bundle.min.js"></script>
 
-        <script src="js/blockly/blockly_compressed.js"></script>
-        <script src="js/blockly/blocks_compressed.js"></script>
-        <script src="js/blockly/msg/js/en.js"></script>
-        <script src="js/blockly/javascript_compressed.js"></script>
+        <script src="js/ace/ace.min.js"></script>
+        <script src="js/ace/mode-javascript.min.js"></script>
+        <script src="js/ace/mode-typescript.min.js"></script>
+        <script src="js/ace/mode-markdown.min.js"></script>
+        <script src="js/ace/theme-kuroir.min.js"></script>
+        <script src="js/ace/theme-monokai.min.js"></script>
+        <script src="js/ace/theme-textmate.min.js"></script>
         
         <script src="js/app-config.js"></script>
 
@@ -41,7 +44,7 @@
             //if (System) System.set('electron', System.newModule(require('electron')));
             //else if (SystemJS) SystemJS.set('electron', SystemJS.newModule(require('electron')));
 
-            console.log("before init au in blockly editor...");
+            console.log("before init au in script editor...");
 
             window.onload = function() {
                 // load aurelia framework
