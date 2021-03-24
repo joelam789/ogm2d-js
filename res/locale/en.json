@@ -55,7 +55,8 @@
 	
 	"topbar": {
 		"save-current": "Save",
-		"run-current": "Run"
+		"run-current": "Run",
+		"edit-tilemap": "Tilemap"
 	},
 	
 	"toolbar": {

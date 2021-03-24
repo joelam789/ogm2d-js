@@ -1,3 +1,4 @@
 <template>
-    <a id="${linkId}" href="#">${buttonText}</a>
+    <a if.bind="linkId != null && linkId.length > 0" id="${linkId}" href="#">${buttonText}</a>
+    <span else class="button-sep"></span>
 </template>

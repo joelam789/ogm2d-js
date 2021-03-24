@@ -11,6 +11,9 @@
 .my-icon-file{
 	background:url('my-icons/file.png') no-repeat center center;
 }
+.my-icon-tilemap{
+	background:url('my-icons/tilemap.png') no-repeat center center;
+}
 
 
 .my-add-file{

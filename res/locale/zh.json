@@ -55,7 +55,8 @@
 	
 	"topbar": {
 		"save-current": "保存",
-		"run-current": "运行"
+		"run-current": "运行",
+		"edit-tilemap": "游戏地图"
 	},
 	
 	"toolbar": {

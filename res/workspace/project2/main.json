@@ -108,9 +108,23 @@
 			},
 			{
 				"group": "ide",
+				"name": ""
+			},
+			{
+				"group": "ide",
 				"name": "run-current",
 				"icon": "my-icon-run",
 				"text": "topbar.run-current"
+			},
+			{
+				"group": "ide",
+				"name": ""
+			},
+			{
+				"group": "ide",
+				"name": "edit-tilemap",
+				"icon": "my-icon-tilemap",
+				"text": "topbar.edit-tilemap"
 			}
 		],
 		"designer": {

@@ -140,6 +140,10 @@ export class Ide {
             this.closeEditorDlg();
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("ide-edit-tilemap", () => {
+            console.log("Show Tilemap Dialog...");
+        }));
+
         App.openProject("workspace/project2/main.json", () => {
             this.eventChannel.publish('project-reloaded');
             App.busy = false;

@@ -1,0 +1,12 @@
+
+.l-btn{
+	vertical-align:middle;
+}
+.button-sep{
+	display:inline-block;
+	width:0;
+	height:22px;
+	border-left:1px solid #ccc;
+	border-right:1px solid #fff;
+	vertical-align:middle;
+}
