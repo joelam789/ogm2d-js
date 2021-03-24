@@ -70,6 +70,10 @@
 					},
 					{
 						"group": "scenes",
+						"name": ""
+					},
+					{
+						"group": "scenes",
 						"name": "edit-scene-tree",
 						"icon": "my-edit-tree",
 						"text": "toolbar.scenes.tree"

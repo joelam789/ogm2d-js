@@ -8,7 +8,7 @@
 
             <div style="text-align: right; background-color:#efefef">
                 <span repeat.for="btn of item.tools" as-element="link-button" 
-                link-id="${'scene-toolbtn-' + btn.name}" 
+                link-id="${ btn.name ? 'scene-toolbtn-' + btn.name : ''}" 
                 icon-css="${btn.icon}" is-plain="true"
                 button-size="small" icon-align="left"
                 tool-tip="${btn.text}" tool-tip-pos="bottom"
