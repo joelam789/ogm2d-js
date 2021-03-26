@@ -116,7 +116,11 @@ export class App {
         else if (langCode == "pt-br") langCode = "pt_BR";
         else langCode = langCode.substr(0, 2);
         // load easyui i18n
-        $.getScript('js/easyui/locale/easyui-lang-' + langCode + '.js');
+        //$.getScript('js/easyui/locale/easyui-lang-' + langCode + '.js');
+		$.ajax({ 
+			url: 'js/easyui/locale/easyui-lang-' + langCode + '.js', 
+			async: false, dataType: "script",
+		});
 	}
 	
 	static changeTheme(themeName: string) {

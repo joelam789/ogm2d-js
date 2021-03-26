@@ -142,6 +142,7 @@ export class Ide {
 
         this.subscribers.push(this.eventChannel.subscribe("ide-edit-tilemap", () => {
             console.log("Show Tilemap Dialog...");
+            this.openTilemapEditor();
         }));
 
         App.openProject("workspace/project2/main.json", () => {
@@ -194,6 +195,16 @@ export class Ide {
         if (this.editorDlg && this.editorFrame) {
             this.editorDlg("close");
         }
+    }
+
+    openTilemapEditor() {
+        console.log("open tilemap editor");
+        let tilemapFilepath = "tilemap.json";
+        this.eventChannel.publish('dlg-editor-open', {
+            url: "index-tilemap.html#tilemap-home?file=" + tilemapFilepath,
+            width: 1024, height: 600
+        });
+
     }
 
     saveCurrent() {

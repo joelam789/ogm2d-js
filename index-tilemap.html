@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <title>Aurelia - Tilemap Editor</title>
+    </head>
+
+    <body style="margin: 0;">
+
+        <script>
+            if (window.Buffer) {
+                window.nodeBuffer = window.Buffer;
+                delete window.Buffer; // disable warning of deprecated usage in system.js
+            }
+        </script>
+
+        <script src="jspm_packages/system.js"></script>
+        <script src="config.js"></script>
+
+        <script>
+            if (window.nodeBuffer) {
+                window.Buffer = window.nodeBuffer; // restore it after load system.js
+                delete window.nodeBuffer;
+            }
+        </script>
+
+        <script src="js/jquery.min.js"></script>
+        <script>if (!window.$) window.$ = window.jQuery = require('./js/jquery.min.js');</script>
+        <script src="js/bootstrap.bundle.min.js"></script>
+
+        <script src="js/app-config.js"></script>
+
+        <script>
+
+            //if (System) System.set('electron', System.newModule(require('electron')));
+            //else if (SystemJS) SystemJS.set('electron', SystemJS.newModule(require('electron')));
+
+            console.log("before init au in tilemap editor...");
+
+            // window's onload event...
+            window.onload = function() {
+                // load aurelia framework
+                System.import('aurelia-bootstrapper');
+            };
+
+        </script>
+
+        <div id="app" aurelia-app="main" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; z-index: 0; visibility: hidden;"></div>
+        <div id="top-loading" style="display: block; margin: auto; position: absolute; top: 0; left: 0; bottom: 0; right: 0; z-index: 500;">
+            <img src="img/loading.svg" style="display: block; position: absolute; margin: auto; top: 0; left: 0; bottom: 0; right: 0;"/>
+        </div>
+        
+    </body>
+</html>

@@ -40,6 +40,16 @@ export function configure(aurelia: Aurelia) {
 	//.globalResources(['./loading-indicator']) // will load it with "require"
 	;
 
-	aurelia.start().then(() => aurelia.setRoot());
+	let url = window.location.pathname;
+	let idx = url.lastIndexOf('/');
+	let currentEntry = idx >= 0 ? url.substring(idx+1) : "";
+	if (currentEntry.indexOf("index-tilemap") >= 0) {
+		aurelia.start().then(() => aurelia.setRoot('tilemap-app'));
+	} else {
+		//aurelia.start().then(() => aurelia.setRoot('app4map', document.getElementById('tilemap-app')));
+		aurelia.start().then(() => aurelia.setRoot());
+	}
+
+	
 
 }
