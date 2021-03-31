@@ -53,6 +53,8 @@ export class App {
 			{ route: ['blockly'], moduleId: 'blockly', name: 'blockly', title: 'Blockly'},
 			{ route: ['jsonedt'], moduleId: 'json-editor', name: 'json-editor', title: 'Json Editor'},
 			{ route: ['scriptedt'], moduleId: 'script-editor', name: 'script-editor', title: 'Script Editor'},
+			{ route: ['tilesetedt'], moduleId: 'tileset-editor', name: 'tileset-editor', title: 'Tileset Editor'},
+			{ route: ['tilemapedt'], moduleId: 'tilemap-editor', name: 'tilemap-editor', title: 'Tilemap Editor'},
 		]);
 		this.router = router;
 	}

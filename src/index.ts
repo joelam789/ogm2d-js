@@ -452,9 +452,9 @@ ipcMain.on("copy-tileset-img", (event, input) => {
     .on("error", (err) => event.sender.send('copy-tileset-img-return', {err: err, url: ""})));
 });
 
-ipcMain.on("get-tilemap-list", (event) => {
-    fs.readdir(__dirname + "/json/tilemaps", (err, files) => {
-        if (err) event.sender.send('get-tilemap-list-return', []);
+ipcMain.on("dlg-get-tilemap-list", (event, srcDir) => {
+    fs.readdir(__dirname + "/" + srcDir, (err, files) => {
+        if (err) event.sender.send('dlg-get-tilemap-list-return', {error: err, list: []});
         else {
             let list = [];
             for (let filepath of files) {
@@ -462,7 +462,7 @@ ipcMain.on("get-tilemap-list", (event) => {
                 let pos = file.indexOf(".json");
                 if (pos > 0) list.push(file.substring(0, pos));
             }
-            event.sender.send('get-tilemap-list-return', list);
+            event.sender.send('dlg-get-tilemap-list-return', {error: null, list: list});
         }
     });
 });

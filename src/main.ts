@@ -40,6 +40,7 @@ export function configure(aurelia: Aurelia) {
 	//.globalResources(['./loading-indicator']) // will load it with "require"
 	;
 
+	/*
 	let url = window.location.pathname;
 	let idx = url.lastIndexOf('/');
 	let currentEntry = idx >= 0 ? url.substring(idx+1) : "";
@@ -49,6 +50,10 @@ export function configure(aurelia: Aurelia) {
 		//aurelia.start().then(() => aurelia.setRoot('app4map', document.getElementById('tilemap-app')));
 		aurelia.start().then(() => aurelia.setRoot());
 	}
+	*/
+
+	//aurelia.start().then(() => aurelia.setRoot('app4map', document.getElementById('tilemap-app')));
+	aurelia.start().then(() => aurelia.setRoot());
 
 	
 

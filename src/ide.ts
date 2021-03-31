@@ -145,6 +145,11 @@ export class Ide {
             this.openTilemapEditor();
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-get-tilemap-list", () => {
+            console.log("Try to get tilemap list for Dialog...");
+            this.getTilemapListToSelect();
+        }));
+
         App.openProject("workspace/project2/main.json", () => {
             this.eventChannel.publish('project-reloaded');
             App.busy = false;
@@ -201,10 +206,17 @@ export class Ide {
         console.log("open tilemap editor");
         let tilemapFilepath = "tilemap.json";
         this.eventChannel.publish('dlg-editor-open', {
-            url: "index-tilemap.html#tilemap-home?file=" + tilemapFilepath,
-            width: 1024, height: 600
+            url: "index-tilemap.html#tilemapedt?file=" + tilemapFilepath,
+            width: 1180, height: 600
         });
 
+    }
+
+    getTilemapListToSelect() {
+        let srcDir = App.projectPath + "/runtime/project/res/json/tilemaps";
+        Ipc.getTilemapListToSelect(srcDir, (list) => {
+            this.editorFrame.contentWindow.appEvent.publish('dlg-get-tilemap-list-return', list);
+        });
     }
 
     saveCurrent() {

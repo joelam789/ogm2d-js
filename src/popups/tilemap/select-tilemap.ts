@@ -1,5 +1,7 @@
 import { autoinject } from 'aurelia-framework';
+import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
 import { DialogController } from 'aurelia-dialog';
+import { I18N } from 'aurelia-i18n';
 
 //import { ipcRenderer } from "electron";
 
@@ -9,8 +11,11 @@ export class SelectTilemapDlg {
     message: any = null;
 	tilemaps: Array<any> = [];
 
-    constructor(public controller: DialogController) {
+    subscribers: Array<Subscription> = [];
+
+    constructor(public controller: DialogController, public i18n: I18N, public eventChannel: EventAggregator) {
         //controller.settings.centerHorizontalOnly = true;
+        this.subscribers = [];
     }
 
     activate(message) {
@@ -23,15 +28,19 @@ export class SelectTilemapDlg {
     }
 	
 	attached() {
-        /*
-		ipcRenderer.once("get-tilemap-list-return", (event, list) => {
+        this.subscribers = [];
+        this.subscribers.push(this.eventChannel.subscribe("dlg-get-tilemap-list-return", (list) => {
             if (list && list.length > 0) {
                 for (let item of list) this.tilemaps.push({name: item, selected: false});
             }
-        });
-        ipcRenderer.send("get-tilemap-list");
-        */
+        }));
+        (window.parent as any).appEvent.publish('dlg-get-tilemap-list');
 	}
+
+    detached() {
+        for (let item of this.subscribers) item.dispose();
+        this.subscribers = [];
+    }
 
     get currentSelectedTilemap() {
         let list = [];

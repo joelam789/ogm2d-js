@@ -18,8 +18,13 @@ import { SetCostDlg } from "./popups/tilemap/set-cost";
 
 import { HttpClient } from "./http-client";
 
+import { App } from "./app";
+
 @autoinject()
 export class TilemapEditorPage {
+
+    ide: any = null;
+    //editor: any = null;
 
     tileset: any = {};
     tilesets: Array<any> = [];
@@ -62,7 +67,7 @@ export class TilemapEditorPage {
 
     constructor(public dialogService: DialogService, public router: Router, 
         public binding: BindingEngine, public i18n: I18N, public eventChannel: EventAggregator) {
-
+        (window as any).appEvent = this.eventChannel;
         this.subscribers = [];
     }
 
@@ -80,7 +85,13 @@ export class TilemapEditorPage {
     }
 
     attached() {
+
         console.log("attached");
+
+        console.log("this is tilemap editor entry...");
+
+        this.ide = window.parent;
+
         this.isMouseDown = false;
         this.tilesetControl = (this as any).tileListCanvas;
         this.tilesetCanvas = this.tilesetControl.canvas;
@@ -106,6 +117,11 @@ export class TilemapEditorPage {
         this.subscribers.push(this.eventChannel.subscribe("open-tilemap", data => this.openSelectTilemapDlg()));
         this.subscribers.push(this.eventChannel.subscribe("save-tilemap", data => this.saveTilemap()));
         this.subscribers.push(this.eventChannel.subscribe("save-tilemap-as", data => this.openSaveTilemapDlg()));
+
+        document.getElementById('top-loading').style.display = 'none';
+        document.getElementById('app').style.visibility = 'visible';
+
+        App.busy = false;
     }
 
     detached() {
@@ -115,11 +131,15 @@ export class TilemapEditorPage {
     }
 
     get maxImageCanvasHeight() {
-        return window.innerHeight - 150;
+        return window.innerHeight - 60;
     }
 
     get maxListCanvasHeight() {
-        return window.innerHeight - 180;
+        return window.innerHeight - 125;
+    }
+
+    getProjectResPath() {
+        return this.ide.appConfig.projectPath + "/runtime/project/res";
     }
 
     clearHist() {
@@ -362,7 +382,7 @@ export class TilemapEditorPage {
     }
 
     loadTileset(tilesetName: string, callback: (tileset: any)=>void) {
-        let url = "json/tilesets/" + tilesetName + ".json";
+        let url = this.getProjectResPath() + "/json/tilesets/" + tilesetName + ".json";
         HttpClient.getJSON(url, "", (json) => {
             //console.log(json);
             if (this.tileWidth != json.tileWidth 
@@ -373,7 +393,7 @@ export class TilemapEditorPage {
             }
 
             let tileset = {name: json.name, tileWidth: json.tileWidth, tileHeight: json.tileHeight, obj: null, img: null};
-            let url = "img/" + json.image;
+            let url = this.getProjectResPath() + "/img/" + json.image;
             if (url.indexOf('.') < 0) url += ".png";
             let img = new Image();
             img.onload = () => {
@@ -989,7 +1009,7 @@ export class TilemapEditorPage {
     }
 
     openTilemap(tilemapName: string) {
-        let url = "json/tilemaps/" + tilemapName + ".json";
+        let url = this.getProjectResPath() + "/json/tilemaps/" + tilemapName + ".json";
         HttpClient.getJSON(url, "", (json) => {
             let tilemap = json;
             //console.log(tilemap);
@@ -1040,6 +1060,20 @@ export class TilemapEditorPage {
             this.histCursor++;
             this.loadTilemap(this.histRecords[this.histCursor], false);
         }
+    }
+
+    createNewFile() {
+        console.log("createNewFile...");
+    }
+    openFile() {
+        console.log("openFile...");
+        this.openSelectTilemapDlg();
+    }
+    saveFile() {
+        console.log("saveFile...");
+    }
+    saveFileAs() {
+        console.log("saveFileAs...");
     }
 
 }

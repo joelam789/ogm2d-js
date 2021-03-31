@@ -8,7 +8,7 @@ export class TileListCanvas {
     @bindable image: HTMLImageElement = null;
     @bindable tileset: any = null;
 
-    @observable columnCount = 8;
+    @observable columnCount = 6;
     selectedRects = [];
 
     isMouseDown: boolean = false;
