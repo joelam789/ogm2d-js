@@ -6,6 +6,8 @@ import { Router } from 'aurelia-router';
 import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
+import { EditTilesetDlg } from "./popups/tileset/edit-tileset";
+
 import { App } from "./app";
 import { Ipc } from "./ipc";
 
@@ -145,6 +147,11 @@ export class Ide {
             this.openTilemapEditor();
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("ide-edit-tileset", (data) => {
+            console.log("Show Tileset Dialog...");
+            //this.openTilesetEditor(data ? data.tileset : "");
+        }));
+
         this.subscribers.push(this.eventChannel.subscribe("dlg-get-tilemap-list", () => {
             console.log("Try to get tilemap list for Dialog...");
             this.getTilemapListToSelect();
@@ -207,9 +214,13 @@ export class Ide {
         let tilemapFilepath = "tilemap.json";
         this.eventChannel.publish('dlg-editor-open', {
             url: "index-tilemap.html#tilemapedt?file=" + tilemapFilepath,
-            width: 1180, height: 600
+            width: 1180, height: 650
         });
 
+    }
+
+    openTilesetEditor(tilesetName: string) {
+        console.log("openTilesetEditor...");
     }
 
     getTilemapListToSelect() {

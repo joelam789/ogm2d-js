@@ -39,7 +39,10 @@
         "replacement-mode": "替换模式",
         "cost": "数值",
         "set-cost": "设置格子数值",
-        "resize-map": "设置地图大小"
+        "resize-map": "设置地图大小",
+		"add-tileset": "添加",
+		"edit-tileset": "修改",
+		"new-tileset": "新建"
     },
 
     "tileset": {

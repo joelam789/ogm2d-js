@@ -11,6 +11,7 @@ import { I18N } from 'aurelia-i18n';
 import { TileListCanvas } from "./controls/tile-list-canvas";
 import { NewTilemapDlg } from "./popups/tilemap/new-tilemap";
 import { SaveTilemapDlg } from "./popups/tilemap/save-tilemap";
+import { EditTilesetDlg } from "./popups/tileset/edit-tileset";
 import { SelectTilesetDlg } from "./popups/tileset/select-tileset";
 import { SelectTilemapDlg } from "./popups/tilemap/select-tilemap";
 import { ResizeTilemapDlg } from "./popups/tilemap/resize-tilemap";
@@ -1046,6 +1047,24 @@ export class TilemapEditorPage {
                 console.log('Give up saving tilemap');
             }
         });
+    }
+
+    openCreateTilesetDlg(tilesetName: string) {
+        console.log("openCreateTilesetDlg...");
+        //(window.parent as any).appEvent.publish('ide-edit-tileset');
+        let tileset = tilesetName ? tilesetName : "tileset1";
+        this.dialogService.open({viewModel: EditTilesetDlg, model: tileset})
+        .whenClosed((response) => {
+            if (!response.wasCancelled && response.output) {
+                console.log(response.output);
+            } else {
+                console.log('Give up updating tileset');
+            }
+        });
+    }
+
+    openEditTilesetDlg() {
+        console.log("openEditTilesetDlg...");
     }
 
     undo() {

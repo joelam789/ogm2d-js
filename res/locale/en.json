@@ -39,7 +39,10 @@
         "replacement-mode": "Replacement",
         "cost": "Cost",
         "set-cost": "Set Cost",
-        "resize-map": "Resize"
+        "resize-map": "Resize",
+		"add-tileset": "Add",
+		"edit-tileset": "Edit",
+		"new-tileset": "New"
     },
 
     "tileset": {

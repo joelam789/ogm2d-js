@@ -41,7 +41,9 @@
                 <select class="form-control" style="margin-left: 16px;" value.bind="selectedTilesetName" change.delegate="changeCurrentTileset()">
                     <option repeat.for="item of tilesets" value.bind="item.name">${item.name}</option>
                 </select>
-                <button class="btn btn-default" type="button" disabled.bind="tileWidth == 0 || tileHeight == 0" click.trigger="openSelectTilesetDlg()">+</button>
+                <button class="btn btn-outline-secondary" type="button" disabled.bind="tileWidth == 0 || tileHeight == 0" click.trigger="openSelectTilesetDlg()"><span i18n="tilemap.add-tileset">Add</span></button>
+                <button class="btn btn-outline-secondary" type="button" disabled.bind="tileWidth == 0 || tileHeight == 0" click.trigger="openEditTilesetDlg()"><span i18n="tilemap.edit-tileset">Edit</span></button>
+                <button class="btn btn-outline-secondary" type="button" click.trigger="openCreateTilesetDlg()"><span i18n="tilemap.new-tileset">New</span></button>
               </div>
             </div>
             <!-- <div class="row">&nbsp;</div> -->

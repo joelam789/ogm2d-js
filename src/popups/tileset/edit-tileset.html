@@ -1,0 +1,69 @@
+<template>
+  <require from="../../controls/tile-list-canvas"></require>
+  <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 40%;
+  width: 1080px; height: 300px; margin-left: -550px; margin-top: -255px;">
+    <ux-dialog-header class="panel-heading" style="border: 2px solid #95B8E7; padding: 8px;">
+      <div class="input-group row">
+        <input class="form-control col-2" style="margin-left: 16px" type="text" placeholder="TilesetName" aria-label="TilesetName">
+        <button class="btn btn-outline-primary" type="button">ChangeName</button>
+        <span class="ml-auto">
+        <button class="btn btn-success float-right" click.trigger="controller.ok('okay!!!')" i18n="app.ok">OK</button>
+        <button class="btn btn-danger float-right" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
+        </span>
+      </div>
+    </ux-dialog-header>
+
+    <ux-dialog-body class="panel-body">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
+        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+          <div class="btn-group mr-2" role="group" aria-label="First group">
+            <button type="button" class="btn btn-secondary" click.delegate="editTile()" disabled.bind="!image || image.src.length == 0"><span i18n="tileset.edit">Edit</span></button>
+            <button type="button" class="btn btn-secondary" click.delegate="removeTiles()" disabled.bind="!image || image.src.length == 0"><span i18n="tileset.remove">Remove</span></button>
+            <button type="button" class="btn btn-secondary" click.delegate="clear()" disabled.bind="!image || image.src.length == 0"><span i18n="tileset.clear">Clear</span></button>
+          </div>
+          <span style="width: 40px;"></span>
+          <div class="btn-group mr-2" role="group" aria-label="Second group">
+            <button type="button" class="btn btn-secondary" 
+            disabled.bind="(startRect && endRect && startRect.x != endRect.x) || selectedRects.length == 0" 
+            click.delegate="addNewTile()"><span i18n="tileset.add-a-tile">Add a tile</span></button>
+            <button type="button" class="btn btn-secondary" 
+            disabled.bind="!startRect || !endRect || freeSelectionFlags.length > 0" 
+            click.delegate="autoAddTiles()"><span i18n="tileset.add-tiles">Add tiles</span></button>
+          </div>
+  
+          <form class="form-inline my-2 my-lg-0">
+            <label style="margin-left: 20px;"><input type="checkbox" value="freeSelection" checked.bind="freeSelectionFlags"><span i18n="tileset.free-style">Free style selection</span></label>
+          </form>
+  
+  
+        </div>
+      </nav>
+      <div class="section">
+        <div class="container-fluid" style="user-select: none;">
+          <div class="row">
+            <div class="col-lg-3">
+              <div class="row">
+                <tile-list-canvas view-model.ref="tileListCanvas" style="width: 100%; height: ${maxListCanvasHeight}px; overflow: auto;"
+                  image.bind="image" tileset.bind="tileset" tile-click.delegate="editTile()"></tile-list-canvas>
+              </div>
+            </div>
+            <div class="col-lg-9">
+              <div class="row">
+                <div style="margin-left: 20px; width: calc(100% - 20px); height: ${maxImageCanvasHeight}px; overflow: auto; position: relative;">
+                  <canvas id="tileset-img" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+                  <canvas id="cursor-rect" width="1" height="1" style="position: absolute; left: 0; top: 0; z-index: 2; pointer-events:none; visibility: hidden;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ux-dialog-body>
+    <!--
+    <ux-dialog-footer class="panel-footer">
+        <button class="btn btn-success" click.trigger="controller.ok('okay!!!')" i18n="app.ok">OK</button>
+        <button class="btn btn-danger" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
+    </ux-dialog-footer>
+    -->
+  </ux-dialog>
+</template>
