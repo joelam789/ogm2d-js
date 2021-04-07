@@ -190,6 +190,18 @@ export class Ipc {
         });
         ipcRenderer.send("dlg-get-tilemap-list", tilemapDir);
 	}
+
+	static getTilesetListToSelect(tilesetDir: string, callback: (tilemapList: Array<string>)=>void) {
+		ipcRenderer.once("dlg-get-tileset-list-return", (event, result) => {
+            if (result.error) {
+				console.error("dlg-get-tileset-list", result.error);
+				if (callback) callback([]);
+			} else {
+				if (callback) callback(result.list);
+			}
+        });
+        ipcRenderer.send("dlg-get-tileset-list", tilesetDir);
+	}
 	
 	static async copyFilesAsync(srcFiles: Array<string>, 
 								destFiles: Array<string>, 

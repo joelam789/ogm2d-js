@@ -1,14 +1,14 @@
 <template>
   <require from="../../controls/tile-list-canvas"></require>
   <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 40%;
-  width: 1080px; height: 300px; margin-left: -550px; margin-top: -255px;">
+  width: 1200px; height: 300px; margin-left: -600px; margin-top: -255px;">
     <ux-dialog-header class="panel-heading" style="border: 2px solid #95B8E7; padding: 8px;">
       <div class="input-group row">
-        <input class="form-control col-2" style="margin-left: 16px" type="text" placeholder="TilesetName" aria-label="TilesetName">
+        <input class="form-control col-2" style="margin-left: 16px" type="text" placeholder="TilesetName" aria-label="TilesetName" readonly value.bind="currentTilesetName">
         <button class="btn btn-outline-primary" type="button">ChangeName</button>
         <span class="ml-auto">
+        <button class="btn btn-danger float-right ml-2" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
         <button class="btn btn-success float-right" click.trigger="controller.ok('okay!!!')" i18n="app.ok">OK</button>
-        <button class="btn btn-danger float-right" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
         </span>
       </div>
     </ux-dialog-header>
@@ -21,7 +21,7 @@
             <button type="button" class="btn btn-secondary" click.delegate="removeTiles()" disabled.bind="!image || image.src.length == 0"><span i18n="tileset.remove">Remove</span></button>
             <button type="button" class="btn btn-secondary" click.delegate="clear()" disabled.bind="!image || image.src.length == 0"><span i18n="tileset.clear">Clear</span></button>
           </div>
-          <span style="width: 40px;"></span>
+          <span style="width: 95px;"></span>
           <div class="btn-group mr-2" role="group" aria-label="Second group">
             <button type="button" class="btn btn-secondary" 
             disabled.bind="(startRect && endRect && startRect.x != endRect.x) || selectedRects.length == 0" 

@@ -466,3 +466,18 @@ ipcMain.on("dlg-get-tilemap-list", (event, srcDir) => {
         }
     });
 });
+
+ipcMain.on("dlg-get-tileset-list", (event, srcDir) => {
+    fs.readdir(__dirname + "/" + srcDir, (err, files) => {
+        if (err) event.sender.send('dlg-get-tileset-list-return', {error: err, list: []});
+        else {
+            let list = [];
+            for (let filepath of files) {
+                let file = path.basename(filepath);
+                let pos = file.indexOf(".json");
+                if (pos > 0) list.push(file.substring(0, pos));
+            }
+            event.sender.send('dlg-get-tileset-list-return', {error: null, list: list});
+        }
+    });
+});

@@ -18,7 +18,10 @@ import { HttpClient } from "../../http-client";
 @autoinject
 export class EditTilesetDlg {
 
+    ide: any = null;
+
     message: any = null;
+    currentTilesetName: string = "";
 
     image: HTMLImageElement = null;
     listCanvas: HTMLCanvasElement = null;
@@ -46,6 +49,7 @@ export class EditTilesetDlg {
 
     activate(message) {
         this.message = message;
+        this.currentTilesetName = message ? message : "";
     }
 
     deactivate() {
@@ -54,6 +58,7 @@ export class EditTilesetDlg {
 
     attached() {
         console.log("attached");
+        this.ide = window.parent;
         this.listControl = (this as any).tileListCanvas;
         this.listCanvas = this.listControl.canvas;
         this.imageCanvas = document.getElementById("tileset-img") as HTMLCanvasElement;
@@ -70,6 +75,12 @@ export class EditTilesetDlg {
         this.subscribers.push(this.eventChannel.subscribe("open-tileset", data => this.openSelectTilesetDlg()));
         this.subscribers.push(this.eventChannel.subscribe("save-tileset", data => this.saveTileset()));
         this.subscribers.push(this.eventChannel.subscribe("save-tileset-as", data => this.openSaveTilesetDlg()));
+
+        if (this.currentTilesetName) {
+            setTimeout(() => {
+                this.openTileset(this.currentTilesetName);
+            }, 100);
+        }
     }
 
     detached() {
@@ -84,6 +95,10 @@ export class EditTilesetDlg {
 
     canActivate() {
         console.log("canActivate");
+    }
+
+    getProjectResPath() {
+        return this.ide.appConfig.projectPath + "/runtime/project/res";
     }
 
     getRect(posX: number, posY: number, isFreeStyleSelection: boolean) {
@@ -396,7 +411,7 @@ export class EditTilesetDlg {
     }
 
     openTileset(tilesetName: string) {
-        let url = "json/tilesets/" + tilesetName + ".json";
+        let url = this.getProjectResPath() + "/json/tilesets/" + tilesetName + ".json";
         HttpClient.getJSON(url, "", (json) => {
             let tileset = json;
             for (let i=0; i<tileset.tiles.length; i++) {
@@ -420,7 +435,7 @@ export class EditTilesetDlg {
                 }
             }
 
-            let url = "img/" + tileset.image;
+            let url = this.getProjectResPath() + "/img/" + tileset.image;
             if (url.indexOf('.') < 0) url += ".png";
             let ctx = this.imageCanvas ? this.imageCanvas.getContext('2d') : null;
             if (ctx) {

@@ -1,5 +1,7 @@
 import { autoinject } from 'aurelia-framework';
+import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
 import { DialogController } from 'aurelia-dialog';
+import { I18N } from 'aurelia-i18n';
 
 //import { ipcRenderer } from "electron";
 
@@ -10,8 +12,11 @@ export class SelectTilesetDlg {
     multiple: boolean = false;
 	tilesets: Array<any> = [];
 
-    constructor(public controller: DialogController) {
+    subscribers: Array<Subscription> = [];
+
+    constructor(public controller: DialogController, public i18n: I18N, public eventChannel: EventAggregator) {
         //controller.settings.centerHorizontalOnly = true;
+        this.subscribers = [];
     }
 
     activate(message) {
@@ -25,15 +30,19 @@ export class SelectTilesetDlg {
     }
 	
 	attached() {
-        /*
-		ipcRenderer.once("get-tileset-list-return", (event, list) => {
+        this.subscribers = [];
+        this.subscribers.push(this.eventChannel.subscribe("dlg-get-tileset-list-return", (list) => {
             if (list && list.length > 0) {
                 for (let item of list) this.tilesets.push({name: item, selected: false});
             }
-        });
-        ipcRenderer.send("get-tileset-list");
-        */
+        }));
+        (window.parent as any).appEvent.publish('dlg-get-tileset-list');
 	}
+
+    detached() {
+        for (let item of this.subscribers) item.dispose();
+        this.subscribers = [];
+    }
 
     get currentSelectedTilesets() {
         let list = [];

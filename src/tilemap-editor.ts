@@ -1052,7 +1052,14 @@ export class TilemapEditorPage {
     openCreateTilesetDlg(tilesetName: string) {
         console.log("openCreateTilesetDlg...");
         //(window.parent as any).appEvent.publish('ide-edit-tileset');
-        let tileset = tilesetName ? tilesetName : "tileset1";
+        //let tileset = tilesetName ? tilesetName : "tileset1";
+        
+    }
+
+    openEditTilesetDlg() {
+        console.log("openEditTilesetDlg...");
+        if (!this.selectedTilesetName) return;
+        let tileset = this.selectedTilesetName;
         this.dialogService.open({viewModel: EditTilesetDlg, model: tileset})
         .whenClosed((response) => {
             if (!response.wasCancelled && response.output) {
@@ -1061,10 +1068,6 @@ export class TilemapEditorPage {
                 console.log('Give up updating tileset');
             }
         });
-    }
-
-    openEditTilesetDlg() {
-        console.log("openEditTilesetDlg...");
     }
 
     undo() {

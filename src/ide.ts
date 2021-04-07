@@ -157,6 +157,11 @@ export class Ide {
             this.getTilemapListToSelect();
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-get-tileset-list", () => {
+            console.log("Try to get tileset list for Dialog...");
+            this.getTilesetListToSelect();
+        }));
+
         App.openProject("workspace/project2/main.json", () => {
             this.eventChannel.publish('project-reloaded');
             App.busy = false;
@@ -214,7 +219,7 @@ export class Ide {
         let tilemapFilepath = "tilemap.json";
         this.eventChannel.publish('dlg-editor-open', {
             url: "index-tilemap.html#tilemapedt?file=" + tilemapFilepath,
-            width: 1180, height: 650
+            width: 1240, height: 650
         });
 
     }
@@ -227,6 +232,13 @@ export class Ide {
         let srcDir = App.projectPath + "/runtime/project/res/json/tilemaps";
         Ipc.getTilemapListToSelect(srcDir, (list) => {
             this.editorFrame.contentWindow.appEvent.publish('dlg-get-tilemap-list-return', list);
+        });
+    }
+
+    getTilesetListToSelect() {
+        let srcDir = App.projectPath + "/runtime/project/res/json/tilesets";
+        Ipc.getTilesetListToSelect(srcDir, (list) => {
+            this.editorFrame.contentWindow.appEvent.publish('dlg-get-tileset-list-return', list);
         });
     }
 
