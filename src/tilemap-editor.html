@@ -44,7 +44,7 @@
           <div class="col-lg-3">
             <div class="row g-2 align-items-center">
               <div class="col-auto">
-                <select class="form-control" value.bind="selectedTilesetName" change.delegate="changeCurrentTileset()">
+                <select class="form-select" value.bind="selectedTilesetName" change.delegate="changeCurrentTileset()">
                     <option repeat.for="item of tilesets" value.bind="item.name">${item.name}</option>
                 </select>
               </div>
