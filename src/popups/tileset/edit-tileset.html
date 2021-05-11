@@ -3,13 +3,17 @@
   <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 40%;
   width: 1200px; height: 300px; margin-left: -600px; margin-top: -255px;">
     <ux-dialog-header class="panel-heading" style="border: 2px solid #95B8E7; padding: 8px;">
-      <div class="input-group row">
-        <input class="form-control col-2" style="margin-left: 16px" type="text" placeholder="TilesetName" aria-label="TilesetName" readonly value.bind="currentTilesetName">
-        <button class="btn btn-outline-primary" type="button">ChangeName</button>
-        <span class="ml-auto">
-        <button class="btn btn-danger float-right ml-2" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
-        <button class="btn btn-success float-right" click.trigger="controller.ok('okay!!!')" i18n="app.ok">OK</button>
-        </span>
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <input class="form-control col-2" style="margin-left: 16px" type="text" placeholder="TilesetName" aria-label="TilesetName" readonly value.bind="currentTilesetName">
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-outline-primary" type="button">ChangeName</button>
+        </div>
+        <div class="col-auto ms-auto">
+          <button class="btn btn-danger float-right ml-2" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
+          <button class="btn btn-success float-right" click.trigger="controller.ok('okay!!!')" i18n="app.ok">OK</button>
+        </div>
       </div>
     </ux-dialog-header>
 
