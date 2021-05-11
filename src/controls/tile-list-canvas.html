@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div show.bind="tileset && image" class="form-group" style="margin-left: 15px; margin-bottom: 4px; width: 200px;">
+        <div show.bind="tileset && image" class="form-group" style="margin-left: 4px; margin-bottom: 4px; width: 200px;">
         <input type="number" min="1" max="12" step="1" class="form-control input-md" placeholder="" value.bind="columnCount" />
         </div>
     </div>
-    <div style="margin-left: 16px;">
+    <div style="margin-left: 4px;">
         <!-- <canvas click.trigger="onTileClick($event)" dblclick.trigger="onTileDoubleClick($event)"></canvas> -->
         <canvas mousedown.delegate="onMouseDown($event)" 
                 mousemove.delegate="onMouseMove($event)"
