@@ -10,6 +10,10 @@
                 {
 					"text": "plane-a",
 					"iconCls": "my-icon-file"
+                },
+				{
+					"text": "plane-b",
+					"iconCls": "my-icon-file"
                 }
             ]
         }

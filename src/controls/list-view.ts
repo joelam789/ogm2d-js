@@ -16,6 +16,7 @@ import { HttpClient } from "../http-client";
 export class ListView {
 
     items: any = null;
+    tools: any = null;
 
     @bindable dataSource: string = "";
     @bindable imagePath: string = ".";
@@ -34,6 +35,8 @@ export class ListView {
     @bindable itemWidth: number = 64;
     @bindable itemHeight: number = 64;
 
+    @bindable toolsValue: string = "";
+
     subscribers: Array<Subscription> = [];
     
     constructor(public router: Router, public eventChannel: EventAggregator, public i18n: I18N, public dialogService: DialogService) {
@@ -50,6 +53,23 @@ export class ListView {
 	detached(argument) {
 		for (let item of this.subscribers) item.dispose();
         this.subscribers = [];
+    }
+
+    genRandomName(length) {
+        const mychars        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = mychars.length;
+        let result = [];
+        for (let i = 0; i < length; i++) {
+            result.push(mychars.charAt(Math.floor(Math.random() * charactersLength)));
+        }
+        return result.join('');
+    }
+
+    private toolsValueChanged(newValue, oldValue) {
+        //console.log(oldValue);
+        //console.log(newValue);
+        if (newValue) this.tools = JSON.parse(newValue);
+        //console.log(this.tools);
     }
     
     private dataSourceChanged(newValue, oldValue) {

@@ -141,6 +141,15 @@
 			"remove": "移除",
 			"tree": "编辑目录树"
 		},
+		"spritesheets": {
+			"add": "增加",
+			"edit": "编辑",
+			"json": "JSON",
+			"script": "脚本",
+			"rename": "重命名",
+			"remove": "移除",
+			"tree": "编辑目录树"
+		},
 		"dirtree": {
 			"add": "新增目录",
 			"rename": "重命名目录",

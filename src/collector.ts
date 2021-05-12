@@ -64,10 +64,21 @@ export class Collector {
             let locate = this.i18n.getLocale().toLowerCase();
             for (let item of items) {
                 if (item.title && item.title.indexOf('.') > 0) item.title = this.i18n.tr(item.title);
+                if (item.tools && item.tools.length > 0) {
+                    for (let tool of item.tools) {
+                        if (tool.text && tool.text.indexOf('.') > 0) tool.text = this.i18n.tr(tool.text);
+                    }
+                    item.toolsValue = JSON.stringify(item.tools);
+                } else item.toolsValue = "";
+                //console.log(item.toolsValue);
             }
             this.mainPath = App.projectPath;
             this.groups = items;
         }
     }
+
+    //jsonToStr(obj) {
+    //    return obj ? JSON.stringify(obj) : "";
+    //}
 
 }

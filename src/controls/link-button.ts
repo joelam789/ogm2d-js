@@ -46,8 +46,9 @@ export class LinkButton {
                     content: this.toolTip,
                     position: this.toolTipPos,
                 });
+                //console.log("tool tip - ", this.toolTip);
             }
-
+            
             this.gui = ($('#' + this.linkId) as any).linkbutton.bind($('#' + this.linkId));
             if (this.gui) this.gui({
                 iconCls: this.iconCss ? this.iconCss : null,
@@ -61,6 +62,7 @@ export class LinkButton {
                     });
                 }
             });
+            
         }
 	}
 

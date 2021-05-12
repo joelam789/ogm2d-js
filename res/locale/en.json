@@ -141,6 +141,15 @@
 			"remove": "Remove",
 			"tree": "Edit Tree"
 		},
+		"spritesheets": {
+			"add": "Add",
+			"edit": "Edit",
+			"json": "Json",
+			"script": "Script",
+			"rename": "Rename",
+			"remove": "Remove",
+			"tree": "Edit Tree"
+		},
 		"dirtree": {
 			"add": "Add Folder",
 			"rename": "Rename Folder",

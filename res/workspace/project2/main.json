@@ -7,7 +7,7 @@
 
 		"collector": [
 			{
-				"group": "actor",
+				"group": "spritesheets",
 				"draggable": true, 
 				"droppable": false,
 				"movable": true,
@@ -16,7 +16,48 @@
 				"folder": "design/collector/spritesheets",
 				"content": "",
 				"title": "collector.spritesheets",
-				"tools": []
+				"tools": [
+					{
+						"group": "spritesheets",
+						"name": "add-spritesheet",
+						"icon": "my-add-file",
+						"text": "toolbar.spritesheets.add"
+					},
+					{
+						"group": "spritesheets",
+						"name": "edit-spritesheet-json",
+						"icon": "my-json-file",
+						"text": "toolbar.spritesheets.json"
+					},
+					{
+						"group": "spritesheets",
+						"name": "edit-spritesheet-script",
+						"icon": "my-script-file",
+						"text": "toolbar.spritesheets.script"
+					},
+					{
+						"group": "spritesheets",
+						"name": "rename-spritesheet",
+						"icon": "my-rename-file",
+						"text": "toolbar.spritesheets.rename"
+					},
+					{
+						"group": "spritesheets",
+						"name": "remove-spritesheet",
+						"icon": "my-remove-file",
+						"text": "toolbar.spritesheets.remove"
+					},
+					{
+						"group": "spritesheets",
+						"name": ""
+					},
+					{
+						"group": "spritesheets",
+						"name": "edit-spritesheet-tree",
+						"icon": "my-edit-tree",
+						"text": "toolbar.spritesheets.tree"
+					}
+				]
 			},
 			{
 				"group": "background",
@@ -28,7 +69,8 @@
 				"folder": "design/collector/tilemaps",
 				"content": "",
 				"title": "collector.tilemaps",
-				"tools": []
+				"tools": [
+				]
 			}
 		],
 		"explorer": [
@@ -46,13 +88,13 @@
 					},
 					{
 						"group": "scenes",
-						"name": "edit-json",
+						"name": "edit-scene-json",
 						"icon": "my-json-file",
 						"text": "toolbar.scenes.json"
 					},
 					{
 						"group": "scenes",
-						"name": "edit-script",
+						"name": "edit-scene-script",
 						"icon": "my-script-file",
 						"text": "toolbar.scenes.script"
 					},

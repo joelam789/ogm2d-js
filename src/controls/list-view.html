@@ -1,5 +1,15 @@
 <template>
-    <div>tool bar</div>
+    <require from="controls/link-button"></require>
+    <!-- <div>tool bar</div> -->
+    <div style="text-align: right; background-color:#efefef">
+        <span repeat.for="btn of tools" as-element="link-button" 
+        link-id="${ btn.name ? 'list-view-toolbtn-' + btn.name : '' }" 
+        icon-css="${btn.icon}" is-plain="true"
+        button-size="small" icon-align="left"
+        tool-tip="${btn.text}" tool-tip-pos="bottom"
+        button-name="${btn.name}" button-group="${btn.group}"
+        ></span>
+    </div>
     <div if.bind="items != null && items.length > 0" style="width: 100%; max-height: 100%; display: flex; flex-flow: row wrap;">
         <div repeat.for="item of items" id="${item.pid}" click.capture="$parent.clickItem($event, item.pid)"
         css="${'width: ' + item.width + 'px; margin-left: 10px; margin-top: 10px; text-align: center;' + (item.selected ? 'background: radial-gradient(white, yellow);' : '')}" >
