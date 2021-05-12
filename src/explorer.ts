@@ -57,11 +57,11 @@ export class Explorer {
             this.openSceneTreeDlg();
         }));
 
-        this.subscribers.push(this.eventChannel.subscribe("scenes-edit-json", () => {
+        this.subscribers.push(this.eventChannel.subscribe("scenes-edit-scene-json", () => {
             this.openJsonEditor();
         }));
 
-        this.subscribers.push(this.eventChannel.subscribe("scenes-edit-script", () => {
+        this.subscribers.push(this.eventChannel.subscribe("scenes-edit-scene-script", () => {
             this.openScriptEditor();
         }));
         
