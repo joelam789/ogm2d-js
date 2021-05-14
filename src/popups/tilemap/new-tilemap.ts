@@ -20,12 +20,16 @@ export class NewTilemapDlg {
 
     tilesets: Array<any> = [];
 
+    tilesetNames = [];
+    selectedTilesetNames = [];
+
     constructor(public controller: DialogController) {
         //controller.settings.centerHorizontalOnly = true;
     }
 
     activate(message) {
         this.message = message;
+
         /*
         ipcRenderer.once("get-tileset-list-return", (event, list) => {
             if (list && list.length > 0) {
@@ -34,6 +38,9 @@ export class NewTilemapDlg {
         });
         ipcRenderer.send("get-tileset-list");
         */
+
+        this.tilesetNames = ["base1", "base2", "base3"];
+        this.selectedTilesetNames = ["base2", "base3"];
     }
 
     deactivate() {

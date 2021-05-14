@@ -3,6 +3,9 @@
     "app": {
         "ok": "OK",
         "cancel": "Cancel",
+		"yes": "Yes",
+        "no": "No",
+		"confirm": "Confirmation",
 		"save-file-ok": "Save file successfully to the path below: "
     },
 
@@ -16,6 +19,10 @@
         "tilemap-tip-1": "Press 'Ctrl' to enable the 'replacement' mode.",
         "tilemap-tip-2": "Press 'Shift' to enable the 'eraser' mode."
     },
+	
+	"confirm": {
+		"remove-current-tileset": "Are you sure you want to remove current tileset?"
+	},
 
 	"tilemap": {
         "tilemap": "Tilemap",
@@ -23,6 +30,8 @@
         "select-tilemap": "Select a tilemap",
         "save-tilemap": "Save tilemap",
         "create-new": "Create new tilemap",
+		"open": "Open a tilemap",
+		"create-tilemap-or-tileset": "Create what",
         "new-name": "New tilemap name",
         "tilemap-editor": "Tilemap Editor",
         "tile-width": "Tile width",
@@ -31,18 +40,24 @@
         "row-count": "Row count",
         "bgcolor": "Background color",
         "bgcolor-opacity": "Background color opacity",
+		"tile-width-height": "Tile width and tile height",
+		"column-row-count": "Column count and row count",
+		"bgcolor-and-opacity": "Background color and opacity",
         "tileset-list": "Tileset list",
         "undo": "Undo",
         "redo": "Redo",
         "fill-up": "Fill up",
         "show-grids": "Show grids",
         "replacement-mode": "Replacement",
+		"bg": "BG",
         "cost": "Cost",
         "set-cost": "Set Cost",
         "resize-map": "Resize",
 		"add-tileset": "Add",
 		"edit-tileset": "Edit",
+		"remove-tileset": "Remove",
 		"new-tileset": "New"
+		
     },
 
     "tileset": {
@@ -51,6 +66,7 @@
         "select-tilesets": "Select tilesets",
         "save-tileset": "Save tileset",
         "create-new": "Create new tileset",
+		"open": "Open a tileset",
         "new-name": "New tileset name",
         "tileset-editor": "Tileset Editor",
         "tile-width": "Tile width",

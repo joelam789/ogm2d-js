@@ -1,0 +1,19 @@
+<template>
+  <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 50%;
+  width: 400px; height: 200px; margin-left: -200px; margin-top: -100px;">
+    <ux-dialog-header class="panel-heading">
+        <h4 class="panel-title" i18n="app.confirm">Confirm</h4>
+    </ux-dialog-header>
+
+    <ux-dialog-body class="panel-body">
+      <div style="text-align: center;">
+          ${message}
+      </div>
+    </ux-dialog-body>
+    
+    <ux-dialog-footer class="panel-footer">
+        <button class="btn btn-success" click.trigger="controller.ok('yes')" i18n="app.yes">Yes</button>
+        <button class="btn btn-danger" click.trigger="controller.cancel()" i18n="app.no">No</button>
+    </ux-dialog-footer>
+  </ux-dialog>
+</template>

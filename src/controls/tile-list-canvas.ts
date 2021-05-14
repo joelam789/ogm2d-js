@@ -404,8 +404,18 @@ export class TileListCanvas {
         this.element.dispatchEvent(event);
     }
 
+    private drawNothing() {
+        let canvas = this.canvas;
+        let ctx = canvas ? canvas.getContext('2d') : null;
+        if (ctx == undefined || ctx == null) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
     private refresh() {
-        if (this.image == undefined || this.image == null) return;
+        if (this.image == undefined || this.image == null) {
+            this.drawNothing();
+            return;
+        }
         if (this.tileset == undefined || this.tileset == null) return;
         if (this.tileset.tiles == undefined || this.tileset.tiles == null) return;
         let canvas = this.canvas;

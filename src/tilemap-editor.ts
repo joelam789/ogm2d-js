@@ -9,6 +9,7 @@ import { I18N } from 'aurelia-i18n';
 //import { ipcRenderer } from "electron";
 
 import { TileListCanvas } from "./controls/tile-list-canvas";
+import { CommonConfirmDlg } from './popups/common-confirm';
 import { NewTilemapDlg } from "./popups/tilemap/new-tilemap";
 import { SaveTilemapDlg } from "./popups/tilemap/save-tilemap";
 import { EditTilesetDlg } from "./popups/tileset/edit-tileset";
@@ -20,6 +21,7 @@ import { SetCostDlg } from "./popups/tilemap/set-cost";
 import { HttpClient } from "./http-client";
 
 import { App } from "./app";
+
 
 @autoinject()
 export class TilemapEditorPage {
@@ -54,6 +56,7 @@ export class TilemapEditorPage {
 
     currentRect: any = { x: 0, y: 0, w: 0, h: 0 };
 
+    bgFlags = [];
     gridFlags = [];
     replacementFlags = [];
 
@@ -118,6 +121,11 @@ export class TilemapEditorPage {
         this.subscribers.push(this.eventChannel.subscribe("open-tilemap", data => this.openSelectTilemapDlg()));
         this.subscribers.push(this.eventChannel.subscribe("save-tilemap", data => this.saveTilemap()));
         this.subscribers.push(this.eventChannel.subscribe("save-tilemap-as", data => this.openSaveTilemapDlg()));
+
+        //this.subscribers.push(this.eventChannel.subscribe("remove-current-tileset", data => this.removeCurrentTileset()));
+
+        // enable bootstrap v4 tooltip
+        //($('[data-toggle="tooltip"]') as any).tooltip();
 
         document.getElementById('top-loading').style.display = 'none';
         document.getElementById('app').style.visibility = 'visible';
@@ -329,6 +337,10 @@ export class TilemapEditorPage {
         }
     }
 
+    setBg() {
+        console.log("open select bg dialog...");
+    }
+
     setCost() {
         let showingGrids = this.gridFlags.length > 0;
         if (showingGrids) {
@@ -444,7 +456,7 @@ export class TilemapEditorPage {
 
     openTileset(tilesetName: string) {
         let tileset = null;
-        for (let item of this.tilesets) {
+        if (tilesetName) for (let item of this.tilesets) {
             if (item.name == tilesetName) {
                 tileset = item;
                 break;
@@ -455,11 +467,48 @@ export class TilemapEditorPage {
             this.tileset = tileset.obj;
             if (this.tileset.columnCount && this.tilesetControl)
                 this.tilesetControl.columnCount = this.tileset.columnCount;
+        } else {
+            this.tilesetImage = null;
+            this.tileset = {};
         }
     }
 
     changeCurrentTileset() {
         this.openTileset(this.selectedTilesetName);
+    }
+
+    removeCurrentTileset() {
+        console.log("remove current tileset");
+        this.dialogService.open({viewModel: CommonConfirmDlg, model: this.i18n.tr("confirm.remove-current-tileset")})
+        .whenClosed((response) => {
+            if (!response.wasCancelled && response.output) {
+                console.log(response.output);
+                if (response.output == 'yes') {
+                    console.log("go to remove current tileset");
+                    let idx = -1;
+                    for (let i=0; i<this.tilesets.length; i++) {
+                        let item = this.tilesets[i];
+                        if (item.name == this.selectedTilesetName) {
+                            idx = i;
+                            break;
+                        }
+                    }
+                    if (idx >= 0) {
+                        this.tilesets.splice(idx, 1);
+                        if (this.tilesets.length == 1) {
+                            this.selectedTilesetName = this.tilesets[0].name;
+                        } else if (this.tilesets.length > 1) {
+                            if (idx == this.tilesets.length) this.selectedTilesetName = this.tilesets[this.tilesets.length - 1].name;
+                            else this.selectedTilesetName = this.tilesets[idx].name;
+                        } else this.selectedTilesetName = "";
+                        this.changeCurrentTileset();
+                        this.refreshTilemap();
+                    }
+                } else console.log("give up removing current tileset");
+            } else {
+                console.log("give up removing current tileset");
+            }
+        });
     }
 
     openSelectTilesetDlg() {
@@ -479,10 +528,16 @@ export class TilemapEditorPage {
                     }
                     if (!existing) tilesetNames.push(item);
                 }
+                //console.log("new tilesets - ", tilesetNames);
+                //console.log("current tileset name - ", this.selectedTilesetName);
+                //console.log("current tilesets - ", this.tilesets);
+                let needNewSelectedTilesetName = !this.selectedTilesetName;
                 if (tilesetNames.length > 0) {
                     this.loadTilesets(tilesetNames, () => {
                         //console.log(this.tilesets);
-                        if (this.selectedTilesetName.length <= 0 && this.tilesets.length > 0) {
+                        //console.log("current tileset name 2 - ", this.selectedTilesetName);
+                        if (needNewSelectedTilesetName && this.tilesets.length > 0) {
+                            //console.log(this.tilesets[0].name);
                             this.selectedTilesetName = this.tilesets[0].name;
                             this.changeCurrentTileset();
                         }
@@ -761,10 +816,11 @@ export class TilemapEditorPage {
                     for (let idx=0; idx<cell.ids.length; idx+=2) {
                         let tilesetIndex = cell.ids[idx];
                         let tileIndex = cell.ids[idx+1];
-                        if (tilesetIndex >= 0 && tileIndex >= 0) {
+                        if (tilesetIndex >= 0 && tilesetIndex < this.tilesets.length && tileIndex >= 0) {
                             let tileset = this.tilesets[tilesetIndex];
-                            let tile = tileset.obj.tiles[tileIndex];
-                            ctx.drawImage(tileset.img, tile.offsets[0], tile.offsets[1], this.tileWidth, this.tileHeight, 
+                            let tile = tileset ? tileset.obj.tiles[tileIndex] : null;
+                            if (tileset && tile) 
+                                ctx.drawImage(tileset.img, tile.offsets[0], tile.offsets[1], this.tileWidth, this.tileHeight, 
                                             x, y, this.tileWidth, this.tileHeight);
                         } else {
                             ctx.fillRect(x, y, this.tileWidth, this.tileHeight);
@@ -1049,7 +1105,7 @@ export class TilemapEditorPage {
         });
     }
 
-    openCreateTilesetDlg(tilesetName: string) {
+    openCreateTilesetDlg() {
         console.log("openCreateTilesetDlg...");
         //(window.parent as any).appEvent.publish('ide-edit-tileset');
         //let tileset = tilesetName ? tilesetName : "tileset1";
@@ -1058,16 +1114,35 @@ export class TilemapEditorPage {
 
     openEditTilesetDlg() {
         console.log("openEditTilesetDlg...");
-        if (!this.selectedTilesetName) return;
-        let tileset = this.selectedTilesetName;
-        this.dialogService.open({viewModel: EditTilesetDlg, model: tileset})
+
+        this.dialogService.open({viewModel: SelectTilesetDlg, model: {multiple: false}})
         .whenClosed((response) => {
             if (!response.wasCancelled && response.output) {
-                console.log(response.output);
+                //console.log(response.output);
+                //if (response.output.length > 0) this.openTileset(response.output[0]);
+                let tilesetName = "";
+                let tilesetNames = [];
+                for (let item of response.output) {
+                    tilesetName = item;
+                    if (tilesetName) break;
+                }
+                if (!tilesetName) return;
+                let tileset = tilesetName;
+                this.dialogService.open({viewModel: EditTilesetDlg, model: tileset})
+                .whenClosed((response) => {
+                    if (!response.wasCancelled && response.output) {
+                        console.log(response.output);
+                    } else {
+                        console.log('Give up updating tileset');
+                    }
+                });
+                
             } else {
-                console.log('Give up updating tileset');
+                console.log('Give up selecting tilesets');
             }
         });
+
+        
     }
 
     undo() {

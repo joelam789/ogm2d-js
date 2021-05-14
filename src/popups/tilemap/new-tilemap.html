@@ -1,38 +1,53 @@
 <template>
-  <ux-dialog class="panel panel-default">
-    <ux-dialog-header class="panel-heading">
+  <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 40%;
+  width: 400px; height: 400px; margin-left: -200px; margin-top: -230px;">
+    <ux-dialog-header class="panel-heading py-8">
         <h4 class="panel-title" i18n="tilemap.create-new">Create new tilemap</h4>
     </ux-dialog-header>
 
-    <ux-dialog-body class="panel-body">
+    <ux-dialog-body class="panel-body py-8">
         <div class="row">
             <div class="col-md-12">
-            <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label" i18n="tilemap.new-name">New tilemap name</label>
-                    <input type="text" class="form-control input-md" placeholder="" value.bind="setting.name" />
-                    <label class="control-label" i18n="tilemap.tile-width">Tile width</label>
-                    <input type="number" class="form-control input-md" placeholder="" value.bind="setting.tileWidth" />
-                    <label class="control-label" i18n="tilemap.tile-height">Tile height</label>
-                    <input type="number" class="form-control input-md" placeholder="" value.bind="setting.tileHeight" />
-                    <label class="control-label" i18n="tilemap.column-count">Column count</label>
-                    <input type="number" class="form-control input-md" placeholder="" value.bind="setting.columnCount" />
-                    <label class="control-label" i18n="tilemap.row-count">Row count</label>
-                    <input type="number" class="form-control input-md" placeholder="" value.bind="setting.rowCount" />
-                    <label class="control-label" i18n="tilemap.bgcolor-opacity">Background Color Opacity</label>
-                    <input type="number" min="0" max="1" step="0.1" class="form-control input-md" placeholder="" value.bind="setting.bgcolorOpacity" />
-                    <label class="control-label" i18n="tilemap.bgcolor">Background Color</label>
-                    <input type="color" class="form-control input-md" placeholder="" value.bind="setting.bgcolor" />
+                    <input type="text" class="form-control input-md mb-2" placeholder="name" value.bind="setting.name" />
+
+                    <label class="control-label" i18n="tilemap.tile-width-height">Tile width</label>
+                    <div class="row col-md-12 mb-2">
+                        <div class="col-md-6 px-0">
+                        <input type="number" class="form-control input-md" placeholder="width" value.bind="setting.tileWidth" />
+                        </div>
+                        <div class="col-md-6 px-0 ml-auto">
+                        <input type="number" class="form-control input-md" placeholder="height" value.bind="setting.tileHeight" />
+                        </div>
+                    </div>
+
+                    <label class="control-label" i18n="tilemap.column-row-count">Column count</label>
+                    <div class="row col-md-12 mb-2">
+                        <div class="col-md-6 px-0">
+                            <input type="number" class="form-control input-md mb-2" placeholder="column count" value.bind="setting.columnCount" />
+                        </div>
+                        <div class="col-md-6 px-0 ml-auto">
+                            <input type="number" class="form-control input-md mb-2" placeholder="row count" value.bind="setting.rowCount" />
+                        </div>
+                    </div>
+                    
+                    <label class="control-label" i18n="tilemap.bgcolor-and-opacity">Background Color Opacity</label>
+                    <div class="row col-md-12 mb-2">
+                        <div class="col-md-6 px-0">
+                            <input type="color" class="form-control input-md" placeholder="" value.bind="setting.bgcolor" />
+                        </div>
+                        <div class="col-md-6 px-0 ml-auto">
+                            <input type="number" min="0" max="1" step="0.1" class="form-control input-md" placeholder="opacity" value.bind="setting.bgcolorOpacity" />
+                        </div>
+                    </div>
+
+                    <label class="control-label" i18n="tilemap.tileset-list">Tileset List</label>
+                    <select class="form-control mb-2" style="max-height: 50px !important;" value.bind="selectedTilesetNames" multiple>
+                        <option repeat.for="item of tilesetNames" mode.bind="item">${item}</option>
+                    </select>
+
                 </div>
-            </div>
-            <div class="col-md-6">
-                <label class="control-label" i18n="tileset.select-tilesets">Select tilesets</label>
-                <ul class="list-group">
-                <li repeat.for="tileset of tilesets" class="list-group-item ${tileset.selected ? 'active' : ''}">
-                <a href="javascript:;" click.trigger="$parent.selectTileset(tileset.name)"><p class="list-group-item-text">${tileset.name}</p></a>
-                </li>
-                </ul>
-            </div>
             </div>
         </div>
 
