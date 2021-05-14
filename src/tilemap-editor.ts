@@ -16,6 +16,7 @@ import { EditTilesetDlg } from "./popups/tileset/edit-tileset";
 import { SelectTilesetDlg } from "./popups/tileset/select-tileset";
 import { SelectTilemapDlg } from "./popups/tilemap/select-tilemap";
 import { ResizeTilemapDlg } from "./popups/tilemap/resize-tilemap";
+import { SelectTilemapBgDlg } from './popups/tilemap/select-tilemap-bg';
 import { SetCostDlg } from "./popups/tilemap/set-cost";
 
 import { HttpClient } from "./http-client";
@@ -48,6 +49,8 @@ export class TilemapEditorPage {
     tilemapTileCanvas: HTMLCanvasElement = null;
     cursorCanvas: HTMLCanvasElement = null;
 
+    tilemapBgImages: Array<HTMLImageElement> = [];
+
     selectedTilesetName: string = "";
 
     isMouseDown: boolean = false;
@@ -56,7 +59,10 @@ export class TilemapEditorPage {
 
     currentRect: any = { x: 0, y: 0, w: 0, h: 0 };
 
-    bgFlags = [];
+    bgFlags = ["layerBG"];
+    layer1Flags = ["layerValue1"];
+    layer2Flags = [];
+    layer3Flags = [];
     gridFlags = [];
     replacementFlags = [];
 
@@ -78,6 +84,24 @@ export class TilemapEditorPage {
     private gridFlagsChanged() {
         console.log("gridFlagsChanged");
         this.refreshTilemapGrids();
+    }
+
+    private bgFlagsChanged() {
+        console.log("bgFlagsChanged");
+        this.refreshTilemapBg();
+    }
+
+    private layer1FlagsChanged() {
+        console.log("layer1FlagsChanged");
+        this.refreshTilemapDisplay();
+    }
+    private layer2FlagsChanged() {
+        console.log("layer2FlagsChanged");
+        this.refreshTilemapDisplay();
+    }
+    private layer3FlagsChanged() {
+        console.log("layer3FlagsChanged");
+        this.refreshTilemapDisplay();
     }
 
     activate(parameters, routeConfig) {
@@ -113,9 +137,11 @@ export class TilemapEditorPage {
 
         this.subscribers = [];
 
-        this.subscribers.push(this.binding
-            .collectionObserver(this.gridFlags)
-            .subscribe(() => this.gridFlagsChanged()));
+        this.subscribers.push(this.binding.collectionObserver(this.gridFlags).subscribe(() => this.gridFlagsChanged()));
+        this.subscribers.push(this.binding.collectionObserver(this.bgFlags).subscribe(() => this.bgFlagsChanged()));
+        this.subscribers.push(this.binding.collectionObserver(this.layer1Flags).subscribe(() => this.layer1FlagsChanged()));
+        this.subscribers.push(this.binding.collectionObserver(this.layer2Flags).subscribe(() => this.layer2FlagsChanged()));
+        this.subscribers.push(this.binding.collectionObserver(this.layer3Flags).subscribe(() => this.layer3FlagsChanged()));
 
         this.subscribers.push(this.eventChannel.subscribe("create-new-tilemap", data => this.openNewTilemapDlg()));
         this.subscribers.push(this.eventChannel.subscribe("open-tilemap", data => this.openSelectTilemapDlg()));
@@ -123,6 +149,8 @@ export class TilemapEditorPage {
         this.subscribers.push(this.eventChannel.subscribe("save-tilemap-as", data => this.openSaveTilemapDlg()));
 
         //this.subscribers.push(this.eventChannel.subscribe("remove-current-tileset", data => this.removeCurrentTileset()));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-copy-image-file-return", data => this.loadTilemapBg(data)));
 
         // enable bootstrap v4 tooltip
         //($('[data-toggle="tooltip"]') as any).tooltip();
@@ -339,6 +367,17 @@ export class TilemapEditorPage {
 
     setBg() {
         console.log("open select bg dialog...");
+        this.dialogService.open({viewModel: SelectTilemapBgDlg, model: 0})
+            .whenClosed((response) => {
+                if (!response.wasCancelled && response.output != undefined) {
+                    console.log(response.output);
+                    let bgimgpath = response.output;
+                    if (bgimgpath) (window.parent as any).appEvent.publish('dlg-copy-image-file', bgimgpath);
+                    
+                } else {
+                    console.log('Give up setting bg of current tilemap');
+                }
+            });
     }
 
     setCost() {
@@ -381,17 +420,41 @@ export class TilemapEditorPage {
 
     resetMapSize() {
         this.dialogService.open({viewModel: ResizeTilemapDlg, model: this.tilemap.rowCount + "," + this.tilemap.columnCount})
-                .whenClosed((response) => {
-                    if (!response.wasCancelled && response.output) {
-                        //console.log(response.output);
-                        let settings = response.output;
-                        this.resizeMap(settings.rowCount, settings.columnCount);
-                        console.log(this.tilemap);
-                        this.refreshTilemap();
-                    } else {
-                        console.log('Give up setting new size of the map');
-                    }
-                });
+            .whenClosed((response) => {
+                if (!response.wasCancelled && response.output) {
+                    //console.log(response.output);
+                    let settings = response.output;
+                    this.resizeMap(settings.rowCount, settings.columnCount);
+                    console.log(this.tilemap);
+                    this.refreshTilemap();
+                } else {
+                    console.log('Give up setting new size of the map');
+                }
+            });
+    }
+
+    loadTilemapBg(bgfile) {
+        console.log(bgfile);
+        this.tilemapBgImages = [];
+        let url: string = bgfile.toString();
+        if (url.indexOf('.') < 0) url += ".png";
+        url = url.replace('\\', '/');
+        let filename = url.substring(url.lastIndexOf('/') + 1);
+        let img = new Image();
+        img.onload = () => {
+            this.tilemapBgImages.push(img);
+            if (this.tilemap) {
+                if (!this.tilemap.extra) this.tilemap.extra = {};
+                this.tilemap.extra.background = {
+                    images: [filename],
+		            areas: [0,0,img.width,img.height]
+                }
+                this.record();
+            }
+            console.log(this.tilemap.extra);
+            this.refreshTilemapBg();
+        };
+        img.src = url;
     }
 
     loadTileset(tilesetName: string, callback: (tileset: any)=>void) {
@@ -564,12 +627,12 @@ export class TilemapEditorPage {
                 tilemap.rowCount = response.output.rowCount;
                 tilemap.bgcolor = response.output.bgcolor;
                 tilemap.tilesetNames = [];
-                Array.prototype.push.apply(tilemap.tilesetNames, response.output.tilesetNames);
+                tilemap.tilesetNames.push(...response.output.tilesetNames);
                 tilemap.cells = [];
                 for (let i=0; i<tilemap.columnCount*tilemap.rowCount; i++) {
                     tilemap.cells.push({ids:[-1, -1]});
                 }
-                //console.log(tilemap);
+                console.log(tilemap);
                 this.loadTilemap(tilemap, true, () => {
                     this.clearHist();
                     this.record();
@@ -591,6 +654,28 @@ export class TilemapEditorPage {
                 //console.log(this.tilemap.bgcolor);
                 ctx.fillStyle = "white";
                 ctx.fillRect(0, 0, this.tilemapBg.width, this.tilemapBg.height);
+
+                if (this.bgFlags.length > 0) {
+                    if (this.tilemap.extra && this.tilemap.extra.background 
+                        && this.tilemap.extra.background.images && this.tilemap.extra.background.areas
+                        && this.tilemapBgImages.length > 0) {
+    
+                        let posArray = this.tilemap.extra.background.areas;
+                        for (let i = 0; i < this.tilemapBgImages.length; i++) {
+                            let bgimg = this.tilemapBgImages[i];
+                            let x = posArray[4*i + 0];
+                            let y = posArray[4*i + 1];
+                            let w = posArray[4*i + 2];
+                            let h = posArray[4*i + 3];
+                            //console.log(x, y, bgimg.width, bgimg.height);
+                            ctx.clearRect(x, y, bgimg.width, bgimg.height);
+                            ctx.drawImage(bgimg, x, y);
+                        }
+                        
+                    }
+                }
+                
+
             }
             ctx = this.tilemapTileCanvas.getContext('2d');
             if (ctx) ctx.clearRect(0, 0, this.tilemapTileCanvas.width, this.tilemapTileCanvas.height);
@@ -710,22 +795,76 @@ export class TilemapEditorPage {
             for (let row=0; row<this.tilemap.rowCount; row++) {
                 for (let col=0; col<this.tilemap.columnCount; col++) {
                     if (x >= this.startRect.x && x <= this.endRect.x && y >= this.startRect.y && y <= this.endRect.y) {
+                        let applied = false;
                         let cell = this.tilemap.cells[pos];
                         if (remove === true) {
-                            if (cell.ids.length >= 4) {
-                                cell.ids.length = cell.ids.length - 2;
-                            } else {
-                                cell.ids = [-1, -1];
+                            //if (cell.ids.length >= 4) {
+                            //    cell.ids.length = cell.ids.length - 2;
+                            //} else {
+                            //    cell.ids = [-1, -1];
+                            //}
+                            if (this.layer3Flags.length > 0) {
+                                if (cell.ids.length < 2) {
+                                    cell.ids = [-1, -1, -1, -1, -1, -1];
+                                } else if (cell.ids.length < 4) {
+                                    cell.ids[2] = -1;
+                                    cell.ids[3] = -1;
+                                    cell.ids[4] = -1;
+                                    cell.ids[5] = -1;
+                                } else {
+                                    cell.ids[4] = -1;
+                                    cell.ids[5] = -1;
+                                }
+                                //applied = true;
+                            } else if (this.layer2Flags.length > 0) {
+                                if (cell.ids.length < 2) {
+                                    cell.ids = [-1, -1, -1, -1];
+                                } else {
+                                    cell.ids[2] = -1;
+                                    cell.ids[3] = -1;
+                                }
+                                //applied = true;
+                            } else if (this.layer1Flags.length > 0) {
+                                cell.ids[0] = -1;
+                                cell.ids[1] = -1;
+                                //applied = true;
                             }
                         } else {
-                            if (replacement || cell.ids[0] == -1) {
-                                cell.ids = [tilesetIndex, tileIndex];
-                            } else {
-                                cell.ids.push(tilesetIndex);
-                                cell.ids.push(tileIndex);
+                            //if (replacement || cell.ids[0] == -1) {
+                            //    cell.ids = [tilesetIndex, tileIndex];
+                            //} else {
+                            //    cell.ids.push(tilesetIndex);
+                            //    cell.ids.push(tileIndex);
+                            //}
+                            if (this.layer3Flags.length > 0) {
+                                if (cell.ids.length < 2) {
+                                    cell.ids = [-1, -1, -1, -1, tilesetIndex, tileIndex];
+                                } else if (cell.ids.length < 4) {
+                                    cell.ids[2] = -1;
+                                    cell.ids[3] = -1;
+                                    cell.ids[4] = tilesetIndex;
+                                    cell.ids[5] = tileIndex;
+                                } else {
+                                    cell.ids[4] = tilesetIndex;
+                                    cell.ids[5] = tileIndex;
+                                }
+                                applied = true;
+                            } else if (this.layer2Flags.length > 0) {
+                                if (cell.ids.length < 2) {
+                                    cell.ids = [-1, -1, tilesetIndex, tileIndex];
+                                } else {
+                                    cell.ids[2] = tilesetIndex;
+                                    cell.ids[3] = tileIndex;
+                                }
+                                applied = true;
+                            } else if (this.layer1Flags.length > 0) {
+                                cell.ids[0] = tilesetIndex;
+                                cell.ids[1] = tileIndex;
+                                applied = true;
                             }
                         }
-                        if (cell.ids.length >= 2) {
+                        console.log(cell);
+                        if (applied && cell.ids.length >= 2) {
                             let currentTileIndex = cell.ids[cell.ids.length - 1];
                             let currentTilesetIndex = cell.ids[cell.ids.length - 2];
                             if (currentTilesetIndex >= 0 && currentTileIndex >= 0) {
@@ -763,15 +902,43 @@ export class TilemapEditorPage {
                 for (let col=0; col<this.tilemap.columnCount; col++) {
                     if (x >= startRect.x && x <= endRect.x && y >= startRect.y && y <= endRect.y) {
                         idx++;
+                        let applied = false;
                         let tileIndex = tileIndexes[idx];
                         let cell = this.tilemap.cells[pos];
-                        if (replacement || cell.ids[0] == -1) {
-                            cell.ids = [tilesetIndex, tileIndex];
-                        } else {
-                            cell.ids.push(tilesetIndex);
-                            cell.ids.push(tileIndex);
+                        //if (replacement || cell.ids[0] == -1) {
+                        //    cell.ids = [tilesetIndex, tileIndex];
+                        //} else {
+                        //    cell.ids.push(tilesetIndex);
+                        //    cell.ids.push(tileIndex);
+                        //}
+                        if (this.layer3Flags.length > 0) {
+                            if (cell.ids.length < 2) {
+                                cell.ids = [-1, -1, -1, -1, tilesetIndex, tileIndex];
+                            } else if (cell.ids.length < 4) {
+                                cell.ids[2] = -1;
+                                cell.ids[3] = -1;
+                                cell.ids[4] = tilesetIndex;
+                                cell.ids[5] = tileIndex;
+                            } else {
+                                cell.ids[4] = tilesetIndex;
+                                cell.ids[5] = tileIndex;
+                            }
+                            applied = true;
+                        } else if (this.layer2Flags.length > 0) {
+                            if (cell.ids.length < 2) {
+                                cell.ids = [-1, -1, tilesetIndex, tileIndex];
+                            } else {
+                                cell.ids[2] = tilesetIndex;
+                                cell.ids[3] = tileIndex;
+                            }
+                            applied = true;
+                        } else if (this.layer1Flags.length > 0) {
+                            cell.ids[0] = tilesetIndex;
+                            cell.ids[1] = tileIndex;
+                            applied = true;
                         }
-                        if (cell.ids.length >= 2) {
+                        console.log(cell);
+                        if (applied && cell.ids.length >= 2) {
                             let currentTileIndex = cell.ids[cell.ids.length - 1];
                             let currentTilesetIndex = cell.ids[cell.ids.length - 2];
                             if (currentTilesetIndex >= 0 && currentTileIndex >= 0) {
@@ -812,8 +979,21 @@ export class TilemapEditorPage {
             let x= 0, y = 0, pos = 0;
             for (let row=0; row<this.tilemap.rowCount; row++) {
                 for (let col=0; col<this.tilemap.columnCount; col++) {
-                    let cell = this.tilemap.cells[pos];
+                    let cell = this.tilemap.cells[pos], layer = 0;
                     for (let idx=0; idx<cell.ids.length; idx+=2) {
+                        layer++;
+                        if (this.layer1Flags.length <= 0 && layer == 1) {
+                            ctx.fillRect(x, y, this.tileWidth, this.tileHeight);
+                            continue;
+                        }
+                        if (this.layer2Flags.length <= 0 && layer == 2) {
+                            ctx.fillRect(x, y, this.tileWidth, this.tileHeight);
+                            continue;
+                        }
+                        if (this.layer3Flags.length <= 0 && layer == 3) {
+                            ctx.fillRect(x, y, this.tileWidth, this.tileHeight);
+                            continue;
+                        }
                         let tilesetIndex = cell.ids[idx];
                         let tileIndex = cell.ids[idx+1];
                         if (tilesetIndex >= 0 && tilesetIndex < this.tilesets.length && tileIndex >= 0) {

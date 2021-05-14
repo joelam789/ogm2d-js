@@ -37,13 +37,13 @@
         <div class="btn-group mr-2" role="group" aria-label="Fourth group">
           <button type="button" class="btn btn-secondary" click.delegate="resetMapSize()"><span i18n="tilemap.resize-map">Resize</span></button>
         </div>
-        <div class="btn-group mr-2" role="group" aria-label="Fifth group">
-          <button type="button" class="btn btn-secondary" disabled.bind="gridFlags.length == 0" click.delegate="setCost()"><span i18n="tilemap.cost">Cost</span></button>
-        </div>
         <div class="btn-group mr-2" role="group" aria-label="Sixth group">
           <button type="button" class="btn btn-secondary" disabled.bind="bgFlags.length == 0" click.delegate="setBg()"><span i18n="tilemap.bg">BG</span></button>
         </div>
-
+        <div class="btn-group mr-2" role="group" aria-label="Fifth group">
+          <button type="button" class="btn btn-secondary" disabled.bind="gridFlags.length == 0" click.delegate="setCost()"><span i18n="tilemap.cost">Cost</span></button>
+        </div>
+        
         <form class="form-inline row g-5 align-items-center my-2 my-lg-0" style="margin-left: 20px;">
           <!--
           <div class="custom-control custom-switch col-auto" style="margin-left: 20px;">
@@ -62,15 +62,15 @@
             <label class="custom-control-label" for="customCheckBgLayer">BG</label>
           </div>
           <div class="custom-control custom-checkbox col-auto" style="margin-left: 2px;">
-            <input type="checkbox" class="custom-control-input" id="customCheckTileLayer1">
+            <input type="checkbox" class="custom-control-input" id="customCheckTileLayer1" value="layerValue1" checked.bind="layer1Flags">
             <label class="custom-control-label" for="customCheckTileLayer1">Layer1</label>
           </div>
           <div class="custom-control custom-checkbox col-auto" style="margin-left: 2px;">
-            <input type="checkbox" class="custom-control-input" id="customCheckTileLayer2">
+            <input type="checkbox" class="custom-control-input" id="customCheckTileLayer2" value="layerValue2" checked.bind="layer2Flags">
             <label class="custom-control-label" for="customCheckTileLayer2">Layer2</label>
           </div>
           <div class="custom-control custom-checkbox col-auto" style="margin-left: 2px;">
-            <input type="checkbox" class="custom-control-input" id="customCheckTileLayer3">
+            <input type="checkbox" class="custom-control-input" id="customCheckTileLayer3" value="layerValue3" checked.bind="layer3Flags">
             <label class="custom-control-label" for="customCheckTileLayer3">Layer3</label>
           </div>
           <div class="custom-control custom-checkbox col-auto" style="margin-left: 2px;">

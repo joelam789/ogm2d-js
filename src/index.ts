@@ -481,3 +481,24 @@ ipcMain.on("dlg-get-tileset-list", (event, srcDir) => {
         }
     });
 });
+
+ipcMain.on("dlg-select-image-file", (event) => {
+    dialog.showOpenDialog(mainWin, {
+        defaultPath: __dirname,
+        filters: [ { name: 'Images', extensions: ['jpg', 'png', 'bmp'] } ],
+    }).then(filepath => {
+        //console.log(filepath);
+        event.sender.send('dlg-select-image-file-return', {error: null, imgpath: filepath});
+    }).catch(err => {
+        event.sender.send('dlg-get-tileset-list-return', {error: err, imgpath: ""});
+    });
+});
+
+ipcMain.on("dlg-copy-image-file", (event, imgpath, outDir) => {
+    let output = outDir + "/" + path.basename(imgpath);
+    let outputFilepath = __dirname + "/" + output;
+    if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
+    fs.createReadStream(imgpath).pipe(fs.createWriteStream(outputFilepath)
+    .on("close", () => event.sender.send('dlg-copy-image-file-return', {error: null, newpath: outputFilepath}))
+    .on("error", (err) => event.sender.send('dlg-copy-image-file-return', {error: err, newpath: ""})));
+});

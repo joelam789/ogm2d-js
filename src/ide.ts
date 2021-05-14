@@ -162,6 +162,16 @@ export class Ide {
             this.getTilesetListToSelect();
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-select-image-file", () => {
+            console.log("Try to select an image file for Dialog...");
+            this.selectImageFile();
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-copy-image-file", (imgpath) => {
+            console.log("Try to copy an image file for Dialog...");
+            this.copyImageFile(imgpath);
+        }));
+
         App.openProject("workspace/project2/main.json", () => {
             this.eventChannel.publish('project-reloaded');
             App.busy = false;
@@ -239,6 +249,22 @@ export class Ide {
         let srcDir = App.projectPath + "/runtime/project/res/json/tilesets";
         Ipc.getTilesetListToSelect(srcDir, (list) => {
             this.editorFrame.contentWindow.appEvent.publish('dlg-get-tileset-list-return', list);
+        });
+    }
+
+    selectImageFile() {
+        Ipc.selectImageFile((imgpath) => {
+            console.log(imgpath);
+            let ret: any = imgpath;
+            this.editorFrame.contentWindow.appEvent.publish('dlg-select-image-file-return', ret.filePaths[0]);
+        });
+    }
+
+    copyImageFile(imgpath) {
+        let srcDir = App.projectPath + "/runtime/project/res/img";
+        Ipc.copyImageFile(imgpath, srcDir, (newpath) => {
+            console.log(newpath);
+            this.editorFrame.contentWindow.appEvent.publish('dlg-copy-image-file-return', newpath);
         });
     }
 

@@ -202,6 +202,30 @@ export class Ipc {
         });
         ipcRenderer.send("dlg-get-tileset-list", tilesetDir);
 	}
+
+	static selectImageFile(callback: (imgpath: string)=>void) {
+		ipcRenderer.once("dlg-select-image-file-return", (event, result) => {
+            if (result.error) {
+				console.error("dlg-select-image-file-return", result.error);
+				if (callback) callback("");
+			} else {
+				if (callback) callback(result.imgpath);
+			}
+        });
+        ipcRenderer.send("dlg-select-image-file");
+	}
+
+	static copyImageFile(imgpath, outDir, callback: (newpath: string)=>void) {
+		ipcRenderer.once("dlg-copy-image-file-return", (event, result) => {
+            if (result.error) {
+				console.error("dlg-copy-image-file-return", result.error);
+				if (callback) callback("");
+			} else {
+				if (callback) callback(result.newpath);
+			}
+        });
+        ipcRenderer.send("dlg-copy-image-file", imgpath, outDir);
+	}
 	
 	static async copyFilesAsync(srcFiles: Array<string>, 
 								destFiles: Array<string>, 

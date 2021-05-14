@@ -44,6 +44,7 @@
 		"column-row-count": "Column count and row count",
 		"bgcolor-and-opacity": "Background color and opacity",
         "tileset-list": "Tileset list",
+		"bg-image-file": "Background image file",
         "undo": "Undo",
         "redo": "Redo",
         "fill-up": "Fill up",

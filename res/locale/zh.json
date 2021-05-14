@@ -43,6 +43,7 @@
 		"tile-width-height": "瓷砖宽度和高度",
 		"column-row-count": "瓷砖列数和行数",
 		"bgcolor-and-opacity": "背景色及其不透明度",
+		"bg-image-file": "背景图文件",
         "tileset-list": "瓷砖素材列表",
         "undo": "撤销",
         "redo": "重做",
