@@ -167,9 +167,9 @@ export class Ide {
             this.selectImageFile();
         }));
 
-        this.subscribers.push(this.eventChannel.subscribe("dlg-copy-image-file", (imgpath) => {
+        this.subscribers.push(this.eventChannel.subscribe("dlg-copy-image-file", (imgsetting) => {
             console.log("Try to copy an image file for Dialog...");
-            this.copyImageFile(imgpath);
+            this.copyImageFile(imgsetting.imageFile, imgsetting.pieceWidth, imgsetting.pieceHeight);
         }));
 
         App.openProject("workspace/project2/main.json", () => {
@@ -260,12 +260,14 @@ export class Ide {
         });
     }
 
-    copyImageFile(imgpath) {
+    async copyImageFile(imgpath, smallw, smallh) {
         let srcDir = App.projectPath + "/runtime/project/res/img";
-        Ipc.copyImageFile(imgpath, srcDir, (newpath) => {
-            console.log(newpath);
-            this.editorFrame.contentWindow.appEvent.publish('dlg-copy-image-file-return', newpath);
-        });
+        //Ipc.copyImageFile(imgpath, srcDir, smallw, smallh, (newpath) => {
+        //    console.log(newpath);
+        //    this.editorFrame.contentWindow.appEvent.publish('dlg-copy-image-file-return', newpath);
+        //});
+        let newpath = await Ipc.copyImageFileAsync(imgpath, srcDir, smallw, smallh);
+        this.editorFrame.contentWindow.appEvent.publish('dlg-copy-image-file-return', newpath);
     }
 
     saveCurrent() {

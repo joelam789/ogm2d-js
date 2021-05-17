@@ -215,7 +215,7 @@ export class Ipc {
         ipcRenderer.send("dlg-select-image-file");
 	}
 
-	static copyImageFile(imgpath, outDir, callback: (newpath: string)=>void) {
+	static copyImageFile(imgpath, outDir, smallw, smallh, callback: (newpath: string)=>void) {
 		ipcRenderer.once("dlg-copy-image-file-return", (event, result) => {
             if (result.error) {
 				console.error("dlg-copy-image-file-return", result.error);
@@ -224,7 +224,16 @@ export class Ipc {
 				if (callback) callback(result.newpath);
 			}
         });
-        ipcRenderer.send("dlg-copy-image-file", imgpath, outDir);
+        ipcRenderer.send("dlg-copy-image-file", imgpath, outDir, smallw, smallh);
+	}
+
+	static async copyImageFileAsync(imgpath, outDir, smallw, smallh): Promise<string> {
+		let result = await ipcRenderer.invoke("dlg-copy-image-file-async", imgpath, outDir, smallw, smallh);
+		if (result.error) {
+			console.error("copy image files error", result.error);
+			return "";
+		}
+		return result.newpath;
 	}
 	
 	static async copyFilesAsync(srcFiles: Array<string>, 

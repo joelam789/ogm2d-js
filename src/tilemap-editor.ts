@@ -371,8 +371,8 @@ export class TilemapEditorPage {
             .whenClosed((response) => {
                 if (!response.wasCancelled && response.output != undefined) {
                     console.log(response.output);
-                    let bgimgpath = response.output;
-                    if (bgimgpath) (window.parent as any).appEvent.publish('dlg-copy-image-file', bgimgpath);
+                    let bgimgpath = response.output.imageFile;
+                    if (bgimgpath) (window.parent as any).appEvent.publish('dlg-copy-image-file', response.output);
                     
                 } else {
                     console.log('Give up setting bg of current tilemap');
@@ -433,28 +433,60 @@ export class TilemapEditorPage {
             });
     }
 
+    updateTilemapBgSetting(imgUrls: Array<string>, imgObjects: Map<string, any>) {
+        if (!this.tilemap) return;
+        if (!this.tilemap.extra) this.tilemap.extra = {};
+        this.tilemap.extra.background = { images: [], areas: [] };
+        imgUrls.sort();
+        this.tilemap.extra.background.images.push(...imgUrls);
+        let x = 0, y = 0, row = '0', col = '0';
+        let lastW = 0, lastH = 0, lastRow = '#', lastCol = '#';
+        for (let url of imgUrls) {
+            let noext = url.substring(0, url.lastIndexOf('.'));
+            let idx = noext.substr(noext.length - 2, 2);
+            row = idx.charAt(0); col = idx.charAt(1);
+            //console.log(row, col);
+            if (row !== lastRow) {
+                y += lastH;
+                x = 0;
+            } else if (col !== lastCol) x += lastW;
+            let img = imgObjects.get(url) as HTMLImageElement;
+            this.tilemapBgImages.push(img);
+            let area = [x, y, img.width, img.height];
+            //console.log(area);
+            this.tilemap.extra.background.areas.push(...area);
+            lastW = img.width;
+            lastH = img.height;
+            lastRow = row;
+            lastCol = col;
+        }
+        this.record();
+        console.log(this.tilemap.extra);
+        this.refreshTilemapBg();
+    }
+
     loadTilemapBg(bgfile) {
-        console.log(bgfile);
+        //console.log(bgfile);
         this.tilemapBgImages = [];
         let url: string = bgfile.toString();
         if (url.indexOf('.') < 0) url += ".png";
         url = url.replace('\\', '/');
-        let filename = url.substring(url.lastIndexOf('/') + 1);
-        let img = new Image();
-        img.onload = () => {
-            this.tilemapBgImages.push(img);
-            if (this.tilemap) {
-                if (!this.tilemap.extra) this.tilemap.extra = {};
-                this.tilemap.extra.background = {
-                    images: [filename],
-		            areas: [0,0,img.width,img.height]
-                }
-                this.record();
-            }
-            console.log(this.tilemap.extra);
-            this.refreshTilemapBg();
-        };
-        img.src = url;
+        let items = url.split(',');
+        let imgUrls = [], imgAreas = [], count = 0;
+        let imgObjects = new Map<string, any>();
+        for (let item of items) {
+            let fileurl = item.trim();
+            let filename = fileurl.substring(fileurl.lastIndexOf('/') + 1);
+            let img = new Image();
+            img.onload = () => {
+                imgUrls.push(filename);
+                imgObjects.set(filename, img);
+                count++;
+                if (count == items.length) this.updateTilemapBgSetting(imgUrls, imgObjects);
+            };
+            img.src = fileurl;
+        }
+        
     }
 
     loadTileset(tilesetName: string, callback: (tileset: any)=>void) {

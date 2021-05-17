@@ -1,6 +1,6 @@
 <template>
   <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 50%;
-  width: 480px; height: 200px; margin-left: -240px; margin-top: -100px;">
+  width: 480px; height: 300px; margin-left: -240px; margin-top: -150px;">
     <ux-dialog-header class="panel-heading">
         <h4 class="panel-title" i18n="tilemap.create-tilemap-or-tileset">Create what</h4>
     </ux-dialog-header>
@@ -13,10 +13,29 @@
           <button class="btn btn-secondary" type="button" id="buttonOpenSelectTilemapBgDlg" click.trigger="openSelectFileDlg()">...</button>
         </div>
       </div>
+      <div style="height: 10px">&nbsp;</div>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="switchAutoCutSmallPieces" value="autoCutValue1" checked.bind="autoCutFlags">
+        <label class="custom-control-label" for="switchAutoCutSmallPieces">Auto split image into smaller pieces</label>
+      </div>
+      <div class="form-row">
+        <div class="form-group input-group col-md-6">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Piece Width</span>
+          </div>
+          <input type="number" class="form-control" readonly.bind="autoCutFlags.length == 0" value.bind="pieceWidth">
+        </div>
+        <div class="form-group input-group col-md-6">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Piece Height</span>
+          </div>
+          <input type="number" class="form-control" readonly.bind="autoCutFlags.length == 0" value.bind="pieceHeight">
+        </div>
+      </div>
     </ux-dialog-body>
     
     <ux-dialog-footer class="panel-footer">
-        <button class="btn btn-success" click.trigger="controller.ok(imageFilepath)" i18n="app.ok">OK</button>
+        <button class="btn btn-success" click.trigger="controller.ok(imageBgSetting)" i18n="app.ok">OK</button>
         <button class="btn btn-danger" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
     </ux-dialog-footer>
   </ux-dialog>

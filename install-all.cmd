@@ -5,6 +5,7 @@ npm install --save-dev del gulp gulp-typescript@5.x gulp-sourcemaps gulp-connect
 REM npm install --save-dev electron json-stringify-deterministic
 
 npm install --save-dev electron glob fs-extra
+npm install --save-dev image-size sharp
 
 REM npm install --save i18next-xhr-backend
 npm install --save i18next-xhr-backend@2.x

@@ -7,6 +7,9 @@ const fse = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
 
+const imgsize  = require('image-size');
+const sharp = require('sharp');
+
 const tsc = require('typescript');
 const tsconfig = {
     compilerOptions: {
@@ -494,11 +497,85 @@ ipcMain.on("dlg-select-image-file", (event) => {
     });
 });
 
-ipcMain.on("dlg-copy-image-file", (event, imgpath, outDir) => {
-    let output = outDir + "/" + path.basename(imgpath);
-    let outputFilepath = __dirname + "/" + output;
-    if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
-    fs.createReadStream(imgpath).pipe(fs.createWriteStream(outputFilepath)
-    .on("close", () => event.sender.send('dlg-copy-image-file-return', {error: null, newpath: outputFilepath}))
-    .on("error", (err) => event.sender.send('dlg-copy-image-file-return', {error: err, newpath: ""})));
+ipcMain.handle("dlg-copy-image-file-async", async (event, imgpath, outDir, smallw, smallh) => {
+
+
+    try {
+
+        //let output = outDir + "/" + path.basename(imgpath);
+        //let outputFilepath = __dirname + "/" + output;
+
+        const idlist = "0123456789abcdefghijklmnopqrstuvwxyz";
+        let size = imgsize(imgpath);
+
+        let shortnames = [];
+
+        let smallIds = new Array<Array<string>>();
+        let smallRects = new Array<Array<any>>();
+
+        let totalW = size.width, currentW = 0, lastX = 0;
+        let totalH = size.height, currentH = 0, lastY = 0;;
+        let row = 0, col = 0;
+
+        while (totalH > 0) {
+            currentH = totalH >= smallh ? smallh : totalH;
+
+            let colIds = new Array<string>();
+            let colRects = new Array<any>();
+            while (totalW > 0) {
+                currentW = totalW >= smallw ? smallw : totalW;
+                colIds.push(idlist[row] + idlist[col]);
+                colRects.push({
+                    x: lastX, 
+                    y: lastY, 
+                    w: currentW, 
+                    h: currentH });
+                col++;
+                totalW -= smallw;
+                lastX += currentW;
+            }
+
+            smallIds.push(colIds);
+            smallRects.push(colRects);
+
+            row++;
+            col = 0;
+            lastX = 0;
+            lastY += currentH;
+            totalH -= smallh;
+            totalW = size.width;
+        }
+
+        //console.log(smallIds);
+        //console.log(smallRects);
+
+        let fullname = path.basename(imgpath);
+        let filename = fullname.substring(0, fullname.lastIndexOf('.'));
+        let fileext = fullname.substring(fullname.lastIndexOf('.'));
+
+        for (let i=0; i<smallIds.length; i++) {
+            let colIds = smallIds[i];
+            for (let j=0; j<colIds.length; j++) {
+                let shortname = filename + "_" + smallIds[i][j] + fileext;
+                let outputFilepath = __dirname + "/" + outDir + "/" + shortname;
+                let rect = smallRects[i][j];
+                await sharp(imgpath).extract({ width: rect.w, height: rect.h, left: rect.x, top: rect.y }).toFile(outputFilepath);
+                shortnames.push(outputFilepath);
+            }
+        }
+
+        //event.sender.send('dlg-copy-image-file-return', {error: "not impl", newpath: ""});
+        
+        return {error: null, newpath: shortnames.join(',')};
+    } catch(err) {
+        console.error(err);
+        return {error: "Failed to copy image file", newpath: ""};
+    }
+
+    
+
+    //if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
+    //fs.createReadStream(imgpath).pipe(fs.createWriteStream(outputFilepath)
+    //.on("close", () => event.sender.send('dlg-copy-image-file-return', {error: null, newpath: outputFilepath}))
+    //.on("error", (err) => event.sender.send('dlg-copy-image-file-return', {error: err, newpath: ""})));
 });

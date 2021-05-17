@@ -1,4 +1,4 @@
-import { autoinject } from 'aurelia-framework';
+import { autoinject, BindingEngine } from 'aurelia-framework';
 import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
 import { DialogController } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
@@ -14,7 +14,12 @@ export class SelectTilemapBgDlg {
 
     imageFilepath = '';
 
-    constructor(public controller: DialogController, public i18n: I18N, public eventChannel: EventAggregator) {
+    autoCutFlags = [];
+    pieceWidth = 320;
+    pieceHeight= 240;
+
+
+    constructor(public controller: DialogController, public binding: BindingEngine, public i18n: I18N, public eventChannel: EventAggregator) {
         //controller.settings.centerHorizontalOnly = true;
         this.subscribers = [];
     }
@@ -30,6 +35,7 @@ export class SelectTilemapBgDlg {
 	
 	attached() {
         this.subscribers = [];
+        this.subscribers.push(this.binding.collectionObserver(this.autoCutFlags).subscribe(() => this.autoCutFlagsChanged()));
         this.subscribers.push(this.eventChannel.subscribe("dlg-select-image-file-return", (imgpath) => {
             console.log(imgpath);
             if (imgpath && imgpath.length > 0) this.imageFilepath = imgpath;
@@ -41,8 +47,20 @@ export class SelectTilemapBgDlg {
         this.subscribers = [];
     }
 
+    autoCutFlagsChanged() {
+        console.log("autoCutFlagsChanged");
+    }
+
     openSelectFileDlg() {
         (window.parent as any).appEvent.publish('dlg-select-image-file');
+    }
+
+    get imageBgSetting() {
+        return {
+            imageFile: this.imageFilepath,
+            pieceWidth: this.autoCutFlags.length > 0 ? this.pieceWidth : 0,
+            pieceHeight: this.autoCutFlags.length > 0 ? this.pieceHeight : 0,
+        }
     }
 	
 }
