@@ -19,7 +19,9 @@
     "gulp-connect": "^5.7.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^5.0.1",
+    "image-size": "^1.0.0",
     "jspm": "^0.16.55",
+    "sharp": "^0.28.2",
     "typescript": "^4.1.5"
   },
   "dependencies": {
