@@ -636,6 +636,18 @@ export class TilemapEditorPage {
                 this.loadTilemap(tilemap, true, () => {
                     this.clearHist();
                     this.record();
+
+                    //this.bgFlags = ["layerBG"];
+                    //this.layer1Flags = ["layerValue1"];
+                    //this.layer2Flags = [];
+                    //this.layer3Flags = [];
+
+                    if (this.bgFlags.length > 0) this.bgFlags.splice(0, 1);
+                    this.bgFlags.push("layerBG");
+                    if (this.layer1Flags.length > 0) this.layer1Flags.splice(0, 1);
+                    this.layer1Flags.push("layerValue1");
+                    if (this.layer2Flags.length > 0) this.layer2Flags.splice(0, 1);
+                    if (this.layer3Flags.length > 0) this.layer3Flags.splice(0, 1);
                 });
 
             } else {
@@ -863,14 +875,14 @@ export class TilemapEditorPage {
                                 applied = true;
                             }
                         }
-                        console.log(cell);
+                        //console.log(cell);
                         if (applied && cell.ids.length >= 2) {
                             let currentTileIndex = cell.ids[cell.ids.length - 1];
                             let currentTilesetIndex = cell.ids[cell.ids.length - 2];
                             if (currentTilesetIndex >= 0 && currentTileIndex >= 0) {
                                 let tileset = this.tilesets[currentTilesetIndex];
                                 let tile = tileset.obj.tiles[currentTileIndex];
-                                console.log('tile.cost = ' + tile.cost);
+                                //console.log('tile.cost = ' + tile.cost);
                                 cell.cost = tile.cost == undefined ? 0 : tile.cost;
                             } else {
                                 cell.cost = 0;
@@ -937,7 +949,7 @@ export class TilemapEditorPage {
                             cell.ids[1] = tileIndex;
                             applied = true;
                         }
-                        console.log(cell);
+                        //console.log(cell);
                         if (applied && cell.ids.length >= 2) {
                             let currentTileIndex = cell.ids[cell.ids.length - 1];
                             let currentTilesetIndex = cell.ids[cell.ids.length - 2];
@@ -971,6 +983,8 @@ export class TilemapEditorPage {
     }
 
     refreshTilemapDisplay() {
+        //console.log(this.layer1Flags, this.layer2Flags, this.layer3Flags);
+        //console.log(this.layer1Flags.length, this.layer2Flags.length, this.layer3Flags.length);
         let ctx = this.tilemapCanvas ? this.tilemapCanvas.getContext('2d') : null;
         if (ctx) {
             ctx.clearRect(0, 0, this.tilemapCanvas.width, this.tilemapCanvas.height);
@@ -1253,6 +1267,20 @@ export class TilemapEditorPage {
             this.loadTilemap(tilemap, true, () => {
                 this.clearHist();
                 this.record();
+
+                //this.bgFlags = ["layerBG"];
+                //this.layer1Flags = ["layerValue1"];
+                //this.layer2Flags = ["layerValue2"];
+                //this.layer3Flags = ["layerValue3"];
+
+                if (this.bgFlags.length > 0) this.bgFlags.splice(0, 1);
+                this.bgFlags.push("layerBG");
+                if (this.layer1Flags.length > 0) this.layer1Flags.splice(0, 1);
+                this.layer1Flags.push("layerValue1");
+                if (this.layer2Flags.length > 0) this.layer2Flags.splice(0, 1);
+                this.layer2Flags.push("layerValue2");
+                if (this.layer3Flags.length > 0) this.layer3Flags.splice(0, 1);
+                this.layer3Flags.push("layerValue3");
             });
         }, (errmsg) => {
             alert("Failed to load tilemap data from - " + url);

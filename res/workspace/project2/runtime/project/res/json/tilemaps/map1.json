@@ -1,6 +1,6 @@
 {
 	"name": "map1",
-	"bgcolor": "#000000ff",
+	"bgcolor": "#00000000",
 	"tileWidth": 32,
 	"tileHeight": 32,
 	"rowCount": 20,
