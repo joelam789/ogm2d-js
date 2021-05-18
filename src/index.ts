@@ -1,5 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
-//import * as jsonstringify from 'json-stringify-deterministic';
+import * as jsonstringify from 'json-stringify-deterministic';
 
 const fs = require('fs');
 const fse = require('fs-extra');
@@ -19,6 +19,9 @@ const tsconfig = {
         noEmitOnError: true
     }
 };
+
+let mainWin = null;
+let editorWin = null;
 
 function transpileTsFiles(fileNames: string[], options: any = null) {
     let transpileOptions = options ? options : tsconfig.compilerOptions;
@@ -43,9 +46,6 @@ function transpileTsFiles(fileNames: string[], options: any = null) {
     console.log(`Process exiting with code '${exitCode}'.`);
     return exitCode;
 }
-
-let mainWin = null;
-let editorWin = null;
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1'; // ...
 
@@ -571,11 +571,50 @@ ipcMain.handle("dlg-copy-image-file-async", async (event, imgpath, outDir, small
         console.error(err);
         return {error: "Failed to copy image file", newpath: ""};
     }
+});
 
+ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
+    //console.log(input);
+
+    try {
+
+        // save json
+        let tilemap = JSON.parse(JSON.stringify(input.tilemapData));
+        let keys = [];
+        let jsonstr = jsonstringify(tilemap, {
+            space: '\t',
+            stringify: (value, replacer, space) => {
+                let key = keys.pop();
+                return key == "ids" && typeof value == "string" ? value : JSON.stringify(value);
+            }, 
+            compare: (a, b) => {
+                if (Array.isArray(a.value) && Array.isArray(b.value)) return a.value.length > b.value.length ? 1 : -1;
+                else if (Array.isArray(a.value) && !Array.isArray(b.value)) return 1;
+                else if (!Array.isArray(a.value) && Array.isArray(b.value)) return -1;
+                else if (typeof a.value === "number" && typeof b.value === "string") return 1;
+                else if (typeof a.value === "string" && typeof b.value === "number") return -1;
+                else if (typeof a.value === "string" && typeof b.value === "string") return a.key.length > b.key.length ? 1 : -1;
+                else return a.key > b.key ? -1 : 1;
+            },
+            replacer: (k, v) => {
+                keys.push(k);
+                return k == "ids" && Array.isArray(v) ? JSON.stringify(v) : v;
+            }
+        });
+        let outputJsonFilepath = __dirname + "/" + input.tilemapFile;
+        if (fs.existsSync(outputJsonFilepath)) fs.unlinkSync(outputJsonFilepath);
+        await fs.promises.writeFile(outputJsonFilepath, jsonstr);
+
+        // save preview
+        let imgdata = input.tilemapPicture;
+        let outputFilepath = __dirname + "/" + input.tilemapPreview;
+        await sharp(Buffer.from(imgdata.split(';base64,').pop(), 'base64')).toFile(outputFilepath);
+
+        return {error: null, outpath: outputJsonFilepath};
+
+    } catch(err) {
+        console.error(err);
+        return {error: "Failed to save tilemap file", outpath: ""};
+    }
     
-
-    //if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
-    //fs.createReadStream(imgpath).pipe(fs.createWriteStream(outputFilepath)
-    //.on("close", () => event.sender.send('dlg-copy-image-file-return', {error: null, newpath: outputFilepath}))
-    //.on("error", (err) => event.sender.send('dlg-copy-image-file-return', {error: err, newpath: ""})));
 });

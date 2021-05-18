@@ -235,6 +235,15 @@ export class Ipc {
 		}
 		return result.newpath;
 	}
+
+	static async saveTilemapFileAsync(tilemapSetting: any)  {
+		let result = await ipcRenderer.invoke("dlg-save-tilemap-file-async", tilemapSetting);
+		if (result.error) {
+			console.error("copy image files error", result.error);
+			return "";
+		}
+		return result.outpath;
+	}
 	
 	static async copyFilesAsync(srcFiles: Array<string>, 
 								destFiles: Array<string>, 

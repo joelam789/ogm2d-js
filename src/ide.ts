@@ -172,6 +172,11 @@ export class Ide {
             this.copyImageFile(imgsetting.imageFile, imgsetting.pieceWidth, imgsetting.pieceHeight);
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-save-tilemap-file", (tilemapSetting) => {
+            console.log("Try to save a tilemap file for Dialog...");
+            this.saveTilemapFile(tilemapSetting);
+        }));
+
         App.openProject("workspace/project2/main.json", () => {
             this.eventChannel.publish('project-reloaded');
             App.busy = false;
@@ -268,6 +273,12 @@ export class Ide {
         //});
         let newpath = await Ipc.copyImageFileAsync(imgpath, srcDir, smallw, smallh);
         this.editorFrame.contentWindow.appEvent.publish('dlg-copy-image-file-return', newpath);
+    }
+
+    async saveTilemapFile(tilemapSetting) {
+        let tilemapOutputPath = await Ipc.saveTilemapFileAsync(tilemapSetting);
+        console.log(tilemapOutputPath);
+        this.editorFrame.contentWindow.appEvent.publish('dlg-save-tilemap-file-return', tilemapOutputPath);
     }
 
     saveCurrent() {

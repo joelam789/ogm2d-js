@@ -152,6 +152,9 @@ export class TilemapEditorPage {
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-copy-image-file-return", data => this.loadTilemapBg(data)));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-save-tilemap-file-return", data => console.log("Saved to file - " + data)));
+        
+
         // enable bootstrap v4 tooltip
         //($('[data-toggle="tooltip"]') as any).tooltip();
 
@@ -177,6 +180,10 @@ export class TilemapEditorPage {
 
     getProjectResPath() {
         return this.ide.appConfig.projectPath + "/runtime/project/res";
+    }
+
+    getProjectDesignPath() {
+        return this.ide.appConfig.projectPath + "/design";
     }
 
     clearHist() {
@@ -437,6 +444,7 @@ export class TilemapEditorPage {
         if (!this.tilemap) return;
         if (!this.tilemap.extra) this.tilemap.extra = {};
         this.tilemap.extra.background = { images: [], areas: [] };
+        this.tilemapBgImages = [];
         imgUrls.sort();
         this.tilemap.extra.background.images.push(...imgUrls);
         let x = 0, y = 0, row = '0', col = '0';
@@ -1062,6 +1070,7 @@ export class TilemapEditorPage {
     }
 
     saveTilemap() {
+
         /*
         if (this.tilemap && this.tilemap.name && this.tilemap.cells.length > 0) {
             ipcRenderer.once("save-tilemap-return", (event, result) => {
@@ -1071,6 +1080,28 @@ export class TilemapEditorPage {
             ipcRenderer.send("save-tilemap", this.tilemap);
         }
         */
+
+        if (!this.tilemap || !this.tilemap.name) return;
+
+        let canv = document.createElement("canvas");
+        canv.width = this.tilemapCanvas.width;
+        canv.height = this.tilemapCanvas.height;
+
+        let ctx = canv.getContext("2d");
+        ctx.drawImage(this.tilemapBg, 0, 0);
+        ctx.drawImage(this.tilemapCanvas, 0, 0);
+
+        console.log("Going to save tilemap - " , this.tilemap.name);
+        let tilemapFileSetting = {
+            tilemapData: this.tilemap,
+            tilemapFile: this.getProjectResPath() + "/json/tilemaps/" + this.tilemap.name + ".json",
+            tilemapPreview: this.getProjectDesignPath() + "/collector/tilemaps/" + this.tilemap.name + ".pv.jpg",
+            tilemapPicture: canv.toDataURL(),
+        };
+
+        
+
+        (window.parent as any).appEvent.publish('dlg-save-tilemap-file', tilemapFileSetting);
     }
 
     fillUp() {
@@ -1408,6 +1439,7 @@ export class TilemapEditorPage {
     }
     saveFile() {
         console.log("saveFile...");
+        this.saveTilemap();
     }
     saveFileAs() {
         console.log("saveFileAs...");
