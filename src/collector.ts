@@ -47,6 +47,9 @@ export class Collector {
             this.gui = ($('#collector') as any).accordion.bind($('#collector'));
             if (this.gui && this.loaded) this.gui();
         }));
+        this.subscribers.push(this.eventChannel.subscribe("tilemaps-refresh-tilemaps", () => {
+            this.eventChannel.publish("refresh-list-view");
+        }));
         this.subscribers.push(this.eventChannel.subscribe("project-reloaded", () => {
             this.refresh();
         }));

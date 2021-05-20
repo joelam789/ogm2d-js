@@ -60,16 +60,32 @@
 				]
 			},
 			{
-				"group": "background",
-				"draggable": false, 
+				"group": "tilemaps",
+				"draggable": true, 
 				"droppable": false,
 				"movable": false,
-				"width": 64,
+				"width": 128,
 				"height": 128,
 				"folder": "design/collector/tilemaps",
 				"content": "",
 				"title": "collector.tilemaps",
 				"tools": [
+					{
+						"group": "tilemaps",
+						"name": "refresh-tilemaps",
+						"icon": "my-icon-refresh",
+						"text": "toolbar.tilemaps.refresh"
+					},
+					{
+						"group": "tilemaps",
+						"name": ""
+					},
+					{
+						"group": "tilemaps",
+						"name": "edit-tilemaps-tree",
+						"icon": "my-edit-tree",
+						"text": "toolbar.tilemaps.tree"
+					}
 				]
 			}
 		],

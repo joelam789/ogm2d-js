@@ -167,6 +167,10 @@
 			"remove": "Remove",
 			"tree": "Edit Tree"
 		},
+		"tilemaps": {
+			"refresh": "Refresh",
+			"tree": "Edit Tree"
+		},
 		"dirtree": {
 			"add": "Add Folder",
 			"rename": "Rename Folder",

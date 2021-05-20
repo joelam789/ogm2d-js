@@ -14,6 +14,9 @@
 .my-icon-tilemap{
 	background:url('my-icons/tilemap.png') no-repeat center center;
 }
+.my-icon-refresh{
+	background:url('my-icons/refresh.png') no-repeat center center;
+}
 
 
 .my-add-file{

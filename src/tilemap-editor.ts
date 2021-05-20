@@ -672,8 +672,10 @@ export class TilemapEditorPage {
                 for (let i=0; i<tilemap.columnCount*tilemap.rowCount; i++) {
                     tilemap.cells.push({ids:[-1, -1]});
                 }
+                tilemap.extra = {};
                 console.log(tilemap);
                 this.loadTilemap(tilemap, true, () => {
+
                     this.clearHist();
                     this.record();
 
@@ -682,12 +684,21 @@ export class TilemapEditorPage {
                     //this.layer2Flags = [];
                     //this.layer3Flags = [];
 
+                    this.tilemapBgImages = [];
+
                     if (this.bgFlags.length > 0) this.bgFlags.splice(0, 1);
                     this.bgFlags.push("layerBG");
                     if (this.layer1Flags.length > 0) this.layer1Flags.splice(0, 1);
                     this.layer1Flags.push("layerValue1");
                     if (this.layer2Flags.length > 0) this.layer2Flags.splice(0, 1);
                     if (this.layer3Flags.length > 0) this.layer3Flags.splice(0, 1);
+
+                    //this.refreshTilemapBg();
+                    //this.refreshTilemapDisplay();
+
+                    this.saveTilemap();
+
+
                 });
 
             } else {
@@ -1071,16 +1082,6 @@ export class TilemapEditorPage {
 
     saveTilemap() {
 
-        /*
-        if (this.tilemap && this.tilemap.name && this.tilemap.cells.length > 0) {
-            ipcRenderer.once("save-tilemap-return", (event, result) => {
-                if (result.err) alert(result.err);
-                else alert(this.i18n.tr("app.save-file-ok") + "\n\n" + result.url + "\n");
-            });
-            ipcRenderer.send("save-tilemap", this.tilemap);
-        }
-        */
-
         if (!this.tilemap || !this.tilemap.name) return;
 
         let canv = document.createElement("canvas");
@@ -1095,11 +1096,10 @@ export class TilemapEditorPage {
         let tilemapFileSetting = {
             tilemapData: this.tilemap,
             tilemapFile: this.getProjectResPath() + "/json/tilemaps/" + this.tilemap.name + ".json",
+            tilemapDesign: this.getProjectDesignPath() + "/collector/tilemaps/" + this.tilemap.name + ".ds.jpg",
             tilemapPreview: this.getProjectDesignPath() + "/collector/tilemaps/" + this.tilemap.name + ".pv.jpg",
             tilemapPicture: canv.toDataURL(),
         };
-
-        
 
         (window.parent as any).appEvent.publish('dlg-save-tilemap-file', tilemapFileSetting);
     }

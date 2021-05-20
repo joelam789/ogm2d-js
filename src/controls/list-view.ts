@@ -48,6 +48,9 @@ export class ListView {
         let signal = this.signalName ? this.signalName : "";
         if (signal.length > 0) this.eventChannel.publish(signal);
         //console.log("isDraggable: " + this.isDraggable);
+        this.subscribers.push(this.eventChannel.subscribe("refresh-list-view", () => {
+            this.sourcePathChanged("", "");
+        }));
 	}
 
 	detached(argument) {
@@ -109,7 +112,7 @@ export class ListView {
                         count++;
                         let item = { 
                             name: filepath.substring(filepath.lastIndexOf('/') + 1, idx),
-                            image: filepath,
+                            image: filepath + "?temp=" + this.genRandomName(16),
                             movable: this.isMovable,
                             selected: false,
                             width: this.itemWidth,
@@ -118,6 +121,7 @@ export class ListView {
                             pid: "lv-item-" + this.imageTag + "-" + count
                         }
                         //newitems.push(item);
+                        console.log(item.image);
                         this.items.push(item);
                     }
                 }

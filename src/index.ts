@@ -585,7 +585,8 @@ ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
             space: '\t',
             stringify: (value, replacer, space) => {
                 let key = keys.pop();
-                return key == "ids" && typeof value == "string" ? value : JSON.stringify(value);
+                let ret = (key == "ids" || key == "areas")  && typeof value == "string" ? value : JSON.stringify(value);
+                return ret;
             }, 
             compare: (a, b) => {
                 if (Array.isArray(a.value) && Array.isArray(b.value)) return a.value.length > b.value.length ? 1 : -1;
@@ -598,7 +599,19 @@ ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
             },
             replacer: (k, v) => {
                 keys.push(k);
-                return k == "ids" && Array.isArray(v) ? JSON.stringify(v) : v;
+                let ret = (k == "ids") && Array.isArray(v) ? JSON.stringify(v) : v;
+                if (k == "areas") {
+                    //console.log(ret);
+                    ret = "";
+                    let str = JSON.stringify(v);
+                    let items = str.split(',');
+                    for (let i=0; i<items.length; i++) {
+                        if (ret.length == 0) ret += items[i];
+                        else ret += "," + items[i];
+                        if (i % 4 == 3) ret += '\n\t\t\t\t\t';
+                    }
+                }
+                return ret;
             }
         });
         let outputJsonFilepath = __dirname + "/" + input.tilemapFile;
@@ -607,9 +620,20 @@ ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
 
         // save preview
         let imgdata = input.tilemapPicture;
-        let outputFilepath = __dirname + "/" + input.tilemapPreview;
+        let outputFilepath = __dirname + "/" + input.tilemapDesign;
+        let outputPreviewFilepath = __dirname + "/" + input.tilemapPreview;
+        if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
+        if (fs.existsSync(outputPreviewFilepath)) fs.unlinkSync(outputPreviewFilepath);
         await sharp(Buffer.from(imgdata.split(';base64,').pop(), 'base64')).toFile(outputFilepath);
-
+        let orgSize = imgsize(outputFilepath);
+        let newWidth = orgSize.width >= orgSize.height ? 128 : 0;
+        let newHeight = orgSize.width <= orgSize.height ? 128 : 0;
+        if (newWidth == 0) newWidth = orgSize.width * 128 / orgSize.height;
+        if (newHeight == 0) newHeight = orgSize.height * 128 / orgSize.width;
+        if (fs.existsSync(outputPreviewFilepath)) fs.unlinkSync(outputPreviewFilepath);
+        console.log(outputFilepath);
+        await sharp(outputFilepath).resize(newWidth, newHeight).toFile(outputPreviewFilepath);
+        console.log(outputPreviewFilepath);
         return {error: null, outpath: outputJsonFilepath};
 
     } catch(err) {
