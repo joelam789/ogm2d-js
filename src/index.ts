@@ -619,6 +619,7 @@ ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
         await fs.promises.writeFile(outputJsonFilepath, jsonstr);
 
         // save preview
+        sharp.cache({ files : 0 }); // clear cache ...
         let imgdata = input.tilemapPicture;
         let outputFilepath = __dirname + "/" + input.tilemapDesign;
         let outputPreviewFilepath = __dirname + "/" + input.tilemapPreview;
@@ -630,10 +631,10 @@ ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
         let newHeight = orgSize.width <= orgSize.height ? 128 : 0;
         if (newWidth == 0) newWidth = orgSize.width * 128 / orgSize.height;
         if (newHeight == 0) newHeight = orgSize.height * 128 / orgSize.width;
-        if (fs.existsSync(outputPreviewFilepath)) fs.unlinkSync(outputPreviewFilepath);
-        console.log(outputFilepath);
+        //if (fs.existsSync(outputPreviewFilepath)) fs.unlinkSync(outputPreviewFilepath);
+        //console.log(outputFilepath);
         await sharp(outputFilepath).resize(newWidth, newHeight).toFile(outputPreviewFilepath);
-        console.log(outputPreviewFilepath);
+        //console.log(outputPreviewFilepath);
         return {error: null, outpath: outputJsonFilepath};
 
     } catch(err) {
