@@ -7,55 +7,61 @@
 
 		"collector": [
 			{
-				"group": "spritesheets",
+				"group": "sprites",
 				"draggable": true, 
 				"droppable": false,
 				"movable": true,
 				"width": 64,
 				"height": 64,
-				"folder": "design/collector/spritesheets",
+				"folder": "design/collector/sprites",
 				"content": "",
-				"title": "collector.spritesheets",
+				"title": "collector.sprites",
 				"tools": [
 					{
-						"group": "spritesheets",
-						"name": "add-spritesheet",
+						"group": "sprites",
+						"name": "add-sprite",
 						"icon": "my-add-file",
-						"text": "toolbar.spritesheets.add"
+						"text": "toolbar.sprites.add"
 					},
 					{
-						"group": "spritesheets",
-						"name": "edit-spritesheet-json",
+						"group": "sprites",
+						"name": "edit-sprite",
+						"icon": "my-edit-file",
+						"text": "toolbar.sprites.edit"
+					},
+					{
+						"group": "sprites",
+						"name": "edit-sprite-json",
 						"icon": "my-json-file",
-						"text": "toolbar.spritesheets.json"
+						"text": "toolbar.sprites.json"
 					},
 					{
-						"group": "spritesheets",
-						"name": "edit-spritesheet-script",
+						"group": "sprites",
+						"name": "edit-sprite-script",
 						"icon": "my-script-file",
-						"text": "toolbar.spritesheets.script"
+						"text": "toolbar.sprites.script"
 					},
 					{
-						"group": "spritesheets",
-						"name": "rename-spritesheet",
+						"group": "sprites",
+						"name": "rename-sprite",
 						"icon": "my-rename-file",
-						"text": "toolbar.spritesheets.rename"
+						"text": "toolbar.sprites.rename"
 					},
 					{
-						"group": "spritesheets",
-						"name": "remove-spritesheet",
+						"group": "sprites",
+						"name": "remove-sprite",
 						"icon": "my-remove-file",
-						"text": "toolbar.spritesheets.remove"
+						"text": "toolbar.sprites.remove"
 					},
 					{
-						"group": "spritesheets",
+						"group": "sprites",
 						"name": ""
 					},
 					{
-						"group": "spritesheets",
-						"name": "edit-spritesheet-tree",
+						"group": "sprites",
+						"name": "edit-sprite-tree",
 						"icon": "my-edit-tree",
-						"text": "toolbar.spritesheets.tree"
+						"text": "toolbar.sprites.tree"
 					}
 				]
 			},
@@ -101,6 +107,12 @@
 						"name": "add-scene",
 						"icon": "my-add-file",
 						"text": "toolbar.scenes.add"
+					},
+					{
+						"group": "scenes",
+						"name": "edit-scene",
+						"icon": "my-edit-file",
+						"text": "toolbar.scenes.edit"
 					},
 					{
 						"group": "scenes",

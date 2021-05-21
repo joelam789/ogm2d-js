@@ -114,7 +114,7 @@
     },
 
     "collector": {
-        "spritesheets": "精灵",
+        "sprites": "精灵",
 		"tilemaps": "地图"
     },
 
@@ -157,7 +157,7 @@
 			"remove": "移除",
 			"tree": "编辑目录树"
 		},
-		"spritesheets": {
+		"sprites": {
 			"add": "增加",
 			"edit": "编辑",
 			"json": "JSON",

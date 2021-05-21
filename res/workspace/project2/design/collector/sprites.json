@@ -3,7 +3,7 @@
         {
             "id": 1,
             "state": "open",
-			"text": "Spritesheets",
+			"text": "Sprites",
 			"iconCls": "my-icon-folder",
             "children":
 			[
