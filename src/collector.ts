@@ -6,7 +6,10 @@ import { Router } from 'aurelia-router';
 import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
+import { SelectSpriteTypeDlg } from './popups/sprite/select-sprite-type';
+
 import { App } from "./app";
+
 
 @autoinject()
 export class Collector {
@@ -47,11 +50,14 @@ export class Collector {
             this.gui = ($('#collector') as any).accordion.bind($('#collector'));
             if (this.gui && this.loaded) this.gui();
         }));
+        this.subscribers.push(this.eventChannel.subscribe("project-reloaded", () => {
+            this.refresh();
+        }));
         this.subscribers.push(this.eventChannel.subscribe("tilemaps-refresh-tilemaps", () => {
             this.eventChannel.publish("refresh-list-view");
         }));
-        this.subscribers.push(this.eventChannel.subscribe("project-reloaded", () => {
-            this.refresh();
+        this.subscribers.push(this.eventChannel.subscribe("sprites-add-sprite", () => {
+            this.openSelectSpriteTypeDlg();
         }));
 	}
 
@@ -83,5 +89,16 @@ export class Collector {
     //jsonToStr(obj) {
     //    return obj ? JSON.stringify(obj) : "";
     //}
+
+    openSelectSpriteTypeDlg() {
+        this.dialogService.open({viewModel: SelectSpriteTypeDlg})
+        .whenClosed((response) => {
+            if (!response.wasCancelled && response.output) {
+                console.log(response.output);
+            } else {
+                console.log('Give up selecting sprite type to create');
+            }
+        });
+    }
 
 }

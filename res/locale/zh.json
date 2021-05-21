@@ -84,6 +84,10 @@
         "add-tiles": "添加多块",
         "free-style": "自由选择模式"
     },
+	
+	"sprite": {
+        "create-what": "创建什么"
+    },
 
     "ide": {
         

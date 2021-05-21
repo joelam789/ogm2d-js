@@ -85,6 +85,10 @@
         "add-tiles": "Add tiles",
         "free-style": "Free style selection"
     },
+	
+	"sprite": {
+        "create-what": "Create what"
+    },
 
     "ide": {
 

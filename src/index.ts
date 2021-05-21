@@ -153,7 +153,7 @@ app.on('activate', () => {
 
 
 ipcMain.on("get-dir-tree", (event, input) => {
-    console.log(input);
+    //console.log(input);
     let filepath = __dirname + "/" + input;
     let output = [];
     if (fs.existsSync(filepath)) {
@@ -165,7 +165,7 @@ ipcMain.on("get-dir-tree", (event, input) => {
 });
 
 ipcMain.on("get-path-by-name", (event, folder, filename) => {
-    console.log(folder, filename);
+    //console.log(folder, filename);
     let filepath = __dirname + "/" + folder;
     if (fs.existsSync(filepath)) {
         glob(filepath + '/**/*', (err, res) => {
@@ -187,7 +187,7 @@ ipcMain.on("get-path-by-name", (event, folder, filename) => {
 });
 
 ipcMain.on("get-fullpaths", (event, filepaths) => {
-    console.log("get-fullpaths", filepaths);
+    //console.log("get-fullpaths", filepaths);
     let fullpaths = [];
     for (let i=0; i<filepaths.length; i++) {
         let filepath = filepaths[i];
@@ -574,6 +574,7 @@ ipcMain.handle("dlg-copy-image-file-async", async (event, imgpath, outDir, small
 });
 
 ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
+    
     //console.log(input);
 
     try {
