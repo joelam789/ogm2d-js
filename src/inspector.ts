@@ -59,12 +59,18 @@ export class Inspector {
             //console.log(evt);
             //console.log(this.editors);
             let edt = this.editors.get(evt.target);
+            //console.log(edt);
             if (edt) {
                 let rows = edt.gui("getData").rows;
+                //console.log(rows);
                 let fields = Object.keys(evt.data);
+                //console.log(fields);
                 for (let row of rows) {
-                    if (fields.indexOf(row.name) >= 0)
+                    if (fields.indexOf(row.name) >= 0) {
+                        //console.log(row.name, row.value, evt.data[row.name]);
                         row.value = evt.data[row.name].toString();
+                    }
+                        
                 }
                 //console.log(rows);
                 edt.gui("loadData", rows);

@@ -90,17 +90,23 @@ export class Designer {
                             if (typeof value == "number") {
                                 activeObject[fieldName] = parseFloat(fieldValue);
                                 activeObject.setCoords();
+                            } else {
+                                if (fieldValue == "true") activeObject[fieldName] = true;
+                                else if (fieldValue == "false") activeObject[fieldName] = false;
                             }
-                            //console.log(activeObject[fieldName]);
+                            console.log(activeObject[fieldName], typeof fieldValue, fieldValue);
                         } else {
-                            let value = activeObject.get(fieldName);
-                            if (value != undefined) {
-                                if (typeof value == "number") {
-                                    activeObject.set(fieldName, parseFloat(fieldValue));
-                                    activeObject.setCoords();
-                                }
-                            }
-                            //console.log(activeObject.get(fieldName));
+                            //let value = activeObject.get(fieldName);
+                            //if (value != undefined) {
+                            //    if (typeof value == "number") {
+                            //        activeObject.set(fieldName, parseFloat(fieldValue));
+                            //        activeObject.setCoords();
+                            //    }
+                            //}
+                            //console.log(fieldName, typeof fieldValue, fieldValue);
+                            if (fieldValue == "true") activeObject[fieldName] = true;
+                            else if (fieldValue == "false") activeObject[fieldName] = false;
+                            console.log(fieldName, activeObject[fieldName]);
                         }
                         canvas.requestRenderAll();
                     }
@@ -138,41 +144,81 @@ export class Designer {
                     //url = url.replace("image/small", "image/normal");
                     //console.log(url);
                     let movable = img.movable && img.movable == "true";
-                    fabric.Image.fromURL(url, (oImg) => {
-                        let rect = ev.target.getBoundingClientRect();
-                        //console.log(rect);
-                        if (movable) {
-                            oImg.originX = "center";
-                            oImg.originY = "center";
-                            oImg.centeredRotation = true;
-                            oImg.centeredScaling = true;
-                            oImg.left = ev.clientX - rect.x;
-                            oImg.top = ev.clientY - rect.y;
-                        } else {
-                            oImg.left = 0;
-                            oImg.top = 0;
-                            oImg.hoverCursor = 'default';
-                        }
-                        oImg.url = url;
-                        oImg.template = data.name;
-                        oImg.selectable = movable;
 
-                        if (oImg.template) {
+                    if (data.name == "panel") {
+
+                        let rect = ev.target.getBoundingClientRect();
+                        let panel = new fabric.Rect({
+                            originX: 'left',
+                            originY: 'top',
+                            width: 120,
+                            height: 60,
+                            fill: 'rgba(0,0,0,0.8)',
+                            left: ev.clientX - rect.x,
+                            top: ev.clientY - rect.y,
+                        });
+
+                        panel.template = data.name;
+                        panel.enabled = true;
+                        panel.selectable = movable;
+
+                        if (panel.template) {
                             let counter = this._counterMap.get(key);
                             if (!counter) this._counterMap.set(key, new Map<string, number>());
                             counter = this._counterMap.get(key);
-                            if (!counter.has(oImg.template)) {
-                                counter.set(oImg.template, 1);
-                                oImg.name = oImg.template.toString() + 1;
+                            if (!counter.has(panel.template)) {
+                                counter.set(panel.template, 1);
+                                panel.name = panel.template.toString() + 1;
                             } else {
-                                counter.set(oImg.template, counter.get(oImg.template) + 1);
-                                oImg.name = oImg.template.toString() + counter.get(oImg.template);
+                                counter.set(panel.template, counter.get(panel.template) + 1);
+                                panel.name = panel.template.toString() + counter.get(panel.template);
                             }
                         }
 
-                        canvas.add(oImg).renderAll();
-                        if (!movable) canvas.sendToBack(oImg);
-                    });
+                        canvas.add(panel).setActiveObject(panel);
+
+                    } else {
+                        fabric.Image.fromURL(url, (oImg) => {
+                            let rect = ev.target.getBoundingClientRect();
+                            //console.log(rect);
+                            if (movable) {
+                                oImg.originX = "center";
+                                oImg.originY = "center";
+                                oImg.centeredRotation = true;
+                                oImg.centeredScaling = true;
+                                oImg.left = ev.clientX - rect.x;
+                                oImg.top = ev.clientY - rect.y;
+                            } else {
+                                oImg.left = 0;
+                                oImg.top = 0;
+                                oImg.hoverCursor = 'default';
+                            }
+                            oImg.url = url;
+                            oImg.template = data.name;
+                            oImg.enabled = true;
+                            oImg.selectable = movable;
+    
+                            if (oImg.template == "plot") oImg.hasControls = false;
+    
+                            if (oImg.template) {
+                                let counter = this._counterMap.get(key);
+                                if (!counter) this._counterMap.set(key, new Map<string, number>());
+                                counter = this._counterMap.get(key);
+                                if (!counter.has(oImg.template)) {
+                                    counter.set(oImg.template, 1);
+                                    oImg.name = oImg.template.toString() + 1;
+                                } else {
+                                    counter.set(oImg.template, counter.get(oImg.template) + 1);
+                                    oImg.name = oImg.template.toString() + counter.get(oImg.template);
+                                }
+                            }
+    
+                            canvas.add(oImg).renderAll();
+                            if (!movable) canvas.sendToBack(oImg);
+                        });
+                    }
+
+                    
                 }
             }
         });
@@ -360,7 +406,7 @@ export class Designer {
             return;
         }
 
-        let json = canv.toJSON(['name', 'url', 'template']);
+        let json = canv.toJSON(['name', 'url', 'template', 'enabled']);
         console.log(json);
         
         let output = [];
@@ -375,19 +421,46 @@ export class Designer {
                     item.src = item.url;
                 }
                 // gen runtime json for every object
-                if (item.type == 'image' && item.name && item.template) {
-                    let jsonObj = RuntimeGenerator.genBasicSceneObjectJson(item.template);
-                    if (jsonObj && jsonObj.components && jsonObj.components.display) {
-                        jsonObj.components.display.x = item.left;
-                        jsonObj.components.display.y = item.top;
-                        jsonObj.components.display.angle = item.angle;
-                        jsonObj.components.display.scale.x = item.scaleX;
-                        jsonObj.components.display.scale.y = item.scaleY;
+                if ( /* item.type == 'image' && */ item.name && item.template) {
+                    let jsonObj = null, scriptText = null;
+                    if (item.template == "plot") {
+                        jsonObj = RuntimeGenerator.genBasicPlotObjectJson();
+                        scriptText = RuntimeGenerator.genBasicPlotObjectScript();
+                        if (item.enabled != undefined) jsonObj.active = item.enabled == true;
+                    } else if (item.template == "panel") {
+                        jsonObj = RuntimeGenerator.genBasicPanelObjectJson();
+                        if (jsonObj && jsonObj.components && jsonObj.components.display) {
+                            jsonObj.components.display.x = item.left;
+                            jsonObj.components.display.y = item.top;
+                            jsonObj.components.display.angle = item.angle;
+                            jsonObj.components.display.width = Math.round(item.width * item.scaleX);
+                            jsonObj.components.display.height = Math.round(item.height * item.scaleY);
+                        }
+                        if (item.enabled != undefined) jsonObj.active = item.enabled == true;
+                    } else {
+                        jsonObj = RuntimeGenerator.genBasicSpriteObjectJson(item.template);
+                        if (jsonObj && jsonObj.components && jsonObj.components.display) {
+                            jsonObj.components.display.x = item.left;
+                            jsonObj.components.display.y = item.top;
+                            jsonObj.components.display.angle = item.angle;
+                            jsonObj.components.display.scale.x = item.scaleX;
+                            jsonObj.components.display.scale.y = item.scaleY;
+                        }
+                        if (item.enabled != undefined) jsonObj.active = item.enabled == true;
                     }
+
+                    console.log(item.name , " - enabled - " , item.enabled);
+                    
                     output.push({
                         text: JSON.stringify(jsonObj, null, 4),
                         path: rtJsonFolder + "/sprites/" + item.name + ".json"
                     });
+                    if (scriptText) {
+                        output.push({
+                            text: scriptText,
+                            path: rtJsonFolder + "/sprites/" + item.name + ".ts"
+                        });
+                    }
                     rtSceneJson.sprites.push(item.name);
                 }
             }
@@ -404,6 +477,8 @@ export class Designer {
             text: JSON.stringify(JSON.stringify(json, null, 4)),
             path: dtJsonFile
         });
+
+        //console.log(output);
 
         Ipc.saveText(output, (errs) => {
             let errmsgs = [];

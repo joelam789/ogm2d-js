@@ -8,7 +8,12 @@
 			"width": 640,
 			"height": 480,
 			"layers": ["bg", "map", "npc", "obj", "fog", "ui"]
-		}
+		},
+		
+		"event":
+        {
+            "onInit": "onInit"
+        }
 	},
 
 	"packs": [],

@@ -14,6 +14,10 @@
 				{
 					"text": "plane-b",
 					"iconCls": "my-icon-file"
+                },
+				{
+					"text": "panel",
+					"iconCls": "my-icon-file"
                 }
             ]
         }

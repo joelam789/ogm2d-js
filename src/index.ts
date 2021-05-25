@@ -23,8 +23,9 @@ const tsconfig = {
 let mainWin = null;
 let editorWin = null;
 
-function transpileTsFiles(fileNames: string[], options: any = null) {
+function transpileTsFiles(fileNames: string[], outDir: string = null, options: any = null) {
     let transpileOptions = options ? options : tsconfig.compilerOptions;
+    if (outDir) transpileOptions.outDir = outDir;
     let program = tsc.createProgram(fileNames, transpileOptions);
     let emitResult = program.emit();
 
@@ -269,13 +270,14 @@ ipcMain.on("run-cmd", (event, cmd, args = [], opt = null) => {
     }
 });
 
-ipcMain.on("transpile-ts", (event, files) => {
+ipcMain.on("transpile-ts", (event, files, outdir) => {
     console.log("transpile ts files - ", files);
+    console.log("transpile js out put dir - ", outdir);
     try {
         //let sourceCode = "let x: string  = 'abc'";
         //let result = tsc.transpileModule(sourceCode, tsconfig);
         //console.log(JSON.stringify(result));
-        let exitCode = transpileTsFiles(files);
+        let exitCode = transpileTsFiles(files, outdir);
         if (exitCode == 0) event.sender.send('transpile-ts-return', {error: null});
         else event.sender.send('transpile-ts-return', {error: "Failed to transpile typescript files"});
         

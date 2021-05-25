@@ -13,7 +13,7 @@ export class SelectSpriteTypeDlg {
     subscribers: Array<Subscription> = [];
 
     selectedType = 'Image';
-    objectTypes = ['Plot', 'GUI', 'Image', 'SpriteSheet'];
+    objectTypes = ['Image', 'SpriteSheet'];
 
     constructor(public controller: DialogController, public i18n: I18N, public eventChannel: EventAggregator) {
         //controller.settings.centerHorizontalOnly = true;

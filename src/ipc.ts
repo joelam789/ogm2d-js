@@ -129,7 +129,7 @@ export class Ipc {
 		ipcRenderer.send("run-cmd", cmd, args, cmdopt);
 	}
 
-	static transpileTsFiles(files: Array<string>, callback: (err: string)=>void) {
+	static transpileTsFiles(files: Array<string>, outputDir, callback: (err: string)=>void) {
 		if (!files || files.length <= 0) return;
 		ipcRenderer.once("transpile-ts-return", (event, result) => {
 			if (result.error) {
@@ -139,7 +139,7 @@ export class Ipc {
 				if (callback) callback("");
 			}
 		});
-		ipcRenderer.send("transpile-ts", files);
+		ipcRenderer.send("transpile-ts", files, outputDir);
 	}
 
 	static runGame(url, callback: (err: string)=>void) {
