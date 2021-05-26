@@ -68,14 +68,26 @@ export class Explorer {
         this.subscribers.push(this.eventChannel.subscribe("tree-node-selection-reply", (evt) => {
             if (!evt || !evt.node || evt.requester != "explorer") return;
             console.log(evt);
-            if (evt.node.id == 1) { // project
-                //let jsonFilepath = App.projectPath + "/design/template/games/" + App.projectName + ".json";
-                let jsonFilepath = App.projectPath + "/design/template/games/game.json"; // must be game.json...
-                this.eventChannel.publish('dlg-editor-open', {
-                    url: "index-json.html#jsonedt?file=" + jsonFilepath,
-                    width: 640, height: 480
-                });
+            if (evt.query == "json") {
+                if (evt.node.id == 1) { // project
+                    //let jsonFilepath = App.projectPath + "/design/template/games/" + App.projectName + ".json";
+                    let jsonFilepath = App.projectPath + "/design/template/games/game.json"; // must be game.json...
+                    this.eventChannel.publish('dlg-editor-open', {
+                        url: "index-json.html#jsonedt?file=" + jsonFilepath,
+                        width: 640, height: 480
+                    });
+                }
+            } else if (evt.query == "script") {
+                if (evt.node.id == 1) { // project
+                    //let jsonFilepath = App.projectPath + "/design/template/games/" + App.projectName + ".json";
+                    let scriptFilepath = App.projectPath + "/design/template/games/game.ts"; // must be game.ts...
+                    this.eventChannel.publish('dlg-editor-open', {
+                        url: "index-script.html#scriptedt?file=" + scriptFilepath,
+                        width: 800, height: 600
+                    });
+                }
             }
+            
         }));
         
 	}
@@ -122,6 +134,7 @@ export class Explorer {
         //});
 
         this.eventChannel.publish('tree-node-selection-query', {
+            query: "json",
             sender: "explorer"
         });
 
@@ -129,10 +142,15 @@ export class Explorer {
 
     openScriptEditor() {
         console.log("open scene script editor");
-        let scriptFilepath = "scene.ts";
-        this.eventChannel.publish('dlg-editor-open', {
-            url: "index-script.html#scriptedt?file=" + scriptFilepath,
-            width: 800, height: 600
+        //let scriptFilepath = "scene.ts";
+        //this.eventChannel.publish('dlg-editor-open', {
+        //    url: "index-script.html#scriptedt?file=" + scriptFilepath,
+        //    width: 800, height: 600
+        //});
+
+        this.eventChannel.publish('tree-node-selection-query', {
+            query: "script",
+            sender: "explorer"
         });
     }
 

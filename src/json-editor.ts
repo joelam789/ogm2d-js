@@ -78,7 +78,7 @@ export class JsonEditorPage {
         }));
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-read-text-file-return", (content) => {
-            if (content) {
+            if (this.editor && content) {
                 this.editor.set(JSON.parse(content));
                 //this.editor.expandAll();
             }
@@ -88,6 +88,7 @@ export class JsonEditorPage {
             if (this.isClosing === true && this.ide) {
                 this.ide.appEvent.publish("ide-reload-game-size");
                 this.ide.appEvent.publish('dlg-editor-close');
+                this.isClosing = false;
             }
         }));
 

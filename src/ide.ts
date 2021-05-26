@@ -6,7 +6,7 @@ import { Router } from 'aurelia-router';
 import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
-import { EditTilesetDlg } from "./popups/tileset/edit-tileset";
+import { RuntimeGenerator } from "./generator";
 
 import { App } from "./app";
 import { Ipc } from "./ipc";
@@ -195,6 +195,11 @@ export class Ide {
             this.writeTextFile(settings.filepath, settings.content);
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-read-script-file", (settings) => {
+            console.log("Try to write a script file for Dialog...");
+            this.tryToReadScript(settings.filepath, settings.classname);
+        }));
+
         App.openProject("workspace/project2/main.json", () => {
             this.eventChannel.publish('project-reloaded');
             App.busy = false;
@@ -319,7 +324,7 @@ export class Ide {
 
     async writeTextFile(filepath, content) {
         let error = await Ipc.writeFileAsync(filepath, content);
-        if (error) console.log("Failed to write a text file - " + error); 
+        if (error) console.log("Failed to write a text file - " + error);
         else this.editorFrame.contentWindow.appEvent.publish('dlg-write-text-file-return');
     }
 
@@ -336,6 +341,21 @@ export class Ide {
                 this.eventChannel.publish("update-game-size", gameSize);
             }
         }
+    }
+
+    async tryToReadScript(filepath, className = "Game1") {
+        //console.log("tryToReadScript - ", filepath);
+        let scriptContent = await Ipc.readFileAsync(filepath);
+        //console.log("read content - ", scriptContent);
+        if (!scriptContent) {
+            scriptContent = RuntimeGenerator.genEmptyClassScript(className);
+            let error = await Ipc.writeFileAsync(filepath, scriptContent);
+            if (error) {
+                console.log("Failed to write a script file with default content - " + error);
+                scriptContent = "";
+            }
+        }
+        this.editorFrame.contentWindow.appEvent.publish('dlg-read-script-file-return', scriptContent);
     }
 
     saveCurrent() {

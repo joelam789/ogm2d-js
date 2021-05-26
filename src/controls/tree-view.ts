@@ -52,6 +52,7 @@ export class TreeView {
                 this.eventChannel.publish("tree-node-selection-reply", {
                     node: node,
                     tree: this.treeId,
+                    query: evt.query,
                     requester: evt.sender
                 });
             }));

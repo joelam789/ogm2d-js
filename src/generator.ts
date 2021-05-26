@@ -126,15 +126,26 @@ export class RuntimeGenerator {
     static genBasicPlotObjectScript(tpl: string = "plot") {
         let tscript = `
 
-        export class Plot1 {
-            * onUpdate(sprite) {
-                console.log("plot started - " + sprite.name);
-                console.log("plot ended - " + sprite.name);
-                sprite.active = false;
-            }
-        }
+export class Plot1 {
+    * onUpdate(sprite) {
+        console.log("plot started - " + sprite.name);
+        console.log("plot ended - " + sprite.name);
+        sprite.active = false;
+    }
+}
 
-        `;
+`;
+        return tscript;
+    }
+
+    static genEmptyClassScript(className: string = "Game1") {
+        let tscript = `
+
+export class ` + className + ` {
+    
+}
+
+`;
         return tscript;
     }
 

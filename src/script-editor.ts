@@ -14,10 +14,20 @@ export class JsonEditorPage {
     ide: any = null;
     editor: any = null;
 
+    isClosing: boolean = false;
+    scriptFilepath: string = "";
+
     subscribers: Array<Subscription> = [];
     
     constructor(public router: Router, public eventChannel: EventAggregator, public i18n: I18N, public dialogService: DialogService) {
         this.subscribers = [];
+    }
+
+    activate(parameters, routeConfig) {
+
+        console.log("activate script editor!");
+        this.isClosing = false;
+
     }
 
     attached(argument) {
@@ -60,7 +70,7 @@ export class JsonEditorPage {
         if (AceEditor && container) {
             
             this.editor = AceEditor.edit(container.id);
-            this.editor.session.setValue(tscript); // set script for testing
+            //this.editor.session.setValue(tscript); // set script for testing
 
             //let ret = this.editor.find("return x");
             //console.log(ret);
@@ -68,6 +78,7 @@ export class JsonEditorPage {
             ////console.log(selection);
             //if (ret) this.editor.gotoLine(ret.start.row + 1, ret.end.column + 1, true);
             //else console.log("not found");
+
         }
 
         // set editor style
@@ -91,9 +102,39 @@ export class JsonEditorPage {
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-editor-save-close", () => {
             console.log("script-save-close");
-            //if (this.editor) console.log(this.editor.session.getValue());
-            if (this.ide) this.ide.appEvent.publish('dlg-editor-close');
+            if (this.editor && this.scriptFilepath) {
+                this.isClosing = true;
+                let setting = {
+                    filepath: this.scriptFilepath,
+                    content: this.editor.session.getValue()
+                };
+                //console.log(setting);
+                (window.parent as any).appEvent.publish('dlg-write-text-file', setting);
+            }
         }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-read-script-file-return", (content) => {
+            if (this.editor && content) {
+                this.editor.session.setValue(content);
+            }
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-write-text-file-return", (content) => {
+            if (this.isClosing === true && this.ide) {
+                this.ide.appEvent.publish('dlg-editor-close');
+                this.isClosing = false;
+            }
+        }));
+
+        if (AceEditor && container) {
+            this.scriptFilepath = App.getUrlParamByName("file");
+            console.log(this.scriptFilepath);
+            let readSetting = {
+                filepath: this.scriptFilepath,
+                classname: "Game1"
+            };
+            (window.parent as any).appEvent.publish('dlg-read-script-file', readSetting);
+        }
 
         App.busy = false;
 	}
