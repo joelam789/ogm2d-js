@@ -76,10 +76,10 @@ function createMainWindow() {
     });
 }
 
-function createGameWindow(gameUrl) {
+function createGameWindow(gameUrl, width, height) {
     // Create the browser window.
     editorWin = new BrowserWindow({
-        title: "Game", width: 680, height: 550, 
+        title: "Game", width: width + 40, height: height + 70, 
         autoHideMenuBar: true, darkTheme: true,
         webPreferences: {
             nodeIntegration: true,
@@ -152,6 +152,23 @@ app.on('activate', () => {
     }
 });
 
+
+ipcMain.on("read-text-file", (event, input) => {
+    //console.log(input);
+    let filepath = __dirname + "/" + input;
+    //console.log(filepath);
+    if (!filepath || !fs.existsSync(filepath)) {
+        event.sender.send('read-text-file-return', {error: "File path not valid", content: null});
+        return;
+    }
+    try {
+        let content = fs.readFileSync(filepath, 'utf8');
+        event.sender.send('read-text-file-return', {error: null, content: content});
+    } catch(err) {
+        console.error(err);
+        event.sender.send('read-text-file-return', {error: "Failed to read file", content: null});
+    }
+});
 
 ipcMain.on("get-dir-tree", (event, input) => {
     //console.log(input);
@@ -338,14 +355,14 @@ ipcMain.on("copy-files", (event, srcFiles, destFiles, absFlag = 0) => {
     
 });
 
-ipcMain.on("run-game", (event, gameUrl) => {
+ipcMain.on("run-game", (event, gameUrl, gameWidth, gameHeight) => {
     console.log("run game - ", gameUrl);
     if (!fs.existsSync(__dirname + "/" + gameUrl)) {
         event.sender.send('run-game-return', {error: "Game path is not valid"});
         return;
     }
     try {
-        createGameWindow(gameUrl);
+        createGameWindow(gameUrl, gameWidth, gameHeight);
         event.sender.send('run-game-return', {error: null});
     } catch(err) {
         console.error(err);

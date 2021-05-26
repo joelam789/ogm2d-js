@@ -64,6 +64,19 @@ export class Explorer {
         this.subscribers.push(this.eventChannel.subscribe("scenes-edit-scene-script", () => {
             this.openScriptEditor();
         }));
+
+        this.subscribers.push(this.eventChannel.subscribe("tree-node-selection-reply", (evt) => {
+            if (!evt || !evt.node || evt.requester != "explorer") return;
+            console.log(evt);
+            if (evt.node.id == 1) { // project
+                //let jsonFilepath = App.projectPath + "/design/template/games/" + App.projectName + ".json";
+                let jsonFilepath = App.projectPath + "/design/template/games/game.json"; // must be game.json...
+                this.eventChannel.publish('dlg-editor-open', {
+                    url: "index-json.html#jsonedt?file=" + jsonFilepath,
+                    width: 640, height: 480
+                });
+            }
+        }));
         
 	}
 
@@ -97,13 +110,19 @@ export class Explorer {
 
     openJsonEditor() {
         console.log("open scene json editor");
+
         //Ipc.runJsonEditor("scene.json", (err) => {
         //    if (err) console.error(err);
         //});
-        let jsonFilepath = "scene.json";
-        this.eventChannel.publish('dlg-editor-open', {
-            url: "index-json.html#jsonedt?file=" + jsonFilepath,
-            width: 640, height: 480
+
+        //let jsonFilepath = "scene.json";
+        //this.eventChannel.publish('dlg-editor-open', {
+        //    url: "index-json.html#jsonedt?file=" + jsonFilepath,
+        //    width: 640, height: 480
+        //});
+
+        this.eventChannel.publish('tree-node-selection-query', {
+            sender: "explorer"
         });
 
     }

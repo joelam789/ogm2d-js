@@ -14,10 +14,20 @@ export class JsonEditorPage {
     ide: any = null;
     editor: any = null;
 
+    isClosing: boolean = false;
+    jsonFilepath: string = "";
+
     subscribers: Array<Subscription> = [];
     
     constructor(public router: Router, public eventChannel: EventAggregator, public i18n: I18N, public dialogService: DialogService) {
         this.subscribers = [];
+    }
+
+    activate(parameters, routeConfig) {
+
+        console.log("activate json editor!");
+        this.isClosing = false;
+
     }
 
     attached(argument) {
@@ -41,11 +51,6 @@ export class JsonEditorPage {
             "String": "Hello World",
             "Object": {"a": "b", "c": "d"}
         }
-        if (this.editor) {
-            this.editor.set(initialJson);
-            console.log(App.getUrlParamByName("file"));
-            console.log(this.editor.get());
-        }
 
         document.getElementById('top-loading').style.display = 'none';
         document.getElementById('app').style.visibility = 'visible';
@@ -62,8 +67,38 @@ export class JsonEditorPage {
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-editor-save-close", () => {
             console.log("json-save-close");
-            if (this.ide) this.ide.appEvent.publish('dlg-editor-close');
+            if (this.editor && this.jsonFilepath) {
+                this.isClosing = true;
+                let setting = {
+                    filepath: this.jsonFilepath,
+                    content: this.editor.getText()
+                };
+                (window.parent as any).appEvent.publish('dlg-write-text-file', setting);
+            }
         }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-read-text-file-return", (content) => {
+            if (content) {
+                this.editor.set(JSON.parse(content));
+                //this.editor.expandAll();
+            }
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-write-text-file-return", (content) => {
+            if (this.isClosing === true && this.ide) {
+                this.ide.appEvent.publish("ide-reload-game-size");
+                this.ide.appEvent.publish('dlg-editor-close');
+            }
+        }));
+
+        if (this.editor) {
+            //this.editor.set(initialJson);
+            //console.log(App.getUrlParamByName("file"));
+            //console.log(this.editor.get());
+            this.jsonFilepath = App.getUrlParamByName("file");
+            console.log(this.jsonFilepath);
+            (window.parent as any).appEvent.publish('dlg-read-text-file', this.jsonFilepath);
+        }
 
         App.busy = false;
 	}
@@ -71,6 +106,8 @@ export class JsonEditorPage {
 	detached(argument) {
 		for (let item of this.subscribers) item.dispose();
         this.subscribers = [];
+
+        if (this.editor) this.editor.destroy();
     }
 
 }

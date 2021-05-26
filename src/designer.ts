@@ -288,8 +288,8 @@ export class Designer {
                 newCanvas.on('object:modified', (ev) => this.requestEditorUpdate(ev, 'property', true));
                 
                 newCanvas.imageSmoothingEnabled = false;
-                newCanvas.setWidth(640);
-                newCanvas.setHeight(480);
+                newCanvas.setWidth(App.gameWidth);
+                newCanvas.setHeight(App.gameHeight);
                 newCanvas.renderAll();
 
                 //console.log(newCanvas.toJSON());
@@ -425,7 +425,8 @@ export class Designer {
                     let jsonObj = null, scriptText = null;
                     if (item.template == "plot") {
                         jsonObj = RuntimeGenerator.genBasicPlotObjectJson();
-                        scriptText = RuntimeGenerator.genBasicPlotObjectScript();
+                        // no need to gen script here...
+                        //scriptText = RuntimeGenerator.genBasicPlotObjectScript();
                         if (item.enabled != undefined) jsonObj.active = item.enabled == true;
                     } else if (item.template == "panel") {
                         jsonObj = RuntimeGenerator.genBasicPanelObjectJson();

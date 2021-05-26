@@ -1,6 +1,6 @@
 
 import { autoinject } from 'aurelia-framework';
-import { EventAggregator } from 'aurelia-event-aggregator';
+import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
 import { Router, RouterConfiguration } from 'aurelia-router';
 
 import { DialogService } from 'aurelia-dialog';
@@ -25,9 +25,15 @@ export class App {
 	private static _projectFile: string = null;
 	private static _projectName: string = null;
 
+	private static _gameWidth: number = 640;
+	private static _gameHeight: number = 480;
+
+	subscribers: Array<Subscription> = [];
+
 	//private static _sceneFilepathMap: Map<string, string> = new Map<string, string>();
 
 	constructor(public i18n: I18N, public eventChannel: EventAggregator, public dialogService: DialogService) {
+		this.subscribers = [];
 		(window as any).appEvent = this.eventChannel;
 		App.busy = true; // start to load stuff
 		let url = window.location.pathname;
@@ -37,6 +43,12 @@ export class App {
 	}
 
 	attached(argument) {
+
+		this.subscribers.push(this.eventChannel.subscribe("update-game-size", (gameSize) => {
+            App._gameWidth = gameSize.width;
+			App._gameHeight = gameSize.height;
+        }));
+
 		// load lang
 		App.lang = this.i18n.getLocale();
 		App.loadAppLanguageScript();
@@ -44,6 +56,8 @@ export class App {
 
 	detached(argument) {
 		// Invoked when component is detached from the dom
+		for (let item of this.subscribers) item.dispose();
+        this.subscribers = [];
 	}
 
 	configureRouter(config: RouterConfiguration, router: Router) {
@@ -73,6 +87,14 @@ export class App {
 
 	static get projectName(): string {
 		return App._projectName;
+	}
+
+	static get gameWidth(): number {
+		return App._gameWidth;
+	}
+
+	static get gameHeight(): number {
+		return App._gameHeight;
 	}
 
 	get currentPage(): string {
@@ -156,6 +178,7 @@ export class App {
 				App.config.projectFile = App._projectFile;
 				App.config.projectName = App._projectName;
 				(window as any).appConfig = App.config;
+				(window as any).appEvent.publish("ide-reload-game-size");
 				if (callback) callback(json);
 			}
 		});
@@ -179,5 +202,14 @@ export class App {
 	//	if (sceneName && filepath) this._sceneFilepathMap.set(sceneName, filepath);
 	//}
 
+	static genRandomName(length) {
+        const mychars        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = mychars.length;
+        let result = [];
+        for (let i = 0; i < length; i++) {
+            result.push(mychars.charAt(Math.floor(Math.random() * charactersLength)));
+        }
+        return result.join('');
+    }
 	
 }

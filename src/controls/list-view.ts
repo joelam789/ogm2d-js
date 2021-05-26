@@ -58,16 +58,6 @@ export class ListView {
         this.subscribers = [];
     }
 
-    genRandomName(length) {
-        const mychars        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let charactersLength = mychars.length;
-        let result = [];
-        for (let i = 0; i < length; i++) {
-            result.push(mychars.charAt(Math.floor(Math.random() * charactersLength)));
-        }
-        return result.join('');
-    }
-
     private toolsValueChanged(newValue, oldValue) {
         //console.log(oldValue);
         //console.log(newValue);
@@ -112,7 +102,7 @@ export class ListView {
                         count++;
                         let item = { 
                             name: filepath.substring(filepath.lastIndexOf('/') + 1, idx),
-                            image: filepath + "?temp=" + this.genRandomName(16),
+                            image: filepath + "?temp=" + App.genRandomName(16),
                             movable: this.isMovable,
                             selected: false,
                             width: this.itemWidth,
@@ -121,7 +111,7 @@ export class ListView {
                             pid: "lv-item-" + this.imageTag + "-" + count
                         }
                         //newitems.push(item);
-                        console.log(item.image);
+                        //console.log(item.image);
                         this.items.push(item);
                     }
                 }

@@ -129,6 +129,10 @@ export class Ide {
             this.runCurrent(data ? data.scene : "");
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("ide-reload-game-size", () => {
+            this.reloadGameSize();
+        }));
+
         this.subscribers.push(this.eventChannel.subscribe("dlg-editor-open", (data) => {
             if (data) {
                 console.log(data);
@@ -177,6 +181,16 @@ export class Ide {
             this.saveTilemapFile(tilemapSetting);
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-read-text-file", (filepath) => {
+            console.log("Try to read a text file for Dialog...");
+            this.readTextFile(filepath);
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-write-text-file", (settings) => {
+            console.log("Try to write a text file for Dialog...");
+            this.writeTextFile(settings.filepath, settings.content);
+        }));
+
         App.openProject("workspace/project2/main.json", () => {
             this.eventChannel.publish('project-reloaded');
             App.busy = false;
@@ -219,7 +233,19 @@ export class Ide {
             });
             this.editorDlg('center');
             this.editorDlg("open");
-            this.editorFrame.src = url;
+            //let newpath = url + "&temp=" + App.genRandomName(16);
+            let newurl = url;
+            let oldurl = this.editorFrame.src;
+            console.log("going to refresh iframe with the url...", oldurl, newurl);
+            let isNewOne = !oldurl || oldurl != newurl;
+            if (oldurl && oldurl.endsWith(newurl)) isNewOne = false;
+            this.editorFrame.src = newurl;
+            if (!isNewOne) {
+                console.log("force iframe to refresh...");
+                this.editorFrame.contentWindow.location.reload(true); // force iframe to refresh
+            }
+            //if (isSameUrl) this.editorFrame.contentWindow.location.reload(true);
+            //this.editorFrame.contentWindow.location.replace(url);
         }
     }
 
@@ -281,6 +307,32 @@ export class Ide {
         this.editorFrame.contentWindow.appEvent.publish('dlg-save-tilemap-file-return', tilemapOutputPath);
     }
 
+    async readTextFile(filepath) {
+        let textFile = await Ipc.readFileAsync(filepath);
+        this.editorFrame.contentWindow.appEvent.publish('dlg-read-text-file-return', textFile);
+    }
+
+    async writeTextFile(filepath, content) {
+        let error = await Ipc.writeFileAsync(filepath, content);
+        if (error) console.log("Failed to write a text file - " + error); 
+        else this.editorFrame.contentWindow.appEvent.publish('dlg-write-text-file-return');
+    }
+
+    async reloadGameSize() {
+        let rtGameFile = App.projectPath + "/design/template/games/game.json"; // must be game.json...
+        let gameJsonStr = await Ipc.readFileAsync(rtGameFile, false);
+        if (gameJsonStr) {
+            let gameJson = JSON.parse(gameJsonStr);
+            if (gameJson) {
+                let gameSize = {
+                    width: gameJson.components.display.width,
+                    height: gameJson.components.display.height
+                }
+                this.eventChannel.publish("update-game-size", gameSize);
+            }
+        }
+    }
+
     saveCurrent() {
         console.log("save current scene");
     }
@@ -314,11 +366,12 @@ export class Ide {
             return;
         }
 
+        let gameJson = null;
         if (sceneName) {
-            let rtGameFile = App.projectPath + "/runtime/build/debug/json/games/game.json";
+            let rtGameFile = App.projectPath + "/runtime/build/debug/json/games/game.json"; // must be game.json...
             let gameJsonStr = await Ipc.readFileAsync(rtGameFile, false);
             if (gameJsonStr) {
-                let gameJson = JSON.parse(gameJsonStr);
+                gameJson = JSON.parse(gameJsonStr);
                 if (gameJson) {
                     
                     // we should make sure all scenes were generated first ...
@@ -346,7 +399,9 @@ export class Ide {
         if (errmsg) console.log("Failed to copy html or js files - " + errmsg);
         else {
             console.log("copying project files done");
-            Ipc.runGame(App.projectPath + "/runtime/build/debug/index.html", (err) => {
+            Ipc.runGame(App.projectPath + "/runtime/build/debug/index.html", 
+                gameJson.components.display.width,
+                gameJson.components.display.height, (err) => {
                 if (err) console.log("Failed to run the game - " + err);
                 else {
                     console.log("the game is running");
@@ -356,5 +411,7 @@ export class Ide {
         
 
     }
+
+    
 
 }

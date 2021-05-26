@@ -46,6 +46,16 @@ export class TreeView {
 
             //this.updateTreeData();
 
+            this.subscribers.push(this.eventChannel.subscribe("tree-node-selection-query", (evt) => {
+                let node = this.gui("getSelected");
+                console.log("tree and selected node - " , this.treeId, node);
+                this.eventChannel.publish("tree-node-selection-reply", {
+                    node: node,
+                    tree: this.treeId,
+                    requester: evt.sender
+                });
+            }));
+
             if (this.gui && this.rootName && this.dataSource && this.dataSource.length > 0) {
                 HttpClient.getJSON(this.dataSource, null, (json) => {
                     //console.log(json);

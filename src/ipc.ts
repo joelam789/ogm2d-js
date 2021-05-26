@@ -76,6 +76,18 @@ export class Ipc {
 		ipcRenderer.send("get-fullpaths", filepaths);
 	}
 
+	static readTextFile(filepath: string, callback: (content: string)=>void) {
+		ipcRenderer.once("read-text-file-return", (event, result) => {
+			if (result.error) {
+				console.error("readTextFile", result.error);
+				if (callback) callback(null);
+			} else {
+				if (callback) callback(result.content);
+			}
+		});
+		ipcRenderer.send("read-text-file", filepath);
+	}
+
 	static saveText(items: Array<any>, callback: (errs: Array<string>)=>void) {
 		ipcRenderer.once("save-text-return", (event, result) => {
 			if (result.error) {
@@ -142,8 +154,8 @@ export class Ipc {
 		ipcRenderer.send("transpile-ts", files, outputDir);
 	}
 
-	static runGame(url, callback: (err: string)=>void) {
-		if (!url) return;
+	static runGame(gameUrl, gameWidth, gameHeight, callback: (err: string)=>void) {
+		if (!gameUrl) return;
 		ipcRenderer.once("run-game-return", (event, result) => {
 			if (result.error) {
 				console.error("run game error", result.error);
@@ -152,7 +164,7 @@ export class Ipc {
 				if (callback) callback("");
 			}
 		});
-		ipcRenderer.send("run-game", url);
+		ipcRenderer.send("run-game", gameUrl, gameWidth, gameHeight);
 	}
 
 	static runJsonEditor(jsonFileUrl, callback: (err: string)=>void) {
