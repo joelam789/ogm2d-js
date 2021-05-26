@@ -50,6 +50,10 @@ export class Ide {
             maximizable: true, 
             title: this.i18n.tr("editor.dlg-title"),
             iconCls: 'icon-edit',
+            onBeforeClose: function() {
+                (document.getElementById('editor-window') as any).src = "about:blank";
+                return true;
+            },
             /*
             toolbar: [{
                 text:'Reload',
@@ -75,7 +79,7 @@ export class Ide {
                 text: this.i18n.tr("ide.cancel"),
                 iconCls:'icon-cancel',
                 handler: () => {
-                    if (this.editorDlg) this.editorDlg("close");
+                    this.closeEditorDlg();
                 }
             }]
         });
@@ -251,6 +255,7 @@ export class Ide {
 
     closeEditorDlg() {
         if (this.editorDlg && this.editorFrame) {
+            this.editorFrame.src = "about:blank";
             this.editorDlg("close");
         }
     }
