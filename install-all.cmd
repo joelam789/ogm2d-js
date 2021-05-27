@@ -4,7 +4,8 @@ npm install --save-dev typescript jspm@0.16x
 npm install --save-dev del gulp gulp-typescript@5.x gulp-sourcemaps gulp-connect
 REM npm install --save-dev electron json-stringify-deterministic
 
-npm install --save-dev electron glob fs-extra
+npm install --save-dev electron fs-extra
+npm install --save-dev glob glob-promise
 npm install --save-dev image-size sharp
 npm install --save-dev json-stringify-deterministic
 

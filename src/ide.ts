@@ -391,6 +391,17 @@ export class Ide {
             return;
         }
 
+        let jsFiles = await Ipc.transpileTsFilesAsync(srcDir);
+        console.log(jsFiles);
+
+        destDir = App.projectPath + "/runtime/build/debug";
+        errmsg = Ipc.copyDirContentSync(srcDir, destDir, 0, ['.js']);
+        if (errmsg) {
+            console.log("Failed to copy js files - " + errmsg);
+            return;
+        }
+
+
         let gameJson = null;
         if (sceneName) {
             let rtGameFile = App.projectPath + "/runtime/build/debug/json/games/game.json"; // must be game.json...

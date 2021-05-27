@@ -52,6 +52,15 @@ export class Ipc {
 		
 	}
 
+	static async getDirTreeAsync(currentPath: string, filePattern: string = "*"): Promise<Array<string>> {
+		let result = await ipcRenderer.invoke("get-dir-tree-async", currentPath, filePattern);
+		if (result.error) {
+			console.error("get dir tree error", result.error);
+			return [];
+		}
+		return result.tree;
+	}
+
 	static getFilepathByName(folder: string, filename: string, callback: (filepath: string)=>void) {
 		ipcRenderer.once("get-path-by-name-return", (event, result) => {
 			if (result.error) {
@@ -152,6 +161,15 @@ export class Ipc {
 			}
 		});
 		ipcRenderer.send("transpile-ts", files, outputDir);
+	}
+
+	static async transpileTsFilesAsync(currentPath: string): Promise<Array<string>> {
+		let result = await ipcRenderer.invoke("transpile-ts-async", currentPath);
+		if (result.error) {
+			console.error("transpile ts error", result.error);
+			return [];
+		}
+		return result.jsfiles;
 	}
 
 	static runGame(gameUrl, gameWidth, gameHeight, callback: (err: string)=>void) {

@@ -6,6 +6,7 @@ const fse = require('fs-extra');
 
 const path = require('path');
 const glob = require('glob');
+const gp = require('glob-promise');
 
 const imgsize  = require('image-size');
 const sharp = require('sharp');
@@ -182,6 +183,21 @@ ipcMain.on("get-dir-tree", (event, input) => {
     } else event.sender.send('get-dir-tree-return', {error: "Path is not existing", path: filepath});
 });
 
+ipcMain.handle("get-dir-tree-async", async (event, currentPath, filePattern) => {
+    //console.log(input);
+    let filepath = __dirname + "/" + currentPath;
+    if (fs.existsSync(filepath)) {
+        try {
+            let res = await gp.promise(filepath + '/**/' + filePattern);
+            return {error: null, tree: res};
+        } catch(err) {
+            console.error(err);
+            return {error: "Failed to get dir tree", path: filepath};
+        }
+
+    } else return {error: "File path is not valid", path: filepath};
+});
+
 ipcMain.on("get-path-by-name", (event, folder, filename) => {
     //console.log(folder, filename);
     let filepath = __dirname + "/" + folder;
@@ -302,6 +318,26 @@ ipcMain.on("transpile-ts", (event, files, outdir) => {
         console.error(err);
         event.sender.send('transpile-ts-return', {error: "Failed to transpile typescript files"});
     }
+});
+
+ipcMain.handle("transpile-ts-async", async (event, currentPath) => {
+    //console.log(input);
+    let filepath = __dirname + "/" + currentPath;
+    if (fs.existsSync(filepath)) {
+        try {
+            let tsfiles = await gp.promise(filepath + '/**/*.ts');
+            let exitCode = transpileTsFiles(tsfiles);
+            if (exitCode == 0) {
+                let jsfiles = await gp.promise(filepath + '/**/*.js');
+                return {error: null, jsfiles: jsfiles};
+            }
+            else return {error: "Failed to transpile typescript files", code: exitCode};
+        } catch(err) {
+            console.error(err);
+            return {error: "Failed to transpile ts files in specified dir", path: filepath};
+        }
+
+    } else return {error: "File path is not valid", path: filepath};
 });
 
 ipcMain.on("copy-dir-content", (event, src, dest, absFlag = 0, exts = null) => {
