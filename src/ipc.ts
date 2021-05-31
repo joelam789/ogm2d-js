@@ -137,6 +137,18 @@ export class Ipc {
 		ipcRenderer.send("copy-files", srcFiles, destFiles, absFlag);
 	}
 
+	static getBgLog(callback: (lines: Array<string>)=>void) {
+		ipcRenderer.once("get-bg-log-return", (event, result) => {
+			if (result.error) {
+				console.error("get bg log error", result.error);
+				if (callback) callback(result.error);
+			} else {
+				if (callback) callback(result.lines);
+			}
+		});
+		ipcRenderer.send("get-bg-log");
+	}
+
 	static runCmd(cmd, args = [], opt = null, callback: (err: string)=>void) {
 		let cmdopt = opt ? opt : {};
 		ipcRenderer.once("run-cmd-return", (event, result) => {

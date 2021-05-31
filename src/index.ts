@@ -22,7 +22,14 @@ const tsconfig = {
 };
 
 let mainWin = null;
+let gameWin = null;
 let editorWin = null;
+
+let mainLogLines = [];
+
+function addMainLog(line) {
+    mainLogLines.push(line);
+}
 
 function transpileTsFiles(fileNames: string[], outDir: string = null, options: any = null) {
     let transpileOptions = options ? options : tsconfig.compilerOptions;
@@ -45,7 +52,9 @@ function transpileTsFiles(fileNames: string[], outDir: string = null, options: a
     });
 
     let exitCode = emitResult.emitSkipped ? 1 : 0;
-    console.log(`Process exiting with code '${exitCode}'.`);
+    let logline = `Process exiting with code '${exitCode}'.`;
+    console.log(logline);
+    //addMainLog(logline);
     return exitCode;
 }
 
@@ -79,7 +88,7 @@ function createMainWindow() {
 
 function createGameWindow(gameUrl, width, height) {
     // Create the browser window.
-    editorWin = new BrowserWindow({
+    gameWin = new BrowserWindow({
         title: "Game", width: width + 40, height: height + 70, 
         autoHideMenuBar: true, darkTheme: true,
         webPreferences: {
@@ -89,17 +98,17 @@ function createGameWindow(gameUrl, width, height) {
     });
 
     // and load the index.html of the app.
-    editorWin.loadURL('file://' + __dirname + '/' + gameUrl);
+    gameWin.loadURL('file://' + __dirname + '/' + gameUrl);
 
     // Open the DevTools.
-    //gameWin.webContents.openDevTools();
+    gameWin.webContents.openDevTools( {mode: 'detach'} );
 
     // Emitted when the window is closed.
-    editorWin.on('closed', () => {
+    gameWin.on('closed', () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        editorWin = null
+        gameWin = null
         console.log("Game window is closed");
     });
 }
@@ -276,8 +285,26 @@ ipcMain.on("save-text", (event, items) => {
     
 });
 
+ipcMain.on("get-bg-log", (event) => {
+
+    try {
+        let lines = [];
+        while (mainLogLines.length > 0) {
+            let line = mainLogLines.shift();
+            console.log(line);
+            lines.push(line);
+        }
+        event.sender.send('get-bg-log-return', {error: null, lines: lines});
+    } catch(err) {
+        console.error(err);
+        event.sender.send('get-bg-log-return', {error: "Failed to get bg log", lines: []});
+    }
+    
+});
+
 ipcMain.on("run-cmd", (event, cmd, args = [], opt = null) => {
     console.log(cmd, args, opt);
+    addMainLog("Running command line - " + cmd);
     try {
         let spawn = require('child_process').spawn;
         //exec('gulp build_dist', {'cwd': 'projectPath'});
@@ -290,10 +317,12 @@ ipcMain.on("run-cmd", (event, cmd, args = [], opt = null) => {
         });
         childp.on('close', (code) => {
             console.log('child process exited with code ' + code.toString());
+            addMainLog("End of command line - " + cmd);
             event.sender.send('run-cmd-return', {error: null});
         });
         childp.on('error', () => {
             console.log('failed to start sub-process');
+            addMainLog("Error of command line - " + cmd);
             event.sender.send('run-cmd-return', {error: "Failed to exec command - " + cmd});
         });
         //event.sender.send('run-cmd-return', {error: null});
@@ -306,11 +335,13 @@ ipcMain.on("run-cmd", (event, cmd, args = [], opt = null) => {
 ipcMain.on("transpile-ts", (event, files, outdir) => {
     console.log("transpile ts files - ", files);
     console.log("transpile js out put dir - ", outdir);
+    //addMainLog("Transpile ts files...");
     try {
         //let sourceCode = "let x: string  = 'abc'";
         //let result = tsc.transpileModule(sourceCode, tsconfig);
         //console.log(JSON.stringify(result));
         let exitCode = transpileTsFiles(files, outdir);
+        //addMainLog("Finish transpiling ts files.");
         if (exitCode == 0) event.sender.send('transpile-ts-return', {error: null});
         else event.sender.send('transpile-ts-return', {error: "Failed to transpile typescript files"});
         
@@ -325,8 +356,10 @@ ipcMain.handle("transpile-ts-async", async (event, currentPath) => {
     let filepath = __dirname + "/" + currentPath;
     if (fs.existsSync(filepath)) {
         try {
+            addMainLog("Transpile ts files...");
             let tsfiles = await gp.promise(filepath + '/**/*.ts');
             let exitCode = transpileTsFiles(tsfiles);
+            addMainLog("Finish transpiling ts files.");
             if (exitCode == 0) {
                 let jsfiles = await gp.promise(filepath + '/**/*.js');
                 return {error: null, jsfiles: jsfiles};

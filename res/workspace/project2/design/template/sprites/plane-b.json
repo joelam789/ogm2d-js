@@ -1,13 +1,15 @@
 {
 	"components":
 	{
-		"animation":
+		"graphic":
 		{
 			"image": "main",
-			"loop": true,
-			"speed": 0.1,
-			"sheets": {
-				"fly": [366,249,66,46, 432,249,66,46, 498,249,66,46]
+			"area":
+			{
+				"x": 703,
+				"y": 119,
+				"width": 85,
+				"height": 61
 			}
 		},
 

@@ -7,11 +7,17 @@ import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
 import { App } from "./app";
+import { Ipc } from './ipc';
 
 @autoinject()
 export class Logger {
 
     gui: any = null;
+
+    bgLogMonitor: any = null;
+
+    mainLogText: string = "";
+    updatingBgLog = false;
 
     subscribers: Array<Subscription> = [];
     
@@ -32,11 +38,45 @@ export class Logger {
             if (maingui) maingui.style.width = maingui.style.height = "100%";
             if (this.gui) this.gui();
         }));
+        this.subscribers.push(this.eventChannel.subscribe("add-ide-log", (line) => {
+            if (!this.mainLogText) this.mainLogText = line;
+            else this.mainLogText += "\n" + line;
+            setTimeout(() => {
+                let textareaMainLog = document.getElementById('ideMainLog');
+                if (textareaMainLog) textareaMainLog.scrollTop = textareaMainLog.scrollHeight;
+            }, 500);
+        }));
+
+        this.updatingBgLog = false;
+        if (this.bgLogMonitor != null) {
+            clearInterval(this.bgLogMonitor);
+            this.bgLogMonitor = null;
+        }
+        this.bgLogMonitor = setInterval(() => {
+            if (this.updatingBgLog === true) return;
+            this.updatingBgLog = true;
+            Ipc.getBgLog((lines) => {
+                for (let line of lines) {
+                    if (!this.mainLogText) this.mainLogText = line;
+                    else this.mainLogText += "\n" + line;
+                }
+                setTimeout(() => {
+                    let textareaMainLog = document.getElementById('ideMainLog');
+                    if (textareaMainLog) textareaMainLog.scrollTop = textareaMainLog.scrollHeight;
+                }, 500);
+                this.updatingBgLog = false;
+            })
+        }, 1000);
 	}
 
 	detached(argument) {
 		for (let item of this.subscribers) item.dispose();
         this.subscribers = [];
+
+        if (this.bgLogMonitor != null) {
+            clearInterval(this.bgLogMonitor);
+            this.bgLogMonitor = null;
+        }
 	}
 
 }
