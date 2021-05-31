@@ -109,7 +109,7 @@ function createGameWindow(gameUrl, width, height) {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         gameWin = null
-        console.log("Game window is closed");
+        //console.log("Game window is closed");
         addMainLog("Game window is closed.");
     });
 }
@@ -286,6 +286,45 @@ ipcMain.on("save-text", (event, items) => {
     
 });
 
+ipcMain.on("save-text-sync", (event, items) => {
+
+    let errs = [];
+
+    for (let item of items) {
+
+        let text = item.text;
+        let filepath = item.path;
+        let isAbsPath = item.abs && item.abs === true;
+
+        if (!text) text = "";
+        if (!filepath) {
+            errs.push("Path not found");
+            continue;
+        }
+
+        let outputFilepath = filepath;
+        if (!isAbsPath) outputFilepath = __dirname + "/" + outputFilepath;
+
+        outputFilepath = outputFilepath.replace(/\\/g,'/');
+        let outputFolder = outputFilepath.substring(0, outputFilepath.lastIndexOf('/'));
+        if (!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder, { recursive: true });
+        if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
+        let saved = false;
+        try {
+            fs.writeFileSync(outputFilepath, text);
+            saved = true;
+            errs.push("ok");
+        } catch(err) {
+            console.error(err);
+            if (!saved) errs.push("Failed to save file - " + outputFilepath);
+        }
+    }
+
+    if (errs.length == items.length) event.returnValue = {error: null, errors: errs};
+    else event.returnValue = {error: "Got some errors", errors: errs};
+    
+});
+
 ipcMain.on("get-bg-log", (event) => {
 
     try {
@@ -372,6 +411,45 @@ ipcMain.handle("transpile-ts-async", async (event, currentPath) => {
         }
 
     } else return {error: "File path is not valid", path: filepath};
+});
+
+ipcMain.handle("save-text-async", async (event, items) => {
+
+    let errs = [];
+
+    for (let item of items) {
+
+        let text = item.text;
+        let filepath = item.path;
+        let isAbsPath = item.abs && item.abs === true;
+
+        if (!text) text = "";
+        if (!filepath) {
+            errs.push("Path not found");
+            continue;
+        }
+
+        let outputFilepath = filepath;
+        if (!isAbsPath) outputFilepath = __dirname + "/" + outputFilepath;
+
+        outputFilepath = outputFilepath.replace(/\\/g,'/');
+        let outputFolder = outputFilepath.substring(0, outputFilepath.lastIndexOf('/'));
+        if (!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder, { recursive: true });
+        if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
+        let saved = false;
+        try {
+            await fs.promises.writeFile(outputFilepath, text, 'utf8');
+            saved = true;
+            errs.push("ok");
+        } catch(err) {
+            console.error(err);
+            if (!saved) errs.push("Failed to save file - " + outputFilepath);
+        }
+    }
+
+    if (errs.length == items.length) return {error: null, errors: errs};
+    else return {error: "Got some errors", errors: errs};
+    
 });
 
 ipcMain.on("copy-dir-content", (event, src, dest, absFlag = 0, exts = null) => {

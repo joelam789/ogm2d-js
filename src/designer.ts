@@ -71,6 +71,20 @@ export class Designer {
                 this.runCurrent();
             }
         }));
+        this.subscribers.push(this.eventChannel.subscribe("display-dblclick", (data) => {
+            if (data) {
+                console.log(data);
+                if (!data.object) return;
+                this.saveCurrent();
+                let sceneName = this._currentCanvasTitle;
+                let spriteName = data.object.name;
+                let jsonFilepath = App.projectPath + "/design/template/scenes/" + sceneName + "/sprites/" + spriteName + ".json";
+                this.eventChannel.publish('dlg-editor-open', {
+                    url: "index-json.html#jsonedt?file=" + jsonFilepath,
+                    width: 640, height: 480
+                });
+            }
+        }));
         this.subscribers.push(this.eventChannel.subscribe("editor-update-ui", (edt) => {
             if (edt.source == 'editor-property') {
                 //console.log(edt.data);
@@ -483,21 +497,7 @@ export class Designer {
 
         //console.log(output);
 
-        Ipc.saveText(output, (errs) => {
-            let errmsgs = [];
-            for (let err of errs) {
-                if (err && err.toLocaleLowerCase() != "ok") {
-                    //console.error(err);
-                    errmsgs.push(err);
-                }
-            }
-            if (errmsgs.length == 0) {
-                console.log("Current scene is saved successfully.");
-            } else {
-                console.error("Failed to save some file(s) - ");
-                for (let errmsg of errmsgs) console.error(errmsg);
-            }
-        });
+        Ipc.saveTextSync(output);
 
         this.updateCurrentTitleDisplay('*' + title, title);
 

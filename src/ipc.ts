@@ -109,6 +109,16 @@ export class Ipc {
 		ipcRenderer.send("save-text", items);
 	}
 
+	static saveTextSync(items: Array<any>): string {
+		if (!items || items.length <= 0) return "";
+		let result = ipcRenderer.sendSync("save-text-sync", items);
+		if (result.error) {
+			console.error("save text error", result.error);
+			return result.error;
+		}
+		return "";
+	}
+
 	static copyDirContent(src: string, dest: string, 
 		absFlag: number = 0, exts: Array<string> = null, callback: (err: string)=>void) {
 		if (!src || !dest) return;
@@ -300,7 +310,7 @@ export class Ipc {
 	}
 
 	static async readFileAsync(filepath: string, abs: boolean = false): Promise<string> {
-		if (!filepath) return;
+		if (!filepath) return "";
 		let result = await ipcRenderer.invoke("read-file-async", filepath, abs);
 		if (result.error) {
 			console.error("read file error", result.error);
@@ -310,7 +320,7 @@ export class Ipc {
 	}
 
 	static async writeFileAsync(filepath: string, content: string, abs: boolean = false): Promise<string> {
-		if (!filepath) return;
+		if (!filepath) return "";
 		let result = await ipcRenderer.invoke("write-file-async", filepath, content, abs);
 		if (result.error) {
 			console.error("write file error", result.error);
@@ -319,7 +329,15 @@ export class Ipc {
 		return "";
 	}
 	
-
+	static async saveTextAsync(items: Array<any>): Promise<string> {
+		if (!items || items.length <= 0) return "";
+		let result = await ipcRenderer.invoke("save-text-async", items);
+		if (result.error) {
+			console.error("save text error", result.error);
+			return result.error;
+		}
+		return "";
+	}
 	
 	
 }

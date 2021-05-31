@@ -116,8 +116,9 @@ export class Ide {
         this.subscribers.push(this.eventChannel.subscribe("display-dblclick", (data) => {
             if (data) {
                 console.log(data);
-                console.log("going to open blockly... ??");
-                this.openEditorDlg("index-blockly.html#blockly", 800, 600);
+                if (!data.object) return;
+                console.log("going to open blockly... ??", data.object.name);
+                //this.openEditorDlg("index-blockly.html#blockly", 800, 600);
             }
         }));
 
