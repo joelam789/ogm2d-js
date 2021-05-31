@@ -373,6 +373,8 @@ export class Ide {
         //    else console.log("Running current scene is done");
         //});
 
+        this.eventChannel.publish("add-ide-log", "Building current scene...");
+
         let srcDir = App.projectPath + "/runtime/project/res";
         let destDir = App.projectPath + "/runtime/build/debug";
 
@@ -391,6 +393,7 @@ export class Ide {
             return;
         }
 
+        this.eventChannel.publish("add-ide-log", "Tanspiling script files...");
         let jsFiles = await Ipc.transpileTsFilesAsync(srcDir);
         console.log(jsFiles);
 
@@ -435,6 +438,7 @@ export class Ide {
         if (errmsg) console.log("Failed to copy html or js files - " + errmsg);
         else {
             console.log("copying project files done");
+            this.eventChannel.publish("add-ide-log", "Running current scene...");
             Ipc.runGame(App.projectPath + "/runtime/build/debug/index.html", 
                 gameJson.components.display.width,
                 gameJson.components.display.height, (err) => {

@@ -110,6 +110,7 @@ function createGameWindow(gameUrl, width, height) {
         // when you should delete the corresponding element.
         gameWin = null
         console.log("Game window is closed");
+        addMainLog("Game window is closed.");
     });
 }
 
@@ -356,10 +357,10 @@ ipcMain.handle("transpile-ts-async", async (event, currentPath) => {
     let filepath = __dirname + "/" + currentPath;
     if (fs.existsSync(filepath)) {
         try {
-            addMainLog("Transpile ts files...");
+            //addMainLog("Transpile ts files...");
             let tsfiles = await gp.promise(filepath + '/**/*.ts');
             let exitCode = transpileTsFiles(tsfiles);
-            addMainLog("Finish transpiling ts files.");
+            //addMainLog("Finish transpiling ts files.");
             if (exitCode == 0) {
                 let jsfiles = await gp.promise(filepath + '/**/*.js');
                 return {error: null, jsfiles: jsfiles};

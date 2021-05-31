@@ -406,6 +406,8 @@ export class Designer {
             return;
         }
 
+        this.eventChannel.publish("add-ide-log", "Saving current scene content...");
+
         let json = canv.toJSON(['name', 'url', 'template', 'enabled']);
         console.log(json);
         
