@@ -325,6 +325,33 @@ ipcMain.on("save-text-sync", (event, items) => {
     
 });
 
+ipcMain.on("file-existing-sync", (event, filepath) => {
+    let outputFilepath = filepath;
+    outputFilepath = __dirname + "/" + outputFilepath;
+    try {
+        event.returnValue = {error: null, existing: fs.existsSync(outputFilepath)};
+    } catch(err) {
+        console.error(err);
+        event.returnValue = {error: "get error when check file existing", existing: false};
+    }
+});
+
+ipcMain.on("write-file-sync", (event, filepath, content, abs) => {
+    try {
+        let outputFilepath = abs ? filepath : __dirname + "/" + filepath;
+        //console.log("write content to ", destpath);
+        outputFilepath = outputFilepath.replace(/\\/g,'/');
+        let outputFolder = outputFilepath.substring(0, outputFilepath.lastIndexOf('/'));
+        if (!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder, { recursive: true });
+        if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
+        fs.writeFileSync(outputFilepath, content, 'utf8');
+        event.returnValue = {error: null};
+    } catch(err) {
+        console.error(err);
+        event.returnValue = {error: "Failed to write file"};
+    }
+});
+
 ipcMain.on("get-bg-log", (event) => {
 
     try {

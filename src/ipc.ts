@@ -119,6 +119,16 @@ export class Ipc {
 		return "";
 	}
 
+	static isFileExistingSync(filepath: string): boolean {
+		if (!filepath) return false;
+		let result = ipcRenderer.sendSync("file-existing-sync", filepath);
+		if (result.error) {
+			console.error("check file existing error", result.error);
+			return false;
+		}
+		return result.existing;
+	}
+
 	static copyDirContent(src: string, dest: string, 
 		absFlag: number = 0, exts: Array<string> = null, callback: (err: string)=>void) {
 		if (!src || !dest) return;
@@ -322,6 +332,16 @@ export class Ipc {
 	static async writeFileAsync(filepath: string, content: string, abs: boolean = false): Promise<string> {
 		if (!filepath) return "";
 		let result = await ipcRenderer.invoke("write-file-async", filepath, content, abs);
+		if (result.error) {
+			console.error("write file error", result.error);
+			return result.error;
+		}
+		return "";
+	}
+
+	static writeFileSync(filepath: string, content: string, abs: boolean = false): string {
+		if (!filepath) return "";
+		let result = ipcRenderer.sendSync("write-file-sync", filepath, content, abs);
 		if (result.error) {
 			console.error("write file error", result.error);
 			return result.error;

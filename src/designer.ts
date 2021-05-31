@@ -75,10 +75,39 @@ export class Designer {
             if (data) {
                 console.log(data);
                 if (!data.object) return;
-                this.saveCurrent();
+                //this.saveCurrent();
                 let sceneName = this._currentCanvasTitle;
                 let spriteName = data.object.name;
                 let jsonFilepath = App.projectPath + "/design/template/scenes/" + sceneName + "/sprites/" + spriteName + ".json";
+                //if (!Ipc.isFileExistingSync(jsonFilepath)) {
+                //}
+                let jsonObj = null, item = data.object;
+                if (item.template == "plot") {
+                    jsonObj = RuntimeGenerator.genBasicPlotObjectJson();
+                    if (item.enabled != undefined) jsonObj.active = item.enabled == true;
+                } else if (item.template == "panel") {
+                    jsonObj = RuntimeGenerator.genBasicPanelObjectJson();
+                    if (jsonObj && jsonObj.components && jsonObj.components.display) {
+                        jsonObj.components.display.x = item.left;
+                        jsonObj.components.display.y = item.top;
+                        jsonObj.components.display.angle = item.angle;
+                        jsonObj.components.display.width = Math.round(item.width * item.scaleX);
+                        jsonObj.components.display.height = Math.round(item.height * item.scaleY);
+                    }
+                    if (item.enabled != undefined) jsonObj.active = item.enabled == true;
+                } else {
+                    jsonObj = RuntimeGenerator.genBasicSpriteObjectJson(item.template);
+                    if (jsonObj && jsonObj.components && jsonObj.components.display) {
+                        jsonObj.components.display.x = item.left;
+                        jsonObj.components.display.y = item.top;
+                        jsonObj.components.display.angle = item.angle;
+                        jsonObj.components.display.scale.x = Math.round(item.scaleX * 100) / 100;
+                        jsonObj.components.display.scale.y = Math.round(item.scaleY * 100) / 100;
+                    }
+                    if (item.enabled != undefined) jsonObj.active = item.enabled == true;
+                }
+                console.log(jsonObj);
+                Ipc.writeFileSync(jsonFilepath, JSON.stringify(jsonObj));
                 this.eventChannel.publish('dlg-editor-open', {
                     url: "index-json.html#jsonedt?file=" + jsonFilepath,
                     width: 640, height: 480
@@ -460,8 +489,8 @@ export class Designer {
                             jsonObj.components.display.x = item.left;
                             jsonObj.components.display.y = item.top;
                             jsonObj.components.display.angle = item.angle;
-                            jsonObj.components.display.scale.x = item.scaleX;
-                            jsonObj.components.display.scale.y = item.scaleY;
+                            jsonObj.components.display.scale.x = Math.round(item.scaleX * 100) / 100;
+                            jsonObj.components.display.scale.y = Math.round(item.scaleY * 100) / 100;
                         }
                         if (item.enabled != undefined) jsonObj.active = item.enabled == true;
                     }
