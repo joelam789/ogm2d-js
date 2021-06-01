@@ -111,4 +111,8 @@ export class JsonEditorPage {
         if (this.editor) this.editor.destroy();
     }
 
+    switchToScript() {
+        (window.parent as any).appEvent.publish('dlg-switch-to-script', this.jsonFilepath);
+    }
+
 }

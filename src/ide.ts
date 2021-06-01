@@ -151,6 +151,17 @@ export class Ide {
             this.closeEditorDlg();
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-switch-to-script", (filepath) => {
+            this.closeEditorDlg();
+            let filename = filepath.substring(0, filepath.lastIndexOf('.'));
+            let scriptfile = filename + ".ts";
+            this.eventChannel.publish('dlg-editor-open', {
+                url: "index-script.html#scriptedt?file=" + scriptfile,
+                width: 800, height: 600
+            });
+
+        }));
+
         this.subscribers.push(this.eventChannel.subscribe("ide-edit-tilemap", () => {
             console.log("Show Tilemap Dialog...");
             this.openTilemapEditor();
@@ -345,9 +356,8 @@ export class Ide {
     }
 
     async tryToReadScript(filepath, className = "Game1") {
-        //console.log("tryToReadScript - ", filepath);
-        let scriptContent = await Ipc.readFileAsync(filepath);
-        //console.log("read content - ", scriptContent);
+        let scriptContent = "";
+        if (Ipc.isFileExistingSync(filepath)) scriptContent = await Ipc.readFileAsync(filepath);
         if (!scriptContent) {
             scriptContent = RuntimeGenerator.genEmptyClassScript(className);
             let error = await Ipc.writeFileAsync(filepath, scriptContent);

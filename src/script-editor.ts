@@ -129,9 +129,17 @@ export class JsonEditorPage {
         if (AceEditor && container) {
             this.scriptFilepath = App.getUrlParamByName("file");
             console.log(this.scriptFilepath);
+            let isForGame = this.scriptFilepath.indexOf("/games/") > 0;
+            let isForSceneSprite = this.scriptFilepath.indexOf("/scenes/") > 0 && this.scriptFilepath.indexOf("/sprites/") > 0;
+            let isForScene = !isForSceneSprite && this.scriptFilepath.indexOf("/scenes/") > 0;
+            let isForSprite = !isForSceneSprite && this.scriptFilepath.indexOf("/sprites/") > 0;
+            let defaultClassName = "Class1";
+            if (isForGame) defaultClassName = "Game1";
+            else if (isForScene) defaultClassName = "Scene1";
+            else if (isForSceneSprite || isForSprite) defaultClassName = "Sprite1";
             let readSetting = {
                 filepath: this.scriptFilepath,
-                classname: "Game1"
+                classname: defaultClassName
             };
             (window.parent as any).appEvent.publish('dlg-read-script-file', readSetting);
         }
