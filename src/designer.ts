@@ -79,14 +79,16 @@ export class Designer {
                 let sceneName = this._currentCanvasTitle;
                 let spriteName = data.object.name;
                 let jsonFilepath = App.projectPath + "/design/template/scenes/" + sceneName + "/sprites/" + spriteName + ".json";
-                //if (!Ipc.isFileExistingSync(jsonFilepath)) {
-                //}
                 let jsonObj = null, item = data.object;
+                if (Ipc.isFileExistingSync(jsonFilepath)) {
+                    let jsonstr = Ipc.readFileSync(jsonFilepath);
+                    jsonObj = JSON.parse(jsonstr);
+                }
                 if (item.template == "plot") {
-                    jsonObj = RuntimeGenerator.genBasicPlotObjectJson();
+                    if (jsonObj == null) jsonObj = RuntimeGenerator.genBasicPlotObjectJson();
                     if (item.enabled != undefined) jsonObj.active = item.enabled == true;
                 } else if (item.template == "panel") {
-                    jsonObj = RuntimeGenerator.genBasicPanelObjectJson();
+                    if (jsonObj == null) jsonObj = RuntimeGenerator.genBasicPanelObjectJson();
                     if (jsonObj && jsonObj.components && jsonObj.components.display) {
                         jsonObj.components.display.x = item.left;
                         jsonObj.components.display.y = item.top;
@@ -96,7 +98,7 @@ export class Designer {
                     }
                     if (item.enabled != undefined) jsonObj.active = item.enabled == true;
                 } else {
-                    jsonObj = RuntimeGenerator.genBasicSpriteObjectJson(item.template);
+                    if (jsonObj == null) jsonObj = RuntimeGenerator.genBasicSpriteObjectJson(item.template);
                     if (jsonObj && jsonObj.components && jsonObj.components.display) {
                         jsonObj.components.display.x = item.left;
                         jsonObj.components.display.y = item.top;
@@ -107,7 +109,7 @@ export class Designer {
                     if (item.enabled != undefined) jsonObj.active = item.enabled == true;
                 }
                 console.log(jsonObj);
-                Ipc.writeFileSync(jsonFilepath, JSON.stringify(jsonObj));
+                Ipc.writeFileSync(jsonFilepath, JSON.stringify(jsonObj, null, 4));
                 this.eventChannel.publish('dlg-editor-open', {
                     url: "index-json.html#jsonedt?file=" + jsonFilepath,
                     width: 640, height: 480
@@ -466,15 +468,20 @@ export class Designer {
                     item.src = item.url;
                 }
                 // gen runtime json for every object
-                if ( /* item.type == 'image' && */ item.name && item.template) {
+                if (item.name && item.template) {
                     let jsonObj = null, scriptText = null;
+                    let jsonFilepath = rtJsonFolder + "/sprites/" + item.name + ".json";
+                    if (Ipc.isFileExistingSync(jsonFilepath)) {
+                        let jsonstr = Ipc.readFileSync(jsonFilepath);
+                        jsonObj = JSON.parse(jsonstr);
+                    }
                     if (item.template == "plot") {
-                        jsonObj = RuntimeGenerator.genBasicPlotObjectJson();
+                        if (jsonObj == null) jsonObj = RuntimeGenerator.genBasicPlotObjectJson();
                         // no need to gen script here...
                         //scriptText = RuntimeGenerator.genBasicPlotObjectScript();
                         if (item.enabled != undefined) jsonObj.active = item.enabled == true;
                     } else if (item.template == "panel") {
-                        jsonObj = RuntimeGenerator.genBasicPanelObjectJson();
+                        if (jsonObj == null) jsonObj = RuntimeGenerator.genBasicPanelObjectJson();
                         if (jsonObj && jsonObj.components && jsonObj.components.display) {
                             jsonObj.components.display.x = item.left;
                             jsonObj.components.display.y = item.top;
@@ -484,7 +491,7 @@ export class Designer {
                         }
                         if (item.enabled != undefined) jsonObj.active = item.enabled == true;
                     } else {
-                        jsonObj = RuntimeGenerator.genBasicSpriteObjectJson(item.template);
+                        if (jsonObj == null) jsonObj = RuntimeGenerator.genBasicSpriteObjectJson(item.template);
                         if (jsonObj && jsonObj.components && jsonObj.components.display) {
                             jsonObj.components.display.x = item.left;
                             jsonObj.components.display.y = item.top;

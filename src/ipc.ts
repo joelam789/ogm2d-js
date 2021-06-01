@@ -119,9 +119,9 @@ export class Ipc {
 		return "";
 	}
 
-	static isFileExistingSync(filepath: string): boolean {
+	static isFileExistingSync(filepath: string, abs: boolean = false): boolean {
 		if (!filepath) return false;
-		let result = ipcRenderer.sendSync("file-existing-sync", filepath);
+		let result = ipcRenderer.sendSync("file-existing-sync", filepath, abs);
 		if (result.error) {
 			console.error("check file existing error", result.error);
 			return false;
@@ -310,7 +310,7 @@ export class Ipc {
 	static async copyFilesAsync(srcFiles: Array<string>, 
 								destFiles: Array<string>, 
 								absFlag: number = 0): Promise<string> {
-		if (!srcFiles || !destFiles) return;
+		if (!srcFiles || !destFiles) return null;
 		let result = await ipcRenderer.invoke("copy-files-async", srcFiles, destFiles, absFlag);
 		if (result.error) {
 			console.error("copy files error", result.error);
@@ -320,7 +320,7 @@ export class Ipc {
 	}
 
 	static async readFileAsync(filepath: string, abs: boolean = false): Promise<string> {
-		if (!filepath) return "";
+		if (!filepath) return null;
 		let result = await ipcRenderer.invoke("read-file-async", filepath, abs);
 		if (result.error) {
 			console.error("read file error", result.error);
@@ -337,6 +337,16 @@ export class Ipc {
 			return result.error;
 		}
 		return "";
+	}
+
+	static readFileSync(filepath: string, abs: boolean = false): string {
+		if (!filepath) return null;
+		let result = ipcRenderer.sendSync("read-file-sync", filepath, abs);
+		if (result.error) {
+			console.error("read file error", result.error);
+			return null;
+		}
+		return result.content;
 	}
 
 	static writeFileSync(filepath: string, content: string, abs: boolean = false): string {

@@ -325,9 +325,8 @@ ipcMain.on("save-text-sync", (event, items) => {
     
 });
 
-ipcMain.on("file-existing-sync", (event, filepath) => {
-    let outputFilepath = filepath;
-    outputFilepath = __dirname + "/" + outputFilepath;
+ipcMain.on("file-existing-sync", (event, filepath, abs) => {
+    let outputFilepath = abs ? filepath : __dirname + "/" + filepath;
     try {
         event.returnValue = {error: null, existing: fs.existsSync(outputFilepath)};
     } catch(err) {
@@ -349,6 +348,21 @@ ipcMain.on("write-file-sync", (event, filepath, content, abs) => {
     } catch(err) {
         console.error(err);
         event.returnValue = {error: "Failed to write file"};
+    }
+});
+
+ipcMain.on("read-file-sync", (event, filepath, abs) => {
+    try {
+        let inputFilepath = abs ? filepath : __dirname + "/" + filepath;
+        if (!inputFilepath || !fs.existsSync(inputFilepath)) {
+            event.returnValue = {error: "Invalid file path", content: null};
+            return;
+        }
+        let content = fs.readFileSync(inputFilepath, 'utf8');
+        event.returnValue = {error: null, content: content};
+    } catch(err) {
+        console.error(err);
+        event.returnValue = {error: "Failed to read file", content: null};
     }
 });
 
