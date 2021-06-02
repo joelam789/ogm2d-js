@@ -1,4 +1,10 @@
 
+.my-icon-new{
+	background:url('my-icons/new.png') no-repeat center center;
+}
+.my-icon-open{
+	background:url('my-icons/open.png') no-repeat center center;
+}
 .my-icon-save{
 	background:url('my-icons/save.png') no-repeat center center;
 }

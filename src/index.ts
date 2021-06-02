@@ -693,15 +693,41 @@ ipcMain.on("dlg-get-tileset-list", (event, srcDir) => {
     });
 });
 
+ipcMain.on("dlg-get-project-list", (event, srcDir) => {
+    fs.readdir(__dirname + "/" + srcDir, (err, files) => {
+        if (err) event.sender.send('dlg-get-project-list-return', {error: err, list: []});
+        else {
+            let list = [];
+            for (let filepath of files) {
+                let file = path.basename(filepath);
+                if (file != "_init") list.push(file);
+            }
+            event.sender.send('dlg-get-project-list-return', {error: null, list: list});
+        }
+    });
+});
+
 ipcMain.on("dlg-select-image-file", (event) => {
     dialog.showOpenDialog(mainWin, {
         defaultPath: __dirname,
         filters: [ { name: 'Images', extensions: ['jpg', 'png', 'bmp'] } ],
     }).then(filepath => {
         //console.log(filepath);
-        event.sender.send('dlg-select-image-file-return', {error: null, imgpath: filepath});
+        event.sender.send('dlg-select-image-file-return', {error: null, data: filepath});
     }).catch(err => {
-        event.sender.send('dlg-get-tileset-list-return', {error: err, imgpath: ""});
+        event.sender.send('dlg-select-image-file-return', {error: err, data: null});
+    });
+});
+
+ipcMain.on("dlg-select-json-file", (event) => {
+    dialog.showOpenDialog(mainWin, {
+        defaultPath: __dirname,
+        filters: [ { name: 'JSON', extensions: ['json'] } ],
+    }).then(filepath => {
+        //console.log(filepath);
+        event.sender.send('dlg-select-json-file-return', {error: null, data: filepath});
+    }).catch(err => {
+        event.sender.send('dlg-select-json-file-return', {error: err, data: null});
     });
 });
 
@@ -851,4 +877,9 @@ ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
         return {error: "Failed to save tilemap file", outpath: ""};
     }
     
+});
+
+
+ipcMain.on("reload-project", (event, projectName) => {
+    mainWin.loadURL('file://' + __dirname + '/index.html?project=' + projectName);
 });

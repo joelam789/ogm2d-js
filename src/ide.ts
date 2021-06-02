@@ -7,9 +7,11 @@ import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
 import { RuntimeGenerator } from "./generator";
+import { SelectProjectDlg } from './popups/select-project';
 
 import { App } from "./app";
 import { Ipc } from "./ipc";
+
 
 @autoinject()
 export class Ide {
@@ -151,9 +153,10 @@ export class Ide {
             this.closeEditorDlg();
         }));
 
-        this.subscribers.push(this.eventChannel.subscribe("dlg-switch-to-script", (filepath) => {
+        this.subscribers.push(this.eventChannel.subscribe("dlg-switch-to-script", (setting) => {
+            Ipc.writeFileSync(setting.filepath, setting.content);
             this.closeEditorDlg();
-            let filename = filepath.substring(0, filepath.lastIndexOf('.'));
+            let filename = setting.filepath.substring(0, setting.filepath.lastIndexOf('.'));
             let scriptfile = filename + ".ts";
             this.eventChannel.publish('dlg-editor-open', {
                 url: "index-script.html#scriptedt?file=" + scriptfile,
@@ -212,7 +215,26 @@ export class Ide {
             this.tryToReadScript(settings.filepath, settings.classname);
         }));
 
-        App.openProject("workspace/project2/main.json", () => {
+        this.subscribers.push(this.eventChannel.subscribe("ide-open-project", () => {
+            this.openProject();
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-select-json-file", () => {
+            console.log("Try to select a json file for Dialog...");
+            this.selectJsonFile();
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-get-project-list", () => {
+            this.getProjectListToSelect();
+        }));
+
+        //App.busy = false;
+
+        let projectName = App.getUrlParamByName("project");
+        console.log("project name - ", projectName);
+        if (!projectName) projectName = "_init";
+
+        App.loadProject("workspace/" + projectName + "/main.json", () => {
             this.eventChannel.publish('project-reloaded');
             App.busy = false;
         });
@@ -305,11 +327,26 @@ export class Ide {
         });
     }
 
+    getProjectListToSelect() {
+        let srcDir = "/workspace";
+        Ipc.getProjectListToSelect(srcDir, (list) => {
+            this.eventChannel.publish('dlg-get-project-list-return', list);
+        });
+    }
+
     selectImageFile() {
         Ipc.selectImageFile((imgpath) => {
             console.log(imgpath);
             let ret: any = imgpath;
             this.editorFrame.contentWindow.appEvent.publish('dlg-select-image-file-return', ret.filePaths[0]);
+        });
+    }
+
+    selectJsonFile() {
+        Ipc.selectJsonFile((filepath) => {
+            console.log(filepath);
+            let ret: any = filepath;
+            this.eventChannel.publish('dlg-select-json-file-return', ret.filePaths[0]);
         });
     }
 
@@ -342,6 +379,7 @@ export class Ide {
 
     async reloadGameSize() {
         let rtGameFile = App.projectPath + "/design/template/games/game.json"; // must be game.json...
+        if (!Ipc.isFileExistingSync(rtGameFile)) return;
         let gameJsonStr = await Ipc.readFileAsync(rtGameFile, false);
         if (gameJsonStr) {
             let gameJson = JSON.parse(gameJsonStr);
@@ -461,6 +499,21 @@ export class Ide {
         }
         
 
+    }
+
+    openProject() {
+        console.log("open select project dialog...");
+        this.dialogService.open({viewModel: SelectProjectDlg, model: 0})
+            .whenClosed((response) => {
+                if (!response.wasCancelled && response.output != undefined) {
+                    console.log(response.output);
+                    let projectName = response.output[0];
+                    if (projectName) Ipc.reloadProject(projectName);
+                    
+                } else {
+                    console.log('Give up selecting project to open');
+                }
+            });
     }
 
     

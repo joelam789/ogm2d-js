@@ -166,7 +166,7 @@ export class App {
 		App.theme = themeName;
 	}
 
-	static openProject(url: string, callback?: (project?: any)=>void) {
+	static loadProject(url: string, callback?: (project?: any)=>void) {
 		HttpClient.getJSON(url, null, (json) => {
 			console.log(json);
 			if (json) {

@@ -6,6 +6,8 @@
 		"yes": "是的",
         "no": "不是",
 		"confirm": "操作确认",
+		"open-project": "打开项目",
+		"project-file": "项目文件",
         "save-file-ok": "成功保存文件到以下路径: "
     },
 
@@ -125,6 +127,10 @@
     "explorer": {
         "scenes": "场景",
         "objects": "物件"
+    },
+	
+	"logger": {
+        "message": "消息"
     },
 	
 	"editor": {

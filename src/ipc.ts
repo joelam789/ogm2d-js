@@ -253,7 +253,7 @@ export class Ipc {
         ipcRenderer.send("dlg-get-tilemap-list", tilemapDir);
 	}
 
-	static getTilesetListToSelect(tilesetDir: string, callback: (tilemapList: Array<string>)=>void) {
+	static getTilesetListToSelect(fromDir: string, callback: (list: Array<string>)=>void) {
 		ipcRenderer.once("dlg-get-tileset-list-return", (event, result) => {
             if (result.error) {
 				console.error("dlg-get-tileset-list", result.error);
@@ -262,19 +262,43 @@ export class Ipc {
 				if (callback) callback(result.list);
 			}
         });
-        ipcRenderer.send("dlg-get-tileset-list", tilesetDir);
+        ipcRenderer.send("dlg-get-tileset-list", fromDir);
 	}
 
-	static selectImageFile(callback: (imgpath: string)=>void) {
+	static getProjectListToSelect(fromDir: string, callback: (list: Array<string>)=>void) {
+		ipcRenderer.once("dlg-get-project-list-return", (event, result) => {
+            if (result.error) {
+				console.error("dlg-get-project-list", result.error);
+				if (callback) callback([]);
+			} else {
+				if (callback) callback(result.list);
+			}
+        });
+        ipcRenderer.send("dlg-get-project-list", fromDir);
+	}
+
+	static selectImageFile(callback: (filepath: string)=>void) {
 		ipcRenderer.once("dlg-select-image-file-return", (event, result) => {
             if (result.error) {
 				console.error("dlg-select-image-file-return", result.error);
 				if (callback) callback("");
 			} else {
-				if (callback) callback(result.imgpath);
+				if (callback) callback(result.data);
 			}
         });
         ipcRenderer.send("dlg-select-image-file");
+	}
+
+	static selectJsonFile(callback: (filepath: string)=>void) {
+		ipcRenderer.once("dlg-select-json-file-return", (event, result) => {
+            if (result.error) {
+				console.error("dlg-select-json-file-return", result.error);
+				if (callback) callback("");
+			} else {
+				if (callback) callback(result.data);
+			}
+        });
+        ipcRenderer.send("dlg-select-json-file");
 	}
 
 	static copyImageFile(imgpath, outDir, smallw, smallh, callback: (newpath: string)=>void) {
@@ -369,5 +393,7 @@ export class Ipc {
 		return "";
 	}
 	
-	
+	static reloadProject(projectName: string) {
+        ipcRenderer.send("reload-project", projectName);
+	}
 }

@@ -16,16 +16,20 @@ export class Logger {
 
     bgLogMonitor: any = null;
 
+    labelMessage: string = "Message";
+
     mainLogText: string = "";
     updatingBgLog = false;
 
     subscribers: Array<Subscription> = [];
     
     constructor(public router: Router, public eventChannel: EventAggregator, public i18n: I18N, public dialogService: DialogService) {
+        this.labelMessage = this.i18n.tr('logger.message');
         this.subscribers = [];
     }
 
     attached(argument) {
+
         this.gui = ($('#logger') as any).tabs.bind($('#logger'));
         if (this.gui) this.gui();
 

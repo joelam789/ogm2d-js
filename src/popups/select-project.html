@@ -1,0 +1,23 @@
+<template>
+  <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 50%;
+  width: 480px; height: 200px; margin-left: -240px; margin-top: -100px;">
+    <ux-dialog-header class="panel-heading">
+        <div class="panel-title" style="font-size:large" i18n="app.open-project">Open project</div>
+    </ux-dialog-header>
+
+    <ux-dialog-body class="panel-body">
+      <div class="list-group" style="max-height: 300px; overflow:auto;">
+        <button repeat.for="item of datalist" type="button" class="list-group-item list-group-item-action 
+        ${item.selected ? 'active py-2' : 'py-2'}" click.trigger="$parent.selectItem(item.name)">
+        ${item.name}
+        </button>
+		  </div>
+
+    </ux-dialog-body>
+    
+    <ux-dialog-footer class="panel-footer">
+        <button class="btn btn-success" click.trigger="controller.ok(currentSelectedItems)" i18n="app.ok">OK</button>
+        <button class="btn btn-danger" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
+    </ux-dialog-footer>
+  </ux-dialog>
+</template>

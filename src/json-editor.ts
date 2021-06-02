@@ -112,7 +112,11 @@ export class JsonEditorPage {
     }
 
     switchToScript() {
-        (window.parent as any).appEvent.publish('dlg-switch-to-script', this.jsonFilepath);
+        let setting = {
+            filepath: this.jsonFilepath,
+            content: this.editor.getText()
+        };
+        (window.parent as any).appEvent.publish('dlg-switch-to-script', setting);
     }
 
 }

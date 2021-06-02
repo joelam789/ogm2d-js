@@ -6,6 +6,8 @@
 		"yes": "Yes",
         "no": "No",
 		"confirm": "Confirmation",
+		"open-project": "Open project",
+		"project-file": "Project file",
 		"save-file-ok": "Save file successfully to the path below: "
     },
 
@@ -126,6 +128,10 @@
     "explorer": {
         "scenes": "Scenes",
         "objects": "Objects"
+    },
+	
+	"logger": {
+        "message": "Message"
     },
 	
 	"editor": {

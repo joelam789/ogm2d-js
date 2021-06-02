@@ -1,0 +1,129 @@
+{
+	"name": "project2",
+	
+	"version": "0.0.1",
+	
+	"containers": {
+
+		"collector": [
+			{
+				"group": "sprites",
+				"draggable": true, 
+				"droppable": false,
+				"movable": true,
+				"width": 64,
+				"height": 64,
+				"folder": "design/collector/sprites",
+				"content": "",
+				"title": "collector.sprites",
+				"tools": [
+					
+				]
+			},
+			{
+				"group": "tilemaps",
+				"draggable": true, 
+				"droppable": false,
+				"movable": false,
+				"width": 128,
+				"height": 128,
+				"folder": "design/collector/tilemaps",
+				"content": "",
+				"title": "collector.tilemaps",
+				"tools": [
+					
+				]
+			}
+		],
+		"explorer": [
+			{
+				"group": "scenes",
+				"folder": "design/explorer",
+				"content": "design/explorer/scenes.json",
+				"title": "explorer.scenes",
+				"tools": [
+					
+				]
+			},
+			{
+				"group": "objects",
+				"folder": "design/explorer",
+				"content": "design/explorer/objects.json",
+				"title": "explorer.objects",
+				"tools": [
+				]
+			}
+		],
+		"inspector": [
+			{
+				"group": "property",
+				"content": "design/inspector/properties.json",
+				"title": "inspector.properties",
+				"tools": []
+			},
+			{
+				"group": "event",
+				"content": "design/inspector/events.json",
+				"title": "inspector.events",
+				"tools": []
+			}
+		],
+		"topbar": [
+			{
+				"group": "ide",
+				"name": "new-project",
+				"icon": "my-icon-new",
+				"text": "topbar.new"
+			},
+			{
+				"group": "ide",
+				"name": "open-project",
+				"icon": "my-icon-open",
+				"text": "topbar.open"
+			}
+		],
+		"designer": {
+			"scene1": "design/designer/scene1.json"
+		}
+
+	},
+
+	"converters": {
+
+	},
+
+	"dialogs": {
+	
+		"dirtree": {
+			"tools": [
+				{
+					"group": "dirtree",
+					"name": "add-folder",
+					"text": "toolbar.dirtree.add"
+				},
+				{
+					"group": "dirtree",
+					"name": "rename-folder",
+					"text": "toolbar.dirtree.rename"
+				},
+				{
+					"group": "dirtree",
+					"name": "remove-folder",
+					"text": "toolbar.dirtree.remove"
+				},
+				{
+					"group": "dirtree",
+					"name": "move-folder",
+					"text": "toolbar.dirtree.move"
+				},
+				{
+					"group": "dirtree",
+					"name": "move-files",
+					"text": "toolbar.dirtree.file"
+				}
+			]
+		}
+
+	}
+    
+}

@@ -176,6 +176,18 @@
 		"topbar": [
 			{
 				"group": "ide",
+				"name": "new-project",
+				"icon": "my-icon-new",
+				"text": "topbar.new"
+			},
+			{
+				"group": "ide",
+				"name": "open-project",
+				"icon": "my-icon-open",
+				"text": "topbar.open"
+			},
+			{
+				"group": "ide",
 				"name": "save-current",
 				"icon": "my-icon-save",
 				"text": "topbar.save-current"
