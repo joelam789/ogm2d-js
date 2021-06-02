@@ -1,0 +1,22 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "state": "open",
+			"text": "project1",
+			"iconCls": "my-icon-folder",
+            "children":
+			[
+                {
+					"text": "scene1",
+					"iconCls": "my-icon-file",
+					"attributes": 
+					{
+                        "data": "design/explorer/scenes/scene1.json"
+                    }
+                }
+            ]
+        }
+    ]
+    
+}
