@@ -1,0 +1,78 @@
+{
+    "rows": [
+        {
+            "group": "Base", 
+            "name": "name", 
+            "value": "Name",
+            "editor": null
+        },
+        {
+            "group": "Base",
+            "name": "left",
+            "value": "0",
+            "editor": {
+                "type": "numberbox",
+                "options": { "precision": 2 }
+            }
+        },
+        {
+            "group": "Base",
+            "name": "top",
+            "value": "0",
+            "editor": {
+                "type": "numberbox",
+                "options": { "precision": 2 }
+            }
+        },
+        {
+            "group": "Base",
+            "name": "angle",
+            "value": "0",
+            "editor": {
+                "type": "numberbox",
+                "options": {
+                    "min": 0,
+                    "max": 360,
+                    "precision": 2
+                }
+            }
+        },
+        {
+            "group": "Base",
+            "name": "scaleX",
+            "value": "0",
+            "editor": {
+                "type": "numberbox",
+                "options": {
+                    "min": 0,
+                    "precision": 2
+                }
+            }
+        },
+        {
+            "group": "Base",
+            "name": "scaleY",
+            "value": "0",
+            "editor": {
+                "type": "numberbox",
+                "options": {
+                    "min": 0,
+                    "precision": 2
+                }
+            }
+        },
+
+        {
+            "group": "Extension",
+            "name": "enabled",
+            "value": "true",
+            "editor": {
+                "type": "checkbox",
+                "options": {
+                    "on": "true",
+                    "off": "false"
+                }
+            }
+        }
+    ]
+}

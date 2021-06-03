@@ -1,0 +1,25 @@
+{
+	"script": true,
+	
+	"title": "project1",
+	
+	"components":
+	{
+		"display":
+		{
+			"width": 640,
+			"height": 480,
+			"layers": ["bg", "map", "npc", "obj", "fog", "ui"]
+		},
+		
+		"event":
+        {
+            "onInit": "onInit"
+        }
+	},
+
+	"packs": [],
+
+	"basics": ["display", "stage", "tween", "transition", "mouse", "keyboard", "gamepad", "event"],
+	"scenes": ["stage1"]
+}

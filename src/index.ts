@@ -331,7 +331,45 @@ ipcMain.on("file-existing-sync", (event, filepath, abs) => {
         event.returnValue = {error: null, existing: fs.existsSync(outputFilepath)};
     } catch(err) {
         console.error(err);
-        event.returnValue = {error: "get error when check file existing", existing: false};
+        event.returnValue = {error: "get errors when check file existing", existing: false};
+    }
+});
+
+ipcMain.on("create-dir-sync", (event, filepath, abs) => {
+    let outputFolder = abs ? filepath : __dirname + "/" + filepath;
+    try {
+        if (!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder, { recursive: true });
+        event.returnValue = {error: null, success: fs.existsSync(outputFolder)};
+    } catch(err) {
+        console.error(err);
+        event.returnValue = {error: "get errors when create new dir", success: false};
+    }
+});
+
+ipcMain.on("copy-dir-content-sync", (event, src, dest, absFlag = 0, exts = null) => {
+    let srcpath = (absFlag & 1) != 0 ? src : __dirname + "/" + src;
+    let destpath = (absFlag & 2) != 0 ? dest : __dirname + "/" + dest;
+    //console.log("copy-dir-content from ", srcpath, ' to ', destpath);
+    //if (exts && exts.length > 0) console.log("for ", exts);
+    try {
+        if (fs.existsSync(srcpath) && fs.existsSync(destpath)) {
+            fse.copySync(srcpath, destpath, {
+                filter: (file) => {
+                    if (!exts || exts.length <= 0) return true;
+                    if (file.indexOf('.') < 0) return true;
+                    for (let ext of exts) {
+                        if (file.endsWith(ext)) return true;
+                    }
+                    return false;
+                }
+            });
+            event.returnValue = {error: null};
+        } else {
+            event.returnValue = {error: "Folders not found"};
+        }
+    } catch(err) {
+        console.error(err);
+        event.returnValue = {error: "Failed to copy dir content"};
     }
 });
 
@@ -496,8 +534,8 @@ ipcMain.handle("save-text-async", async (event, items) => {
 ipcMain.on("copy-dir-content", (event, src, dest, absFlag = 0, exts = null) => {
     let srcpath = (absFlag & 1) != 0 ? src : __dirname + "/" + src;
     let destpath = (absFlag & 2) != 0 ? dest : __dirname + "/" + dest;
-    console.log("copy-dir-content from ", srcpath, ' to ', destpath);
-    if (exts && exts.length > 0) console.log("for ", exts);
+    //console.log("copy-dir-content from ", srcpath, ' to ', destpath);
+    //if (exts && exts.length > 0) console.log("for ", exts);
     try {
         if (fs.existsSync(srcpath) && fs.existsSync(destpath)) {
             fse.copySync(srcpath, destpath, {
@@ -571,33 +609,6 @@ ipcMain.on("run-json-editor", (event, jsonFileUrl) => {
     } catch(err) {
         console.error(err);
         event.sender.send('run-json-editor-return', {error: "Failed to run json editor"});
-    }
-});
-
-ipcMain.on("copy-dir-content-sync", (event, src, dest, absFlag = 0, exts = null) => {
-    let srcpath = (absFlag & 1) != 0 ? src : __dirname + "/" + src;
-    let destpath = (absFlag & 2) != 0 ? dest : __dirname + "/" + dest;
-    //console.log("copy-dir-content from ", srcpath, ' to ', destpath);
-    //if (exts && exts.length > 0) console.log("for ", exts);
-    try {
-        if (fs.existsSync(srcpath) && fs.existsSync(destpath)) {
-            fse.copySync(srcpath, destpath, {
-                filter: (file) => {
-                    if (!exts || exts.length <= 0) return true;
-                    if (file.indexOf('.') < 0) return true;
-                    for (let ext of exts) {
-                        if (file.endsWith(ext)) return true;
-                    }
-                    return false;
-                }
-            });
-            event.returnValue = {error: null};
-        } else {
-            event.returnValue = {error: "Folders not found"};
-        }
-    } catch(err) {
-        console.error(err);
-        event.returnValue = {error: "Failed to copy dir content"};
     }
 });
 
@@ -700,7 +711,7 @@ ipcMain.on("dlg-get-project-list", (event, srcDir) => {
             let list = [];
             for (let filepath of files) {
                 let file = path.basename(filepath);
-                if (file != "_init") list.push(file);
+                if (file != "_init" && file != "_default" && file != "_sample") list.push(file);
             }
             event.sender.send('dlg-get-project-list-return', {error: null, list: list});
         }

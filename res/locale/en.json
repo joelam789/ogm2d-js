@@ -5,11 +5,19 @@
         "cancel": "Cancel",
 		"yes": "Yes",
         "no": "No",
+		"info": "Information",
 		"confirm": "Confirmation",
-		"open-project": "Open project",
-		"project-file": "Project file",
 		"save-file-ok": "Save file successfully to the path below: "
     },
+	
+	"project": {
+		"new-project": "Create new project",
+		"open-project": "Open project",
+		"project-file": "Project file",
+		"project-name": "Project name",
+		"screen-width": "Screen width",
+		"screen-height": "Screen height"
+	},
 
 	"home": {
         "welcome": "Welcome",

@@ -8,6 +8,8 @@ import { I18N } from 'aurelia-i18n';
 
 import { RuntimeGenerator } from "./generator";
 import { SelectProjectDlg } from './popups/select-project';
+import { CreateNewProjectDlg } from './popups/new-project';
+import { CommonInfoDlg } from './popups/common-info';
 
 import { App } from "./app";
 import { Ipc } from "./ipc";
@@ -226,6 +228,10 @@ export class Ide {
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-get-project-list", () => {
             this.getProjectListToSelect();
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("ide-new-project", () => {
+            this.createNewProject();
         }));
 
         //App.busy = false;
@@ -486,7 +492,7 @@ export class Ide {
 
         if (errmsg) console.log("Failed to copy html or js files - " + errmsg);
         else {
-            console.log("copying project files done");
+            console.log("copying project files done", gameJson.components.display);
             this.eventChannel.publish("add-ide-log", "Running current scene...");
             Ipc.runGame(App.projectPath + "/runtime/build/debug/index.html", 
                 gameJson.components.display.width,
@@ -512,6 +518,45 @@ export class Ide {
                     
                 } else {
                     console.log('Give up selecting project to open');
+                }
+            });
+    }
+
+    createNewProject() {
+        console.log("open new project dialog...");
+        this.dialogService.open({viewModel: CreateNewProjectDlg, model: 0})
+            .whenClosed((response) => {
+                if (!response.wasCancelled && response.output != undefined) {
+                    console.log(response.output);
+                    let projectSetting = response.output;
+                    let projectFolder = "/workspace/" + projectSetting.projectName;
+                    if (Ipc.isFileExistingSync(projectFolder)) {
+                        this.dialogService.open({viewModel: CommonInfoDlg, model: "A project with same name is already existing."});
+                    } else {
+                        //this.dialogService.open({viewModel: CommonInfoDlg, model: "Okay."});
+                        Ipc.createDirSync(projectFolder);
+                        Ipc.copyDirContentSync("/workspace/_sample", projectFolder, 0, []);
+                        
+                        let jsonstr = Ipc.readFileSync(projectFolder + "/design/explorer/scenes.json");
+                        let jsonobj = JSON.parse(jsonstr);
+                        jsonobj.items[0].text = projectSetting.projectName;
+                        jsonstr = JSON.stringify(jsonobj, null, 4);
+                        Ipc.writeFileSync(projectFolder + "/design/explorer/scenes.json", jsonstr);
+
+                        jsonstr = Ipc.readFileSync(projectFolder + "/design/template/games/game.json");
+                        jsonobj = JSON.parse(jsonstr);
+                        jsonobj.title = projectSetting.projectName;
+                        jsonobj.components.display.width = parseInt(projectSetting.screenWidth.toString(), 10);
+                        jsonobj.components.display.height = parseInt(projectSetting.screenHeight.toString(), 10);
+                        jsonstr = JSON.stringify(jsonobj, null, 4);
+                        Ipc.writeFileSync(projectFolder + "/design/template/games/game.json", jsonstr);
+
+                        Ipc.reloadProject(projectSetting.projectName);
+
+                    }
+                    
+                } else {
+                    console.log('Give up creating a new project');
                 }
             });
     }

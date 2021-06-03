@@ -1,0 +1,26 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "state": "open",
+			"text": "Sprites",
+			"iconCls": "my-icon-folder",
+            "children":
+			[
+                {
+					"text": "bunny",
+					"iconCls": "my-icon-file"
+                },
+				{
+					"text": "panel",
+					"iconCls": "my-icon-file"
+                },
+				{
+					"text": "plot",
+					"iconCls": "my-icon-file"
+                }
+            ]
+        }
+    ]
+    
+}

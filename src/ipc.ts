@@ -129,6 +129,16 @@ export class Ipc {
 		return result.existing;
 	}
 
+	static createDirSync(filepath: string, abs: boolean = false): boolean {
+		if (!filepath) return false;
+		let result = ipcRenderer.sendSync("create-dir-sync", filepath, abs);
+		if (result.error) {
+			console.error("create dir error", result.error);
+			return false;
+		}
+		return result.success;
+	}
+
 	static copyDirContent(src: string, dest: string, 
 		absFlag: number = 0, exts: Array<string> = null, callback: (err: string)=>void) {
 		if (!src || !dest) return;

@@ -5,11 +5,19 @@
         "cancel": "取消",
 		"yes": "是的",
         "no": "不是",
+		"info": "消息",
 		"confirm": "操作确认",
-		"open-project": "打开项目",
-		"project-file": "项目文件",
         "save-file-ok": "成功保存文件到以下路径: "
     },
+	
+	"project": {
+		"new-project": "创建新项目",
+		"open-project": "打开项目",
+		"project-file": "项目文件",
+		"project-name": "项目名称",
+		"screen-width": "屏幕宽度",
+		"screen-height": "屏幕高度"
+	},
 
     "home": {
         "welcome": "欢迎",

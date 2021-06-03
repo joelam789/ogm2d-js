@@ -1,0 +1,260 @@
+{
+	"name": "project1",
+	
+	"version": "0.0.1",
+	
+	"containers": {
+
+		"collector": [
+			{
+				"group": "sprites",
+				"draggable": true, 
+				"droppable": false,
+				"movable": true,
+				"width": 64,
+				"height": 64,
+				"folder": "design/collector/sprites",
+				"content": "",
+				"title": "collector.sprites",
+				"tools": [
+					{
+						"group": "sprites",
+						"name": "add-sprite",
+						"icon": "my-add-file",
+						"text": "toolbar.sprites.add"
+					},
+					{
+						"group": "sprites",
+						"name": "edit-sprite",
+						"icon": "my-edit-file",
+						"text": "toolbar.sprites.edit"
+					},
+					{
+						"group": "sprites",
+						"name": "edit-sprite-json",
+						"icon": "my-json-file",
+						"text": "toolbar.sprites.json"
+					},
+					{
+						"group": "sprites",
+						"name": "edit-sprite-script",
+						"icon": "my-script-file",
+						"text": "toolbar.sprites.script"
+					},
+					{
+						"group": "sprites",
+						"name": "rename-sprite",
+						"icon": "my-rename-file",
+						"text": "toolbar.sprites.rename"
+					},
+					{
+						"group": "sprites",
+						"name": "remove-sprite",
+						"icon": "my-remove-file",
+						"text": "toolbar.sprites.remove"
+					},
+					{
+						"group": "sprites",
+						"name": ""
+					},
+					{
+						"group": "sprites",
+						"name": "edit-sprite-tree",
+						"icon": "my-edit-tree",
+						"text": "toolbar.sprites.tree"
+					}
+				]
+			},
+			{
+				"group": "tilemaps",
+				"draggable": true, 
+				"droppable": false,
+				"movable": false,
+				"width": 128,
+				"height": 128,
+				"folder": "design/collector/tilemaps",
+				"content": "",
+				"title": "collector.tilemaps",
+				"tools": [
+					{
+						"group": "tilemaps",
+						"name": "refresh-tilemaps",
+						"icon": "my-icon-refresh",
+						"text": "toolbar.tilemaps.refresh"
+					},
+					{
+						"group": "tilemaps",
+						"name": ""
+					},
+					{
+						"group": "tilemaps",
+						"name": "edit-tilemaps-tree",
+						"icon": "my-edit-tree",
+						"text": "toolbar.tilemaps.tree"
+					}
+				]
+			}
+		],
+		"explorer": [
+			{
+				"group": "scenes",
+				"folder": "design/explorer",
+				"content": "design/explorer/scenes.json",
+				"title": "explorer.scenes",
+				"tools": [
+					{
+						"group": "scenes",
+						"name": "add-scene",
+						"icon": "my-add-file",
+						"text": "toolbar.scenes.add"
+					},
+					{
+						"group": "scenes",
+						"name": "edit-scene",
+						"icon": "my-edit-file",
+						"text": "toolbar.scenes.edit"
+					},
+					{
+						"group": "scenes",
+						"name": "edit-scene-json",
+						"icon": "my-json-file",
+						"text": "toolbar.scenes.json"
+					},
+					{
+						"group": "scenes",
+						"name": "edit-scene-script",
+						"icon": "my-script-file",
+						"text": "toolbar.scenes.script"
+					},
+					{
+						"group": "scenes",
+						"name": "rename-scene",
+						"icon": "my-rename-file",
+						"text": "toolbar.scenes.rename"
+					},
+					{
+						"group": "scenes",
+						"name": "remove-scene",
+						"icon": "my-remove-file",
+						"text": "toolbar.scenes.remove"
+					},
+					{
+						"group": "scenes",
+						"name": ""
+					},
+					{
+						"group": "scenes",
+						"name": "edit-scene-tree",
+						"icon": "my-edit-tree",
+						"text": "toolbar.scenes.tree"
+					}
+				]
+			},
+			{
+				"group": "objects",
+				"folder": "design/explorer",
+				"content": "design/explorer/objects.json",
+				"title": "explorer.objects",
+				"tools": [
+				]
+			}
+		],
+		"inspector": [
+			{
+				"group": "property",
+				"content": "design/inspector/properties.json",
+				"title": "inspector.properties",
+				"tools": []
+			},
+			{
+				"group": "event",
+				"content": "design/inspector/events.json",
+				"title": "inspector.events",
+				"tools": []
+			}
+		],
+		"topbar": [
+			{
+				"group": "ide",
+				"name": "new-project",
+				"icon": "my-icon-new",
+				"text": "topbar.new"
+			},
+			{
+				"group": "ide",
+				"name": "open-project",
+				"icon": "my-icon-open",
+				"text": "topbar.open"
+			},
+			{
+				"group": "ide",
+				"name": "save-current",
+				"icon": "my-icon-save",
+				"text": "topbar.save-current"
+			},
+			{
+				"group": "ide",
+				"name": ""
+			},
+			{
+				"group": "ide",
+				"name": "run-current",
+				"icon": "my-icon-run",
+				"text": "topbar.run-current"
+			},
+			{
+				"group": "ide",
+				"name": ""
+			},
+			{
+				"group": "ide",
+				"name": "edit-tilemap",
+				"icon": "my-icon-tilemap",
+				"text": "topbar.edit-tilemap"
+			}
+		],
+		"designer": {
+			"scene1": "design/designer/scene1.json"
+		}
+
+	},
+
+	"converters": {
+
+	},
+
+	"dialogs": {
+	
+		"dirtree": {
+			"tools": [
+				{
+					"group": "dirtree",
+					"name": "add-folder",
+					"text": "toolbar.dirtree.add"
+				},
+				{
+					"group": "dirtree",
+					"name": "rename-folder",
+					"text": "toolbar.dirtree.rename"
+				},
+				{
+					"group": "dirtree",
+					"name": "remove-folder",
+					"text": "toolbar.dirtree.remove"
+				},
+				{
+					"group": "dirtree",
+					"name": "move-folder",
+					"text": "toolbar.dirtree.move"
+				},
+				{
+					"group": "dirtree",
+					"name": "move-files",
+					"text": "toolbar.dirtree.file"
+				}
+			]
+		}
+
+	}
+    
+}
