@@ -909,8 +909,8 @@ ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
         let orgSize = imgsize(outputFilepath);
         let newWidth = orgSize.width >= orgSize.height ? 128 : 0;
         let newHeight = orgSize.width <= orgSize.height ? 128 : 0;
-        if (newWidth == 0) newWidth = orgSize.width * 128 / orgSize.height;
-        if (newHeight == 0) newHeight = orgSize.height * 128 / orgSize.width;
+        if (newWidth == 0) newWidth = Math.round(orgSize.width * 128 / orgSize.height);
+        if (newHeight == 0) newHeight = Math.round(orgSize.height * 128 / orgSize.width);
         //if (fs.existsSync(outputPreviewFilepath)) fs.unlinkSync(outputPreviewFilepath);
         //console.log(outputFilepath);
         await sharp(outputFilepath).resize(newWidth, newHeight).toFile(outputPreviewFilepath);
