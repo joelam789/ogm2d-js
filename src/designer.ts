@@ -207,6 +207,8 @@ export class Designer {
                         panel.enabled = true;
                         panel.selectable = movable;
 
+                        panel.bgimg = panel.selectable ? "false" : "true";
+
                         if (panel.template) {
                             let counter = this._counterMap.get(key);
                             if (!counter) this._counterMap.set(key, new Map<string, number>());
@@ -242,6 +244,8 @@ export class Designer {
                             oImg.template = data.name;
                             oImg.enabled = true;
                             oImg.selectable = movable;
+
+                            oImg.bgimg = oImg.selectable ? "false" : "true";
     
                             if (oImg.template == "plot") oImg.hasControls = false;
     
@@ -357,6 +361,14 @@ export class Designer {
 
                 if (json) newCanvas.loadFromJSON(json, () => {
                     newCanvas.renderAll.bind(newCanvas);
+                    newCanvas.forEachObject(function(obj) {
+                        console.log(obj.template);
+                        if (obj.template == "plot") obj.hasControls = false;
+                        if (obj.bgimg == "true") {
+                            obj.selectable = false;
+                            obj.hoverCursor = 'default';
+                        }
+                    });
                     console.log("loaded json data to canvas - ");
                     //console.log(json);
                     this.updateCurrentTitleDisplay('*' + title, title);
@@ -454,7 +466,7 @@ export class Designer {
 
         this.eventChannel.publish("add-ide-log", "Saving current scene content...");
 
-        let json = canv.toJSON(['name', 'url', 'template', 'enabled']);
+        let json = canv.toJSON(['name', 'url', 'template', 'enabled', 'bgimg']);
         console.log(json);
         
         let output = [];
@@ -542,6 +554,8 @@ export class Designer {
         Ipc.saveTextSync(output);
 
         this.updateCurrentTitleDisplay('*' + title, title);
+
+        this.eventChannel.publish("add-ide-log", "Current scene saved.");
 
     }
 
