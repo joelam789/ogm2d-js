@@ -69,23 +69,29 @@ export class Explorer {
             if (!evt || !evt.node || evt.requester != "explorer") return;
             console.log(evt);
             if (evt.query == "json") {
+                let jsonFilepath = "";
                 if (evt.node.id == 1) { // project
                     //let jsonFilepath = App.projectPath + "/design/template/games/" + App.projectName + ".json";
-                    let jsonFilepath = App.projectPath + "/design/template/games/game.json"; // must be game.json...
-                    this.eventChannel.publish('dlg-editor-open', {
-                        url: "index-json.html#jsonedt?file=" + jsonFilepath,
-                        width: 640, height: 480
-                    });
+                    jsonFilepath = App.projectPath + "/design/template/games/game.json"; // must be game.json...
+                } else if (evt.node.iconCls.indexOf("file") >= 0) { // scene
+                    jsonFilepath = App.projectPath + "/design/template/scenes/"+ evt.node.text + "/" + evt.node.text + ".json"; // must be game.json...
                 }
+                if (jsonFilepath) this.eventChannel.publish('dlg-editor-open', {
+                    url: "index-json.html#jsonedt?file=" + jsonFilepath,
+                    width: 640, height: 480
+                });
             } else if (evt.query == "script") {
+                let scriptFilepath = "";
                 if (evt.node.id == 1) { // project
                     //let jsonFilepath = App.projectPath + "/design/template/games/" + App.projectName + ".json";
-                    let scriptFilepath = App.projectPath + "/design/template/games/game.ts"; // must be game.ts...
-                    this.eventChannel.publish('dlg-editor-open', {
-                        url: "index-script.html#scriptedt?file=" + scriptFilepath,
-                        width: 800, height: 600
-                    });
+                    scriptFilepath = App.projectPath + "/design/template/games/game.ts"; // must be game.ts...
+                } else if (evt.node.iconCls.indexOf("file") >= 0) { // scene
+                    scriptFilepath = App.projectPath + "/design/template/scenes/"+ evt.node.text + "/" + evt.node.text + ".ts"; // must be game.json...
                 }
+                if (scriptFilepath) this.eventChannel.publish('dlg-editor-open', {
+                    url: "index-script.html#scriptedt?file=" + scriptFilepath,
+                    width: 800, height: 600
+                });
             }
             
         }));

@@ -1,0 +1,19 @@
+{
+    "script": false,
+    "components": {
+        "display": {
+            "bgcolor": "#ffffff"
+        }
+    },
+    "preload": {
+        "images": [],
+        "musics": [],
+        "sounds": [],
+        "jsons": []
+    },
+    "systems": [
+        "motion"
+    ],
+    "sprites": [
+    ]
+}

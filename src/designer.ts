@@ -459,7 +459,12 @@ export class Designer {
         let output = [];
         let rtJsonFolder = App.projectPath + "/design/template/scenes/" + title;
 
-        let rtSceneJson = RuntimeGenerator.genBasicSceneJson();
+        let rtSceneJson = null;
+        if (Ipc.isFileExistingSync(rtJsonFolder + "/" + title + ".json")) {
+            let jsonstr = Ipc.readFileSync(rtJsonFolder + "/" + title + ".json");
+            rtSceneJson = JSON.parse(jsonstr);
+        }
+        if (rtSceneJson == null) rtSceneJson = RuntimeGenerator.genBasicSceneJson();
 
         if (json && json.objects) {
             for (let item of json.objects) {
