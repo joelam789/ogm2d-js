@@ -208,6 +208,20 @@ ipcMain.handle("get-dir-tree-async", async (event, currentPath, filePattern) => 
     } else return {error: "File path is not valid", path: filepath};
 });
 
+ipcMain.on("get-dir-tree-sync", (event, currentPath, filePattern) => {
+    let filepath = __dirname + "/" + currentPath;
+    if (fs.existsSync(filepath)) {
+        try {
+            let res = glob.sync(filepath + '/**/' + filePattern);
+            event.returnValue = {error: null, tree: res};
+        } catch(err) {
+            console.error(err);
+            event.returnValue = {error: "Failed to get dir tree", path: filepath};
+        }
+
+    } else event.returnValue = {error: "File path is not valid", path: filepath};
+});
+
 ipcMain.on("get-path-by-name", (event, folder, filename) => {
     //console.log(folder, filename);
     let filepath = __dirname + "/" + folder;
@@ -571,13 +585,33 @@ ipcMain.on("copy-files", (event, srcFiles, destFiles, absFlag = 0) => {
         for (let i=0; i<srcFiles.length; i++) {
             let srcpath = (absFlag & 1) != 0 ? srcFiles[i] : __dirname + "/" + srcFiles[i];
             let destpath = (absFlag & 2) != 0 ? destFiles[i] : __dirname + "/" + destFiles[i];
-            console.log("copy file from ", srcpath, ' to ', destpath);
+            //console.log("copy file from ", srcpath, ' to ', destpath);
             fs.copyFileSync(srcpath, destpath);
         }
         event.sender.send('copy-files-return', {error: null});
     } catch(err) {
         console.error(err);
         event.sender.send('copy-files-return', {error: "Failed to copy files"});
+    }
+    
+});
+
+ipcMain.on("delete-files-sync", (event, srcFiles, abs) => {
+
+    if (!srcFiles || srcFiles.length <= 0) {
+        event.returnValue = {error: "File paths not valid"};
+        return;
+    }
+
+    try {
+        for (let i=0; i<srcFiles.length; i++) {
+            let srcpath = abs ? srcFiles[i] : __dirname + "/" + srcFiles[i];
+            if (fs.existsSync(srcpath)) fs.unlinkSync(srcpath);
+        }
+        event.returnValue = {error: null};
+    } catch(err) {
+        console.error(err);
+        event.returnValue = {error: "Failed to delete files"};
     }
     
 });

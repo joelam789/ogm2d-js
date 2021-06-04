@@ -1,0 +1,24 @@
+<template>
+  <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 50%;
+  width: 500px; height: 200px; margin-left: -250px; margin-top: -100px;">
+    <ux-dialog-header class="panel-heading">
+        <div class="panel-title" style="font-size:large" i18n="scene.new-scene">Create new scene</div>
+    </ux-dialog-header>
+
+    <ux-dialog-body class="panel-body" style="overflow: hidden;">
+      <div style="height: 15px">&nbsp;</div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" i18n="scene.scene-name">Scene Name</span>
+        </div>
+        <input type="text" class="form-control" placeholder="" aria-label="" value.bind="sceneName">
+      </div>
+      <div style="height: 15px">&nbsp;</div>
+    </ux-dialog-body>
+    
+    <ux-dialog-footer class="panel-footer">
+        <button class="btn btn-success" click.trigger="controller.ok(sceneName)" i18n="app.ok">OK</button>
+        <button class="btn btn-danger" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
+    </ux-dialog-footer>
+  </ux-dialog>
+</template>

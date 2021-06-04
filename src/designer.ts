@@ -355,10 +355,11 @@ export class Designer {
                     (window as any).appEvent.publish('display-dblclick', {canvas: this, object: this.getActiveObject()} );
                 }.bind(newCanvas);
 
-                if (json) newCanvas.loadFromJSON(json, function() {
+                if (json) newCanvas.loadFromJSON(json, () => {
                     newCanvas.renderAll.bind(newCanvas);
                     console.log("loaded json data to canvas - ");
                     //console.log(json);
+                    this.updateCurrentTitleDisplay('*' + title, title);
                 });
 
             });

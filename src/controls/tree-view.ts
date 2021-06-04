@@ -57,6 +57,18 @@ export class TreeView {
                 });
             }));
 
+            this.subscribers.push(this.eventChannel.subscribe("tree-content-refresh", (evt) => {
+                //console.log("tree refresh request - " , this.treeId, evt);
+                if (evt.treeId == this.treeId) {
+                    HttpClient.getJSON(this.dataSource, null, (json) => {
+                        if (json && json[this.rootName]) {
+                            let treeNodes = json[this.rootName];
+                            this.gui("loadData", treeNodes);
+                        }
+                    });
+                }
+            }));
+
             if (this.gui && this.rootName && this.dataSource && this.dataSource.length > 0) {
                 HttpClient.getJSON(this.dataSource, null, (json) => {
                     //console.log(json);

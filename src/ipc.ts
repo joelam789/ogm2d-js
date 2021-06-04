@@ -61,6 +61,15 @@ export class Ipc {
 		return result.tree;
 	}
 
+	static getDirTreeSync(currentPath: string, filePattern: string = "*"): Array<string> {
+		let result = ipcRenderer.sendSync("get-dir-tree-sync", currentPath, filePattern);
+		if (result.error) {
+			console.error("get dir tree error", result.error);
+			return [];
+		}
+		return result.tree;
+	}
+
 	static getFilepathByName(folder: string, filename: string, callback: (filepath: string)=>void) {
 		ipcRenderer.once("get-path-by-name-return", (event, result) => {
 			if (result.error) {
@@ -127,6 +136,16 @@ export class Ipc {
 			return false;
 		}
 		return result.existing;
+	}
+
+	static deleteFilesSync(filepaths: Array<string>, abs: boolean = false): boolean {
+		if (!filepaths) return false;
+		let result = ipcRenderer.sendSync("delete-files-sync", filepaths, abs);
+		if (result.error) {
+			console.error("delete files error", result.error);
+			return false;
+		}
+		return true;
 	}
 
 	static createDirSync(filepath: string, abs: boolean = false): boolean {

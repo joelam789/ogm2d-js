@@ -18,6 +18,12 @@
 		"screen-width": "Screen width",
 		"screen-height": "Screen height"
 	},
+	
+	"scene": {
+		"new-scene": "Create new scene",
+		"open-scene": "Open scene",
+		"scene-name": "Scene name"
+	},
 
 	"home": {
         "welcome": "Welcome",

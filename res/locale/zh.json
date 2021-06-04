@@ -18,6 +18,12 @@
 		"screen-width": "屏幕宽度",
 		"screen-height": "屏幕高度"
 	},
+	
+	"scene": {
+		"new-scene": "创建新场景",
+		"open-scene": "打开场景",
+		"scene-name": "场景名称"
+	},
 
     "home": {
         "welcome": "欢迎",
