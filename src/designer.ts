@@ -264,6 +264,14 @@ export class Designer {
                                     oImg.name = oImg.template.toString() + counter.get(oImg.template);
                                 }
                             }
+
+                            if (!movable) {
+                                canvas.forEachObject(function(obj) {
+                                    if (obj.bgimg == "true") {
+                                        canvas.remove(obj);
+                                    }
+                                });
+                            }
     
                             canvas.add(oImg).renderAll();
                             if (!movable) canvas.sendToBack(oImg);
@@ -506,8 +514,9 @@ export class Designer {
                     }
                     if (item.template == "plot") {
                         if (jsonObj == null) jsonObj = RuntimeGenerator.genBasicPlotObjectJson();
-                        // no need to gen script here...
-                        //scriptText = RuntimeGenerator.genBasicPlotObjectScript();
+                        if (!Ipc.isFileExistingSync(rtJsonFolder + "/sprites/" + item.name + ".ts")) {
+                            scriptText = RuntimeGenerator.genBasicPlotObjectScript();
+                        }
                         if (item.enabled != undefined) jsonObj.active = item.enabled == true;
                     } else if (item.template == "panel") {
                         if (jsonObj == null) jsonObj = RuntimeGenerator.genBasicPanelObjectJson();
