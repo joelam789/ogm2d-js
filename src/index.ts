@@ -616,6 +616,24 @@ ipcMain.on("delete-files-sync", (event, srcFiles, abs) => {
     
 });
 
+ipcMain.on("delete-dir-sync", (event, dirPath, abs) => {
+
+    if (!dirPath || dirPath.length <= 0) {
+        event.returnValue = {error: "Dir path not valid"};
+        return;
+    }
+
+    try {
+        let srcpath = abs ? dirPath : __dirname + "/" + dirPath;
+        if (fs.existsSync(srcpath)) fse.removeSync(srcpath);
+        event.returnValue = {error: null};
+    } catch(err) {
+        console.error(err);
+        event.returnValue = {error: "Failed to delete the dir"};
+    }
+    
+});
+
 ipcMain.on("run-game", (event, gameUrl, gameWidth, gameHeight) => {
     console.log("run game - ", gameUrl);
     if (!fs.existsSync(__dirname + "/" + gameUrl)) {

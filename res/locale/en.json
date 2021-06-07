@@ -37,6 +37,7 @@
     },
 	
 	"confirm": {
+		"remove-selected-scene": "Are you sure you want to remove selected scene?",
 		"remove-current-tileset": "Are you sure you want to remove current tileset?"
 	},
 

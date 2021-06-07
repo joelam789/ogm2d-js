@@ -37,6 +37,7 @@
     },
 	
 	"confirm": {
+		"remove-selected-scene": "确要删除所选的场景吗？",
 		"remove-current-tileset": "确要移除当前的瓷砖素材吗？"
 	},
 

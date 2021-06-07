@@ -57,6 +57,9 @@ export class Designer {
         this.subscribers.push(this.eventChannel.subscribe("open-canvas", (data) => {
             this.openCanvas(data.title, data.content);
         }));
+        this.subscribers.push(this.eventChannel.subscribe("close-canvas", (cavName) => {
+            this.closeCanvas(cavName);
+        }));
         this.subscribers.push(this.eventChannel.subscribe("ide-save-current", () => {
             let title = this.getCurrentTitle();
             if (!title || !this._canvasMap.has(title)) return;
@@ -295,6 +298,14 @@ export class Designer {
         json.name = display.name;
         this.eventChannel.publish('ui-update-editor', {target: "editor-" + editorName, data: json});
 
+    }
+
+    closeCanvas(title: string) {
+        if (!this.gui) return;
+        if (this.gui("getTab", title)) {
+            this.gui("close", title);
+            this._canvasMap.delete(title);
+        }
     }
     
     openCanvas(title: string, url: string) {

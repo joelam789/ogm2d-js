@@ -148,6 +148,16 @@ export class Ipc {
 		return true;
 	}
 
+	static deleteDirSync(dirpath: string, abs: boolean = false): boolean {
+		if (!dirpath) return false;
+		let result = ipcRenderer.sendSync("delete-dir-sync", dirpath, abs);
+		if (result.error) {
+			console.error("delete dir error", result.error);
+			return false;
+		}
+		return true;
+	}
+
 	static createDirSync(filepath: string, abs: boolean = false): boolean {
 		if (!filepath) return false;
 		let result = ipcRenderer.sendSync("create-dir-sync", filepath, abs);

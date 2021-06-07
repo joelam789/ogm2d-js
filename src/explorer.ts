@@ -13,6 +13,7 @@ import { CreateNewSceneDlg } from './popups/new-scene';
 
 import { App } from "./app";
 import { Ipc } from "./ipc";
+import { CommonConfirmDlg } from './popups/common-confirm';
 
 
 @autoinject()
@@ -73,6 +74,10 @@ export class Explorer {
             this.createNewScene();
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("scenes-remove-scene", () => {
+            this.deleteSelectedScene();
+        }));
+
         this.subscribers.push(this.eventChannel.subscribe("tree-node-selection-reply", (evt) => {
             if (!evt || !evt.node || evt.requester != "explorer") return;
             console.log(evt);
@@ -100,6 +105,11 @@ export class Explorer {
                     url: "index-script.html#scriptedt?file=" + scriptFilepath,
                     width: 800, height: 600
                 });
+            } else if (evt.query == "delete") {
+                if (evt.node.iconCls.indexOf("file") >= 0) { // scene
+                    this.deleteScene(evt.node.text);
+                }
+                
             }
             
         }));
@@ -168,6 +178,13 @@ export class Explorer {
         });
     }
 
+    deleteSelectedScene() {
+        this.eventChannel.publish('tree-node-selection-query', {
+            query: "delete",
+            sender: "explorer"
+        });
+    }
+
     openSceneTreeDlg() {
 
         console.log("open scenes tree editor");
@@ -194,52 +211,90 @@ export class Explorer {
     createNewScene() {
         console.log("open new scene dialog...");
         this.dialogService.open({viewModel: CreateNewSceneDlg, model: 0})
-            .whenClosed((response) => {
-                if (!response.wasCancelled && response.output != undefined) {
-                    console.log(response.output);
-                    let newSceneName = response.output;
-                    let sceneJsonFilepath = App.projectPath + "/design/template/scenes/" + newSceneName + "/" + newSceneName + ".json";
-                    if (Ipc.isFileExistingSync(sceneJsonFilepath)) {
-                        this.dialogService.open({viewModel: CommonInfoDlg, model: "A scene with same name is already existing."});
-                    } else {
-                        //this.dialogService.open({viewModel: CommonInfoDlg, model: "Okay."});
-                        //Ipc.createDirSync(App.projectPath + "/design/template/scenes/" + newSceneName);
-                        
-                        let jsonobj = RuntimeGenerator.genBasicSceneJson();
-                        let jsonstr = JSON.stringify(jsonobj, null, 4);
-                        Ipc.writeFileSync(sceneJsonFilepath, jsonstr);
-
-                        let dsJsonPath = App.projectPath + "/design/explorer/scenes/" + newSceneName + ".json";
-                        let dsJsonObj = {
-                            version: "3.6.4",
-                            objects: []
-                        }
-                        Ipc.writeFileSync(dsJsonPath, JSON.stringify(dsJsonObj, null, 4));
-
-                        let treeJsonPath = App.projectPath + "/design/explorer/scenes.json";
-                        jsonstr = Ipc.readFileSync(treeJsonPath);
-                        let treeJsonObj = JSON.parse(jsonstr);
-                        treeJsonObj.items[0].children.push({
-                            text: newSceneName,
-                            iconCls: "my-icon-file",
-                            attributes: 
-                            {
-                                data: "design/explorer/scenes/" + newSceneName + ".json"
-                            }
-                        });
-                        jsonstr = JSON.stringify(treeJsonObj, null, 4);
-                        Ipc.writeFileSync(treeJsonPath, jsonstr);
-
-                        this.eventChannel.publish('tree-content-refresh', {
-                            treeId: "tree-scenes"
-                        });
-
-                    }
-                    
+        .whenClosed((response) => {
+            if (!response.wasCancelled && response.output != undefined) {
+                console.log(response.output);
+                let newSceneName = response.output;
+                let sceneJsonFilepath = App.projectPath + "/design/template/scenes/" + newSceneName + "/" + newSceneName + ".json";
+                if (Ipc.isFileExistingSync(sceneJsonFilepath)) {
+                    this.dialogService.open({viewModel: CommonInfoDlg, model: "A scene with same name is already existing."});
                 } else {
-                    console.log('Give up creating a new project');
+                    //this.dialogService.open({viewModel: CommonInfoDlg, model: "Okay."});
+                    //Ipc.createDirSync(App.projectPath + "/design/template/scenes/" + newSceneName);
+                    
+                    let jsonobj = RuntimeGenerator.genBasicSceneJson();
+                    let jsonstr = JSON.stringify(jsonobj, null, 4);
+                    Ipc.writeFileSync(sceneJsonFilepath, jsonstr);
+
+                    let dsJsonPath = App.projectPath + "/design/explorer/scenes/" + newSceneName + ".json";
+                    let dsJsonObj = {
+                        version: "3.6.4",
+                        objects: []
+                    }
+                    Ipc.writeFileSync(dsJsonPath, JSON.stringify(dsJsonObj, null, 4));
+
+                    let treeJsonPath = App.projectPath + "/design/explorer/scenes.json";
+                    jsonstr = Ipc.readFileSync(treeJsonPath);
+                    let treeJsonObj = JSON.parse(jsonstr);
+                    treeJsonObj.items[0].children.push({
+                        text: newSceneName,
+                        iconCls: "my-icon-file",
+                        attributes: 
+                        {
+                            data: "design/explorer/scenes/" + newSceneName + ".json"
+                        }
+                    });
+                    jsonstr = JSON.stringify(treeJsonObj, null, 4);
+                    Ipc.writeFileSync(treeJsonPath, jsonstr);
+
+                    this.eventChannel.publish('tree-content-refresh', {
+                        treeId: "tree-scenes"
+                    });
+
                 }
-            });
+                
+            } else {
+                console.log('Give up creating a new scene');
+            }
+        });
+    }
+
+    removeLeafFromTree(rootNode, nodeText) {
+        if (rootNode.children && rootNode.children.length > 0) {
+            for (let i = 0; i<rootNode.children.length; i++) {
+                let treeNode = rootNode.children[i];
+                if (treeNode.children) this.removeLeafFromTree(treeNode, nodeText);
+                else if (treeNode.iconCls == "my-icon-file") {
+                    if (treeNode.text == nodeText) {
+                        rootNode.children.splice(i, 1);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    deleteScene(sceneName: string) {
+        this.dialogService.open({viewModel: CommonConfirmDlg, model: this.i18n.tr("confirm.remove-selected-scene")})
+        .whenClosed((response) => {
+            if (!response.wasCancelled && response.output && response.output == 'yes') {
+                console.log("remove scene - ", sceneName);
+                let sceneJsonFileDir = App.projectPath + "/design/template/scenes/" + sceneName;
+                Ipc.deleteDirSync(sceneJsonFileDir);
+                let dsJsonPath = App.projectPath + "/design/explorer/scenes/" + sceneName + ".json";
+                Ipc.deleteFilesSync([dsJsonPath]);
+                let treeJsonPath = App.projectPath + "/design/explorer/scenes.json";
+                let jsonstr = Ipc.readFileSync(treeJsonPath);
+                let treeJsonObj = JSON.parse(jsonstr);
+                this.removeLeafFromTree(treeJsonObj.items[0], sceneName);
+                jsonstr = JSON.stringify(treeJsonObj, null, 4);
+                Ipc.writeFileSync(treeJsonPath, jsonstr);
+                this.eventChannel.publish('close-canvas', sceneName);
+                this.eventChannel.publish('tree-content-refresh', {
+                    treeId: "tree-scenes"
+                });
+            }
+        });
     }
     
 
