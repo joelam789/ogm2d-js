@@ -366,7 +366,8 @@ ipcMain.on("copy-dir-content-sync", (event, src, dest, absFlag = 0, exts = null)
     //console.log("copy-dir-content from ", srcpath, ' to ', destpath);
     //if (exts && exts.length > 0) console.log("for ", exts);
     try {
-        if (fs.existsSync(srcpath) && fs.existsSync(destpath)) {
+        if (fs.existsSync(srcpath)) {
+            if (!fs.existsSync(destpath)) fs.mkdirSync(destpath, { recursive: true });
             fse.copySync(srcpath, destpath, {
                 filter: (file) => {
                     if (!exts || exts.length <= 0) return true;

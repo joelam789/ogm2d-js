@@ -5,6 +5,12 @@
 .my-icon-open{
 	background:url('my-icons/open.png') no-repeat center center;
 }
+.my-icon-delete{
+	background:url('my-icons/delete.png') no-repeat center center;
+}
+.my-icon-delete-map{
+	background:url('my-icons/delete-map.png') no-repeat center center;
+}
 .my-icon-save{
 	background:url('my-icons/save.png') no-repeat center center;
 }

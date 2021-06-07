@@ -433,6 +433,8 @@ export class Ide {
         let srcDir = App.projectPath + "/runtime/project/res";
         let destDir = App.projectPath + "/runtime/build/debug";
 
+        Ipc.deleteDirSync(destDir);
+
         let errmsg = Ipc.copyDirContentSync(srcDir, destDir, 0, []);
         if (errmsg) {
             console.log("Failed to copy resource - " + errmsg);
@@ -450,7 +452,7 @@ export class Ide {
 
         this.eventChannel.publish("add-ide-log", "Tanspiling script files...");
         let jsFiles = await Ipc.transpileTsFilesAsync(srcDir);
-        console.log(jsFiles);
+        //console.log(jsFiles);
 
         destDir = App.projectPath + "/runtime/build/debug";
         errmsg = Ipc.copyDirContentSync(srcDir, destDir, 0, ['.js']);

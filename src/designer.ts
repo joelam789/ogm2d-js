@@ -6,11 +6,13 @@ import { Router } from 'aurelia-router';
 import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
+import { HttpClient } from "./http-client";
+import { RuntimeGenerator } from "./generator";
+import { CommonConfirmDlg } from './popups/common-confirm';
+
 import { App } from "./app";
 import { Ipc } from "./ipc";
 
-import { HttpClient } from "./http-client";
-import { RuntimeGenerator } from "./generator";
 
 @autoinject()
 export class Designer {
@@ -64,6 +66,11 @@ export class Designer {
             let title = this.getCurrentTitle();
             if (!title || !this._canvasMap.has(title)) return;
             this.saveCurrent();
+        }));
+        this.subscribers.push(this.eventChannel.subscribe("ide-delete-current", () => {
+            let title = this.getCurrentTitle();
+            if (!title || !this._canvasMap.has(title)) return;
+            this.deleteSelected();
         }));
         this.subscribers.push(this.eventChannel.subscribe("ide-save-current-and-run", () => {
             let title = this.getCurrentTitle();
@@ -462,6 +469,37 @@ export class Designer {
         }
     }
 
+    deleteSelected() {
+        console.log("deleteSelected()");
+
+        if (!this.gui) return;
+        let currentPage = this.gui("getSelected");
+        if (!currentPage) return;
+
+        let currentTab = currentPage.panel('options');
+        if (!currentTab) return;
+
+        let title: string = currentTab.title.toString();
+        if (title && title.startsWith('*')) title = title.substr(1);
+
+        let canv = title ? this._canvasMap.get(title) : null;
+        if (!canv) return;
+
+        let selectedObjs = canv.getActiveObjects();
+
+        if (selectedObjs.length > 0) {
+            this.dialogService.open({viewModel: CommonConfirmDlg, model: this.i18n.tr("confirm.remove-selected-sprite")})
+            .whenClosed((response) => {
+                if (!response.wasCancelled && response.output && response.output == 'yes') {
+                    for (let obj of selectedObjs) canv.remove(obj);
+                }
+                let orgTitle: string = currentTab.title.toString();
+                if (!orgTitle.startsWith('*')) this.updateCurrentTitleDisplay(orgTitle, '*' + orgTitle);
+            });
+        }
+        
+    }
+
     saveCurrent() {
 
         console.log("saveCurrent()");
@@ -498,12 +536,18 @@ export class Designer {
         let output = [];
         let rtJsonFolder = App.projectPath + "/design/template/scenes/" + title;
 
+        let rtSpriteJsonFolder = rtJsonFolder + "/sprites";
+        let existingSpriteJsonFiles = Ipc.getDirTreeSync(rtSpriteJsonFolder, "*.json");
+        let usefulSpriteJsonFiles = [];
+
         let rtSceneJson = null;
         if (Ipc.isFileExistingSync(rtJsonFolder + "/" + title + ".json")) {
             let jsonstr = Ipc.readFileSync(rtJsonFolder + "/" + title + ".json");
             rtSceneJson = JSON.parse(jsonstr);
         }
         if (rtSceneJson == null) rtSceneJson = RuntimeGenerator.genBasicSceneJson();
+
+        rtSceneJson.sprites = [];
 
         if (json && json.objects) {
             for (let item of json.objects) {
@@ -565,6 +609,9 @@ export class Designer {
                             path: rtJsonFolder + "/sprites/" + item.name + ".ts"
                         });
                     }
+
+                    usefulSpriteJsonFiles.push(rtJsonFolder + "/sprites/" + item.name + ".json");
+
                     rtSceneJson.sprites.push(item.name);
                 }
             }
@@ -585,6 +632,29 @@ export class Designer {
         //console.log(output);
 
         Ipc.saveTextSync(output);
+
+        let uselessTextFiles = [];
+        let uselessSpriteJsonFiles = [];
+        for (let i=0; i<existingSpriteJsonFiles.length; i++) {
+            let found = false;
+            let existingSpriteJsonFile = existingSpriteJsonFiles[i].replace(/\\/g, "/");
+            for (let spriteJsonFile of usefulSpriteJsonFiles) {
+                if (existingSpriteJsonFile.endsWith(spriteJsonFile)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) uselessSpriteJsonFiles.push(existingSpriteJsonFile);
+        }
+        for (let uselessSpriteJsonFile of uselessSpriteJsonFiles) {
+            uselessTextFiles.push(uselessSpriteJsonFile);
+            let uselessSpriteScriptFile = uselessSpriteJsonFile.substring(0, uselessSpriteJsonFile.lastIndexOf('.')) + ".ts";
+            let uselessSpriteScriptFile2 = uselessSpriteJsonFile.substring(0, uselessSpriteJsonFile.lastIndexOf('.')) + ".js";
+            uselessTextFiles.push(uselessSpriteScriptFile);
+            uselessTextFiles.push(uselessSpriteScriptFile2);
+        }
+        console.log("need to remove text files - ", uselessTextFiles);
+        if (uselessTextFiles.length > 0) Ipc.deleteFilesSync(uselessTextFiles, true);
 
         this.updateCurrentTitleDisplay('*' + title, title);
 
