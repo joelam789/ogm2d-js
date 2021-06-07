@@ -271,6 +271,10 @@ export class Designer {
                                         canvas.remove(obj);
                                     }
                                 });
+                                console.log(oImg.width, oImg.height);
+                                if (oImg.width > App.gameWidth) canvas.setWidth(oImg.width);
+                                if (oImg.height > App.gameHeight) canvas.setHeight(oImg.height);
+                                if (oImg.width > App.gameWidth || oImg.height > App.gameHeight) canvas.calcOffset();
                             }
     
                             canvas.add(oImg).renderAll();
@@ -386,6 +390,9 @@ export class Designer {
                         if (obj.bgimg == "true") {
                             obj.selectable = false;
                             obj.hoverCursor = 'default';
+                            if (obj.width > App.gameWidth) newCanvas.setWidth(obj.width);
+                            if (obj.height > App.gameHeight) newCanvas.setHeight(obj.height);
+                            if (obj.width > App.gameWidth || obj.height > App.gameHeight) newCanvas.calcOffset();
                         }
                     });
                     console.log("loaded json data to canvas - ");
