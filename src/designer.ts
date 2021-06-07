@@ -504,8 +504,14 @@ export class Designer {
                 if (item.type == 'image' && item.src && item.url) {
                     item.src = item.url;
                 }
-                // gen runtime json for every object
-                if (item.name && item.template) {
+                if (item.name && item.template && item.bgimg == "true") { // gen tilemap info
+                    // ...
+                    rtSceneJson.components.stage = {
+                        x: 0,
+                        y: 0,
+                        map: item.template
+                    }
+                } else if (item.name && item.template) { // gen runtime json for every object
                     let jsonObj = null, scriptText = null;
                     let jsonFilepath = rtJsonFolder + "/sprites/" + item.name + ".json";
                     if (Ipc.isFileExistingSync(jsonFilepath)) {
