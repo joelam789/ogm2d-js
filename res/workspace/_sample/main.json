@@ -188,6 +188,26 @@
 			},
 			{
 				"group": "ide",
+				"name": ""
+			},
+			{
+				"group": "ide",
+				"name": "delete-current",
+				"icon": "my-icon-delete",
+				"text": "topbar.delete-current"
+			},
+			{
+				"group": "ide",
+				"name": "delete-map",
+				"icon": "my-icon-delete-map",
+				"text": "topbar.delete-map"
+			},
+			{
+				"group": "ide",
+				"name": ""
+			},
+			{
+				"group": "ide",
 				"name": "save-current",
 				"icon": "my-icon-save",
 				"text": "topbar.save-current"

@@ -469,18 +469,20 @@ export class Ide {
             if (gameJsonStr) {
                 gameJson = JSON.parse(gameJsonStr);
                 if (gameJson) {
+
+                    console.log(gameJson);
                     
                     // we should make sure all scenes were generated first ...
-                    //if (!gameJson.scenes) gameJson.scenes = [sceneName]
-                    //else {
-                    //    let idx = gameJson.scenes.indexOf(sceneName);
-                    //    if (idx < 0) gameJson.scenes.push(sceneName);
-                    //    gameJson.first = sceneName;
-                    //}
+                    if (!gameJson.scenes) gameJson.scenes = [sceneName]
+                    else {
+                        let idx = gameJson.scenes.indexOf(sceneName);
+                        if (idx < 0) gameJson.scenes.push(sceneName);
+                        gameJson.first = sceneName;
+                    }
                     
                     // since so far we would generate only current scene , 
                     // so just let it be the only one scene of the game ...
-                    gameJson.scenes = [sceneName];
+                    //gameJson.scenes = [sceneName];
 
                 }
                 await Ipc.writeFileAsync(rtGameFile, JSON.stringify(gameJson, null, 4), false);

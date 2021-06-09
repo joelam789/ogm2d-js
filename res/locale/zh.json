@@ -39,6 +39,7 @@
 	"confirm": {
 		"remove-selected-scene": "确要删除所选的场景吗？",
 		"remove-current-tileset": "确要移除当前的瓷砖素材吗？",
+		"remove-current-tilemap": "确要移除当前的场景地图吗？",
 		"remove-selected-sprite": "确要移除所选的精灵吗？"
 	},
 
@@ -168,7 +169,7 @@
         "tilemap": "瓷砖地图",
         "tileset": "瓷砖素材",
 
-		"delete-current": "移除",
+		"delete-current": "移除精灵",
 		"delete-map": "移除地图",
 		"save-current": "保存",
 		

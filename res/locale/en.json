@@ -39,6 +39,7 @@
 	"confirm": {
 		"remove-selected-scene": "Are you sure you want to remove selected scene?",
 		"remove-current-tileset": "Are you sure you want to remove current tileset?",
+		"remove-current-tilemap": "Are you sure you want to remove current tilemap?",
 		"remove-selected-sprite": "Are you sure you want to remove selected sprite(s)?"
 	},
 
@@ -169,8 +170,8 @@
         "tilemap": "Tilemap",
         "tileset": "Tileset",
 		
-		"delete-current": "Remove",
-		"delete-map": "Remove tilemap",
+		"delete-current": "Remove sprites",
+		"delete-map": "Remove current tilemap",
 		"save-current": "Save",
 
 		"save-current": "Save",

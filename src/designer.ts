@@ -72,6 +72,11 @@ export class Designer {
             if (!title || !this._canvasMap.has(title)) return;
             this.deleteSelected();
         }));
+        this.subscribers.push(this.eventChannel.subscribe("ide-delete-map", () => {
+            let title = this.getCurrentTitle();
+            if (!title || !this._canvasMap.has(title)) return;
+            this.removeTilemap();
+        }));
         this.subscribers.push(this.eventChannel.subscribe("ide-save-current-and-run", () => {
             let title = this.getCurrentTitle();
             if (!title || !this._canvasMap.has(title)) return;
@@ -392,7 +397,7 @@ export class Designer {
                 if (json) newCanvas.loadFromJSON(json, () => {
                     newCanvas.renderAll.bind(newCanvas);
                     newCanvas.forEachObject(function(obj) {
-                        console.log(obj.template);
+                        //console.log(obj.template);
                         if (obj.template == "plot") obj.hasControls = false;
                         if (obj.bgimg == "true") {
                             obj.selectable = false;
@@ -402,7 +407,7 @@ export class Designer {
                             if (obj.width > App.gameWidth || obj.height > App.gameHeight) newCanvas.calcOffset();
                         }
                     });
-                    console.log("loaded json data to canvas - ");
+                    console.log("loaded json data to canvas");
                     //console.log(json);
                     this.updateCurrentTitleDisplay('*' + title, title);
                 });
@@ -500,6 +505,43 @@ export class Designer {
         
     }
 
+    removeTilemap() {
+        console.log("removeTilemap()");
+
+        if (!this.gui) return;
+        let currentPage = this.gui("getSelected");
+        if (!currentPage) return;
+
+        let currentTab = currentPage.panel('options');
+        if (!currentTab) return;
+
+        let title: string = currentTab.title.toString();
+        if (title && title.startsWith('*')) title = title.substr(1);
+
+        let canv = title ? this._canvasMap.get(title) : null;
+        if (!canv) return;
+
+        let mapObj = null;
+        canv.forEachObject(function(obj) {
+            if (obj.bgimg == "true") {
+                //canv.remove(obj);
+                mapObj = obj;
+            }
+        });
+
+        if (mapObj != null) {
+            this.dialogService.open({viewModel: CommonConfirmDlg, model: this.i18n.tr("confirm.remove-current-tilemap")})
+            .whenClosed((response) => {
+                if (!response.wasCancelled && response.output && response.output == 'yes') {
+                    canv.remove(mapObj);
+                }
+                let orgTitle: string = currentTab.title.toString();
+                if (!orgTitle.startsWith('*')) this.updateCurrentTitleDisplay(orgTitle, '*' + orgTitle);
+            });
+        }
+
+    }
+
     saveCurrent() {
 
         console.log("saveCurrent()");
@@ -548,6 +590,8 @@ export class Designer {
         if (rtSceneJson == null) rtSceneJson = RuntimeGenerator.genBasicSceneJson();
 
         rtSceneJson.sprites = [];
+        if (rtSceneJson.components && rtSceneJson.components.stage)
+            rtSceneJson.components.stage.map = null;
 
         if (json && json.objects) {
             for (let item of json.objects) {
@@ -653,7 +697,7 @@ export class Designer {
             uselessTextFiles.push(uselessSpriteScriptFile);
             uselessTextFiles.push(uselessSpriteScriptFile2);
         }
-        console.log("need to remove text files - ", uselessTextFiles);
+        //console.log("need to remove text files - ", uselessTextFiles);
         if (uselessTextFiles.length > 0) Ipc.deleteFilesSync(uselessTextFiles, true);
 
         this.updateCurrentTitleDisplay('*' + title, title);
