@@ -73,6 +73,8 @@ export class TilemapEditorPage {
     histCursor = -1;
     histRecords = [];
 
+    needInfoAfterSaved = false;
+
     subscribers: Array<Subscription> = [];
 
     private _loadingTilesets: Array<string> = [];
@@ -108,6 +110,7 @@ export class TilemapEditorPage {
 
     activate(parameters, routeConfig) {
         console.log("activate");
+        this.needInfoAfterSaved = false;
     }
 
     deactivate() {
@@ -156,7 +159,10 @@ export class TilemapEditorPage {
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-save-tilemap-file-return", data => {
             console.log("Saved to file - " + data);
-            this.dialogService.open({viewModel: CommonInfoDlg, model: "Tilemap has been saved successfully."});
+            if (this.needInfoAfterSaved === true) {
+                if (data) this.dialogService.open({viewModel: CommonInfoDlg, model: "Tilemap has been saved successfully."});
+            }
+            this.needInfoAfterSaved = false;
         }));
         
 
@@ -1444,6 +1450,7 @@ export class TilemapEditorPage {
     }
     saveFile() {
         console.log("saveFile...");
+        this.needInfoAfterSaved = true;
         this.saveTilemap();
     }
     saveFileAs() {
