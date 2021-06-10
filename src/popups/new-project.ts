@@ -44,8 +44,8 @@ export class CreateNewProjectDlg {
     get projectSetting() {
         return {
             projectName: this.projectName,
-            screenWidth: this.screenWidth,
-            screenHeight: this.screenHeight,
+            screenWidth: parseInt(this.screenWidth.toString(), 10),
+            screenHeight: parseInt(this.screenHeight.toString(), 10)
         }
     }
 	

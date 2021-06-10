@@ -320,12 +320,24 @@ export class Ipc {
 		ipcRenderer.once("dlg-select-image-file-return", (event, result) => {
             if (result.error) {
 				console.error("dlg-select-image-file-return", result.error);
-				if (callback) callback("");
+				if (callback) callback(null);
 			} else {
 				if (callback) callback(result.data);
 			}
         });
         ipcRenderer.send("dlg-select-image-file");
+	}
+
+	static selectImageWithSize(callback: (filepath: string)=>void) {
+		ipcRenderer.once("dlg-select-image-with-size-return", (event, result) => {
+            if (result.error) {
+				console.error("dlg-select-image-with-size-return", result.error);
+				if (callback) callback(null);
+			} else {
+				if (callback) callback(result.data);
+			}
+        });
+        ipcRenderer.send("dlg-select-image-with-size");
 	}
 
 	static selectJsonFile(callback: (filepath: string)=>void) {
@@ -364,7 +376,16 @@ export class Ipc {
 	static async saveTilemapFileAsync(tilemapSetting: any)  {
 		let result = await ipcRenderer.invoke("dlg-save-tilemap-file-async", tilemapSetting);
 		if (result.error) {
-			console.error("copy image files error", result.error);
+			console.error("save tilemap file error", result.error);
+			return "";
+		}
+		return result.outpath;
+	}
+
+	static async saveSpriteFileAsync(spriteSetting: any)  {
+		let result = await ipcRenderer.invoke("save-sprite-file-async", spriteSetting);
+		if (result.error) {
+			console.error("copy sprite file error", result.error);
 			return "";
 		}
 		return result.outpath;

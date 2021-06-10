@@ -775,11 +775,27 @@ ipcMain.on("dlg-select-image-file", (event) => {
     dialog.showOpenDialog(mainWin, {
         defaultPath: __dirname,
         filters: [ { name: 'Images', extensions: ['jpg', 'png', 'bmp'] } ],
-    }).then(filepath => {
+    }).then(filepathinfo => {
         //console.log(filepath);
-        event.sender.send('dlg-select-image-file-return', {error: null, data: filepath});
+        event.sender.send('dlg-select-image-file-return', {error: null, data: filepathinfo});
     }).catch(err => {
         event.sender.send('dlg-select-image-file-return', {error: err, data: null});
+    });
+});
+
+ipcMain.on("dlg-select-image-with-size", (event) => {
+    dialog.showOpenDialog(mainWin, {
+        defaultPath: __dirname,
+        filters: [ { name: 'Images', extensions: ['jpg', 'png', 'bmp'] } ],
+    }).then(filepathinfo => {
+        //console.log(filepath);
+        let orgSize = imgsize(filepathinfo.filePaths[0]);
+        event.sender.send('dlg-select-image-with-size-return', {error: null, data: {
+            filepath: filepathinfo.filePaths[0],
+            width: orgSize.width,
+            height: orgSize.height}});
+    }).catch(err => {
+        event.sender.send('dlg-select-image-with-size-return', {error: err, data: null});
     });
 });
 
@@ -927,9 +943,11 @@ ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
         await sharp(Buffer.from(imgdata.split(';base64,').pop(), 'base64')).toFile(outputFilepath);
         let orgSize = imgsize(outputFilepath);
         let newWidth = orgSize.width >= orgSize.height ? 128 : 0;
+        if (newWidth == 128 && orgSize.width < 128) newWidth = orgSize.width;
         let newHeight = orgSize.width <= orgSize.height ? 128 : 0;
-        if (newWidth == 0) newWidth = Math.round(orgSize.width * 128 / orgSize.height);
-        if (newHeight == 0) newHeight = Math.round(orgSize.height * 128 / orgSize.width);
+        if (newHeight == 128 && orgSize.height < 128) newHeight = orgSize.height;
+        if (newWidth == 0) newWidth = Math.round(orgSize.width * newHeight / orgSize.height);
+        if (newHeight == 0) newHeight = Math.round(orgSize.height * newWidth / orgSize.width);
         //if (fs.existsSync(outputPreviewFilepath)) fs.unlinkSync(outputPreviewFilepath);
         //console.log(outputFilepath);
         await sharp(outputFilepath).resize(newWidth, newHeight).toFile(outputPreviewFilepath);
@@ -943,6 +961,66 @@ ipcMain.handle("dlg-save-tilemap-file-async", async (event, input) => {
     
 });
 
+ipcMain.handle("save-sprite-file-async", async (event, input) => {
+    
+    //console.log(input);
+
+    try {
+
+        // save json
+        let jsonObj = input.jsonData;
+        // update json 
+        // ...
+        //
+        let jsonstr = JSON.stringify(jsonObj, null, 4);
+        let outputJsonFilepath = __dirname + "/" + input.jsonFile;
+        if (fs.existsSync(outputJsonFilepath)) fs.unlinkSync(outputJsonFilepath);
+        await fs.promises.writeFile(outputJsonFilepath, jsonstr);
+
+        // save preview
+        sharp.cache({ files : 0 }); // clear cache ...
+
+        let rect = {
+            x: input.areaLeft,
+            y: input.areaTop,
+            w: input.areaWidth,
+            h: input.areaHeight
+        }
+
+        let imgpath = input.spriteImage;
+        
+        let outputImgFilepath = __dirname + "/" + input.imgPath;
+        let outputFilepath = __dirname + "/" + input.imgDesign;
+        let outputPreviewFilepath = __dirname + "/" + input.imgPreview;
+        if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
+        if (fs.existsSync(outputImgFilepath)) fs.unlinkSync(outputImgFilepath);
+        if (fs.existsSync(outputPreviewFilepath)) fs.unlinkSync(outputPreviewFilepath);
+
+        await fs.promises.copyFile(imgpath, outputImgFilepath);
+
+        await sharp(imgpath).extract({ width: rect.w, height: rect.h, left: rect.x, top: rect.y }).toFile(outputFilepath);
+
+        let orgSize = {
+            width: input.areaWidth,
+            height: input.areaHeight
+        }
+        let newWidth = orgSize.width >= orgSize.height ? 64 : 0;
+        if (newWidth == 64 && orgSize.width < 64) newWidth = orgSize.width;
+        let newHeight = orgSize.width <= orgSize.height ? 64 : 0;
+        if (newHeight == 64 && orgSize.height < 64) newHeight = orgSize.height;
+        if (newWidth == 0) newWidth = Math.round(orgSize.width * newHeight / orgSize.height);
+        if (newHeight == 0) newHeight = Math.round(orgSize.height * newWidth / orgSize.width);
+
+        await sharp(outputFilepath).resize(newWidth, newHeight).toFile(outputPreviewFilepath);
+
+        return {error: null, outpath: outputJsonFilepath};
+
+    } catch(err) {
+        console.error(err);
+        return {error: "Failed to save sprite file", outpath: ""};
+    }
+    
+});
 
 ipcMain.on("reload-project", (event, projectName) => {
     mainWin.loadURL('file://' + __dirname + '/index.html?project=' + projectName);

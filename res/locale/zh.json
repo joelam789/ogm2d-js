@@ -105,7 +105,14 @@
     },
 	
 	"sprite": {
-        "create-what": "创建什么"
+        "create-what": "创建什么",
+		"new-sprite": "创建新精灵",
+		"sprite-name": "精灵名称",
+		"sprite-image": "精灵图片",
+		"area-left": "图像左端",
+		"area-top": "图像上端",
+		"area-width": "图像宽度",
+		"area-height": "图像高度"
     },
 
     "ide": {

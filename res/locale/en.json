@@ -106,7 +106,14 @@
     },
 	
 	"sprite": {
-        "create-what": "Create what"
+        "create-what": "Create what",
+		"new-sprite": "Create new sprite",
+		"sprite-name": "Sprite Name",
+		"sprite-image": "Sprite Image",
+		"area-left": "Area Left",
+		"area-top": "Area Top",
+		"area-width": "Area Width",
+		"area-height": "Area Height"
     },
 
     "ide": {

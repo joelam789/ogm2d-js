@@ -1,3 +1,4 @@
+import { RuntimeGenerator } from './generator';
 
 import { autoinject } from 'aurelia-framework';
 import { EventAggregator, Subscription } from 'aurelia-event-aggregator';
@@ -7,8 +8,10 @@ import { DialogService } from 'aurelia-dialog';
 import { I18N } from 'aurelia-i18n';
 
 import { SelectSpriteTypeDlg } from './popups/sprite/select-sprite-type';
+import { CreateNewSpriteDlg } from './popups/new-sprite';
 
 import { App } from "./app";
+import { Ipc } from './ipc';
 
 
 @autoinject()
@@ -57,7 +60,11 @@ export class Collector {
             this.eventChannel.publish("refresh-list-view");
         }));
         this.subscribers.push(this.eventChannel.subscribe("sprites-add-sprite", () => {
-            this.openSelectSpriteTypeDlg();
+            //this.openSelectSpriteTypeDlg();
+            this.openCreateNewSpriteDlg();
+        }));
+        this.subscribers.push(this.eventChannel.subscribe("create-new-sprite", (data) => {
+            this.createNewSprite(data);
         }));
 	}
 
@@ -99,6 +106,61 @@ export class Collector {
                 console.log('Give up selecting sprite type to create');
             }
         });
+    }
+
+    openCreateNewSpriteDlg() {
+        this.dialogService.open({viewModel: CreateNewSpriteDlg})
+        .whenClosed((response) => {
+            if (!response.wasCancelled && response.output) {
+                console.log(response.output);
+
+                let setting = response.output;
+                let imgFile = setting.spriteImage;
+                imgFile = imgFile.replace(/\\/g, "/");
+                imgFile = imgFile.substring(imgFile.lastIndexOf("/") + 1);
+                let imgFileExt = imgFile.substring(imgFile.lastIndexOf(".") );
+
+                let spriteJson = RuntimeGenerator.genBasicSpriteJson();
+                if (spriteJson.components && spriteJson.components.graphic) {
+                    spriteJson.components.graphic.image = imgFile;
+                    spriteJson.components.graphic.area  = {
+                        x: setting.areaLeft,
+                        y: setting.areaTop,
+                        width: setting.areaWidth,
+                        height: setting.areaHeight
+                    }
+                }
+
+                let spriteSetting = {
+                    spriteName: setting.spriteName,
+                    spriteImage: setting.spriteImage,
+                    areaLeft: setting.areaLeft,
+                    areaTop: setting.areaTop,
+                    areaWidth: setting.areaWidth,
+                    areaHeight: setting.areaHeight,
+
+                    jsonData: spriteJson,
+                    jsonFile: App.projectPath + "/design/template/sprites/" + setting.spriteName + ".json",
+                    imgPath: App.projectPath + "/runtime/project/res/img/" + imgFile,
+                    imgDesign: App.projectPath + "/design/collector/sprites/" + setting.spriteName + ".ds" + imgFileExt,
+                    imgPreview: App.projectPath + "/design/collector/sprites/" + setting.spriteName + ".pv" + imgFileExt
+
+                }
+
+                this.eventChannel.publish('create-new-sprite', spriteSetting);
+
+
+
+            } else {
+                console.log('Give up creating a new sprite');
+            }
+        });
+    }
+
+    async createNewSprite(setting) {
+        let result = await Ipc.saveSpriteFileAsync(setting);
+        console.log(result);
+        this.eventChannel.publish("refresh-list-view");
     }
 
 }

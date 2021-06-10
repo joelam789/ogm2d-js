@@ -67,6 +67,38 @@ export class RuntimeGenerator {
         return json;
     }
 
+    static genBasicSpriteJson() {
+        let json = {
+            components:
+            {
+                graphic:
+                {
+                    image: "bunny",
+                    area:
+                    {
+                        x: 0,
+                        y: 0,
+                        width: 26,
+                        height: 37
+                    }
+                },
+
+                display:
+                {
+                    layer: "npc",
+                    x: 100,
+                    y: 100,     
+                    anchor:
+                    {
+                        x: 0.5,
+                        y: 0.5
+                    }
+                }
+            }
+        }
+        return json;
+    }
+
     static genBasicSpriteObjectJson(tpl: string = "") {
         let json = {
             active: true,

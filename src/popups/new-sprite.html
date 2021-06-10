@@ -1,0 +1,63 @@
+<template>
+  <ux-dialog class="panel panel-default" style="position: absolute; left: 50%; top: 50%;
+  width: 500px; height: 350px; margin-left: -250px; margin-top: -175px;">
+    <ux-dialog-header class="panel-heading">
+        <div class="panel-title" style="font-size:large" i18n="sprite.new-sprite">Create new sprite</div>
+    </ux-dialog-header>
+
+    <ux-dialog-body class="panel-body" style="overflow: hidden;">
+      <!-- <label class="control-label ml-2" i18n="app.project-file">Project file</label> -->
+      <div style="height: 15px">&nbsp;</div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" i18n="sprite.sprite-name">Sprite Name</span>
+        </div>
+        <input type="text" class="form-control" placeholder="" aria-label="" value.bind="spriteName">
+      </div>
+      <div style="height: 10px">&nbsp;</div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" i18n="sprite.sprite-image">Sprite Image</span>
+        </div>
+        <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="buttonOpenSelectSpriteImgDlg" value.bind="spriteImage">
+        <div class="input-group-append">
+          <button class="btn btn-secondary" type="button" id="buttonOpenSelectSpriteImgDlg" click.trigger="openSelectFileDlg()">...</button>
+        </div>
+      </div>
+      <div style="height: 10px">&nbsp;</div>
+      <div class="form-row">
+        <div class="form-group input-group col-md-6">
+          <div class="input-group-prepend">
+            <span class="input-group-text" i18n="sprite.area-left">Area Left</span>
+          </div>
+          <input type="number" class="form-control" value.bind="areaLeft">
+        </div>
+        <div class="form-group input-group col-md-6">
+          <div class="input-group-prepend">
+            <span class="input-group-text" i18n="sprite.area-top">Area Top</span>
+          </div>
+          <input type="number" class="form-control" value.bind="areaTop">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top: -8px">
+        <div class="form-group input-group col-md-6">
+          <div class="input-group-prepend">
+            <span class="input-group-text" i18n="sprite.area-width">Area Width</span>
+          </div>
+          <input type="number" class="form-control" value.bind="areaWidth">
+        </div>
+        <div class="form-group input-group col-md-6">
+          <div class="input-group-prepend">
+            <span class="input-group-text" i18n="sprite.area-height">Area Height</span>
+          </div>
+          <input type="number" class="form-control" value.bind="areaHeight">
+        </div>
+      </div>
+    </ux-dialog-body>
+    
+    <ux-dialog-footer class="panel-footer">
+        <button class="btn btn-success" click.trigger="controller.ok(spriteSetting)" i18n="app.ok">OK</button>
+        <button class="btn btn-danger" click.trigger="controller.cancel()" i18n="app.cancel">Cancel</button>
+    </ux-dialog-footer>
+  </ux-dialog>
+</template>

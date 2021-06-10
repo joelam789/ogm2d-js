@@ -18,10 +18,12 @@ import { SelectTilemapDlg } from "./popups/tilemap/select-tilemap";
 import { ResizeTilemapDlg } from "./popups/tilemap/resize-tilemap";
 import { SelectTilemapBgDlg } from './popups/tilemap/select-tilemap-bg';
 import { SetCostDlg } from "./popups/tilemap/set-cost";
+import { CommonInfoDlg } from './popups/common-info';
 
 import { HttpClient } from "./http-client";
 
 import { App } from "./app";
+
 
 
 @autoinject()
@@ -152,7 +154,10 @@ export class TilemapEditorPage {
 
         this.subscribers.push(this.eventChannel.subscribe("dlg-copy-image-file-return", data => this.loadTilemapBg(data)));
 
-        this.subscribers.push(this.eventChannel.subscribe("dlg-save-tilemap-file-return", data => console.log("Saved to file - " + data)));
+        this.subscribers.push(this.eventChannel.subscribe("dlg-save-tilemap-file-return", data => {
+            console.log("Saved to file - " + data);
+            this.dialogService.open({viewModel: CommonInfoDlg, model: "Tilemap has been saved successfully."});
+        }));
         
 
         // enable bootstrap v4 tooltip

@@ -192,6 +192,11 @@ export class Ide {
             this.selectImageFile();
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-select-image-with-size", () => {
+            console.log("Try to select an image file for Dialog...");
+            this.selectImageWithSize();
+        }));
+
         this.subscribers.push(this.eventChannel.subscribe("dlg-copy-image-file", (imgsetting) => {
             console.log("Try to copy an image file for Dialog...");
             this.copyImageFile(imgsetting.imageFile, imgsetting.pieceWidth, imgsetting.pieceHeight);
@@ -341,17 +346,24 @@ export class Ide {
     }
 
     selectImageFile() {
-        Ipc.selectImageFile((imgpath) => {
-            console.log(imgpath);
-            let ret: any = imgpath;
+        Ipc.selectImageFile((imgpathinfo) => {
+            //console.log(imgpathinfo);
+            let ret: any = imgpathinfo;
             this.editorFrame.contentWindow.appEvent.publish('dlg-select-image-file-return', ret.filePaths[0]);
         });
     }
 
+    selectImageWithSize() {
+        Ipc.selectImageWithSize((data) => {
+            //console.log(data);
+            this.eventChannel.publish('dlg-select-image-with-size-return', data);
+        });
+    }
+
     selectJsonFile() {
-        Ipc.selectJsonFile((filepath) => {
-            console.log(filepath);
-            let ret: any = filepath;
+        Ipc.selectJsonFile((filepathinfo) => {
+            console.log(filepathinfo);
+            let ret: any = filepathinfo;
             this.eventChannel.publish('dlg-select-json-file-return', ret.filePaths[0]);
         });
     }
