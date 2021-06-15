@@ -177,6 +177,16 @@ export class Ide {
             //this.openTilesetEditor(data ? data.tileset : "");
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-copy-tileset-img", (imgPathSetting) => {
+            this.copyTilesetImage(imgPathSetting);
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-save-new-tileset-file", (data) => {
+            Ipc.saveTilesetFile(data, (newpath) => {
+                if (newpath) this.editorFrame.contentWindow.appEvent.publish('dlg-save-new-tileset-file-return', newpath);
+            })
+        }));
+
         this.subscribers.push(this.eventChannel.subscribe("dlg-get-tilemap-list", () => {
             console.log("Try to get tilemap list for Dialog...");
             this.getTilemapListToSelect();
@@ -365,6 +375,13 @@ export class Ide {
             console.log(filepathinfo);
             let ret: any = filepathinfo;
             this.eventChannel.publish('dlg-select-json-file-return', ret.filePaths[0]);
+        });
+    }
+
+    copyTilesetImage(imgPathSetting) {
+        Ipc.copyTilesetImage(imgPathSetting, (newpath) => {
+            //console.log(data);
+            this.editorFrame.contentWindow.appEvent.publish('dlg-copy-tileset-img-return', newpath);
         });
     }
 

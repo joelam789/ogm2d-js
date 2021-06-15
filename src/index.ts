@@ -719,12 +719,49 @@ ipcMain.handle('write-file-async', async (event, filepath, content, abs = false)
 
 ipcMain.on("copy-tileset-img", (event, input) => {
     //console.log(input);
-    let output = "img/tilesets/" + path.basename(input);
+    let outputFolder = __dirname + "/" + input.outDir;
+    if (!fs.existsSync(outputFolder)) fs.mkdirSync(outputFolder, { recursive: true });
+    let outputFilepath = outputFolder + "/" + path.basename(input.srcFile);
+    if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
+    fs.createReadStream(input.srcFile).pipe(fs.createWriteStream(outputFilepath)
+    .on("close", () => event.sender.send('copy-tileset-img-return', {error: null, newpath: outputFilepath}))
+    .on("error", (err) => event.sender.send('copy-tileset-img-return', {error: err, newpath: ""})));
+});
+
+ipcMain.on("save-tileset-file", (event, input) => {
+    //console.log(input);
+    let tileset = input.jsonData;
+    for (let tile of tileset.tiles) {
+        if (tile.id != undefined) delete tile.id;
+        if (tile.cost != undefined && tile.cost == 0) delete tile.cost;
+        if (tile.speed != undefined && tile.speed == 0) delete tile.speed;
+    }
+    let keys = [];
+    //let jsonstr = JSON.stringify(tileset, null, 4);
+    let jsonstr = jsonstringify(tileset, {
+        space: '\t',
+        stringify: (value, replacer, space) => {
+            let key = keys.pop();
+            return key == "offsets" && typeof value == "string" ? value : JSON.stringify(value);
+        }, 
+        compare: (a, b) => {
+            if (typeof a.value === "number" && typeof b.value !== "number" && typeof b.value !== "string") return -1;
+            else return a.key.length > b.key.length ? 1 : -1;
+        },
+        replacer: (k, v) => {
+            keys.push(k);
+            return k == "offsets" && Array.isArray(v) ? JSON.stringify(v) : v;
+        }
+    });
+    //let output = "json/tilesets/" + tileset.name + ".json";
+    let output = input.jsonFile;
     let outputFilepath = __dirname + "/" + output;
     if (fs.existsSync(outputFilepath)) fs.unlinkSync(outputFilepath);
-    fs.createReadStream(input).pipe(fs.createWriteStream(outputFilepath)
-    .on("close", () => event.sender.send('copy-tileset-img-return', {err: null, url: output}))
-    .on("error", (err) => event.sender.send('copy-tileset-img-return', {err: err, url: ""})));
+    fs.writeFile(outputFilepath, jsonstr, 
+    (err) => {
+        if (err) event.sender.send('save-tileset-file-return', {error: err, newpath: ""});
+        else event.sender.send('save-tileset-file-return', {error: null, newpath: output});
+    });
 });
 
 ipcMain.on("dlg-get-tilemap-list", (event, srcDir) => {

@@ -352,6 +352,30 @@ export class Ipc {
         ipcRenderer.send("dlg-select-json-file");
 	}
 
+	static copyTilesetImage(imgpath, callback: (newpath: string)=>void) {
+		ipcRenderer.once("copy-tileset-img-return", (event, result) => {
+            if (result.error) {
+				console.error("copy-tileset-img-return", result.error);
+				if (callback) callback("");
+			} else {
+				if (callback) callback(result.newpath);
+			}
+        });
+        ipcRenderer.send("copy-tileset-img", imgpath);
+	}
+
+	static saveTilesetFile(data, callback: (newpath: string)=>void) {
+		ipcRenderer.once("save-tileset-file-return", (event, result) => {
+            if (result.error) {
+				console.error("save-tileset-file-return", result.error);
+				if (callback) callback("");
+			} else {
+				if (callback) callback(result.newpath);
+			}
+        });
+        ipcRenderer.send("save-tileset-file", data);
+	}
+
 	static copyImageFile(imgpath, outDir, smallw, smallh, callback: (newpath: string)=>void) {
 		ipcRenderer.once("dlg-copy-image-file-return", (event, result) => {
             if (result.error) {

@@ -14,6 +14,7 @@ import { NewTilemapDlg } from "./popups/tilemap/new-tilemap";
 import { SaveTilemapDlg } from "./popups/tilemap/save-tilemap";
 import { EditTilesetDlg } from "./popups/tileset/edit-tileset";
 import { SelectTilesetDlg } from "./popups/tileset/select-tileset";
+import { NewTilesetDlg } from './popups/tileset/new-tileset';
 import { SelectTilemapDlg } from "./popups/tilemap/select-tilemap";
 import { ResizeTilemapDlg } from "./popups/tilemap/resize-tilemap";
 import { SelectTilemapBgDlg } from './popups/tilemap/select-tilemap-bg';
@@ -23,7 +24,6 @@ import { CommonInfoDlg } from './popups/common-info';
 import { HttpClient } from "./http-client";
 
 import { App } from "./app";
-
 
 
 @autoinject()
@@ -69,6 +69,8 @@ export class TilemapEditorPage {
     replacementFlags = [];
 
     selectedArea: any = null;
+
+    creatingTileset: any = null;
 
     histCursor = -1;
     histRecords = [];
@@ -165,6 +167,15 @@ export class TilemapEditorPage {
             this.needInfoAfterSaved = false;
         }));
         
+
+        this.subscribers.push(this.eventChannel.subscribe("dlg-copy-tileset-img-return", data => {
+            console.log(data);
+            this.saveCreatingTileset();
+        }));
+        this.subscribers.push(this.eventChannel.subscribe("dlg-save-new-tileset-file-return", data => {
+            console.log(data);
+            this.openCreatingTileset();
+        }));
 
         // enable bootstrap v4 tooltip
         //($('[data-toggle="tooltip"]') as any).tooltip();
@@ -1387,11 +1398,61 @@ export class TilemapEditorPage {
         });
     }
 
-    openCreateTilesetDlg() {
-        console.log("openCreateTilesetDlg...");
+    openNewTilesetDlg() {
+        console.log("openNewTilesetDlg...");
         //(window.parent as any).appEvent.publish('ide-edit-tileset');
         //let tileset = tilesetName ? tilesetName : "tileset1";
+
+        this.dialogService.open({viewModel: NewTilesetDlg, model: '' })
+        .whenClosed((response) => {
+            if (!response.wasCancelled && response.output) {
+                //console.log(response.output);
+
+                let imgfilepath = response.output.image.replace(/\\/g, '/');
+                let tileset = {
+                    image: "tilesets/" + imgfilepath.substring(imgfilepath.lastIndexOf('/')+1),
+                    name: response.output.name,
+                    tileWidth: response.output.tileWidth,
+                    tileHeight: response.output.tileHeight,
+                    columnCount: 8,
+                    tiles: []
+                };
+
+                let imgPathSetting = {
+                    srcFile: imgfilepath,
+                    outDir: this.getProjectResPath() + "/img/tilesets"
+                }
+                
+                this.creatingTileset = tileset;
+                (window.parent as any).appEvent.publish('dlg-copy-tileset-img', imgPathSetting);
+
+            } else {
+                console.log('Give up creating a new tileset');
+            }
+        });
         
+    }
+
+    saveCreatingTileset() {
+
+        let inputData = {
+            jsonData: this.creatingTileset,
+            jsonFile: this.getProjectResPath() + "/json/tilesets/" + this.creatingTileset.name + ".json"
+        };
+        (window.parent as any).appEvent.publish('dlg-save-new-tileset-file', inputData);
+        
+    }
+
+    openCreatingTileset() {
+        let tileset = this.creatingTileset.name;
+        this.dialogService.open({viewModel: EditTilesetDlg, model: tileset})
+        .whenClosed((response) => {
+            if (!response.wasCancelled && response.output) {
+                console.log(response.output);
+            } else {
+                console.log('Give up updating tileset');
+            }
+        });
     }
 
     openEditTilesetDlg() {
