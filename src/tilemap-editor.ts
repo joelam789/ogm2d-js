@@ -1448,7 +1448,13 @@ export class TilemapEditorPage {
         this.dialogService.open({viewModel: EditTilesetDlg, model: tileset})
         .whenClosed((response) => {
             if (!response.wasCancelled && response.output) {
-                console.log(response.output);
+                //console.log(response.output);
+                let tilesetData = response.output;
+                let inputData = {
+                    jsonData: tilesetData,
+                    jsonFile: this.getProjectResPath() + "/json/tilesets/" + tilesetData.name + ".json"
+                };
+                (window.parent as any).appEvent.publish('dlg-save-tileset-file', inputData);
             } else {
                 console.log('Give up updating tileset');
             }
@@ -1474,7 +1480,14 @@ export class TilemapEditorPage {
                 this.dialogService.open({viewModel: EditTilesetDlg, model: tileset})
                 .whenClosed((response) => {
                     if (!response.wasCancelled && response.output) {
-                        console.log(response.output);
+                        //console.log(response.output);
+                        let tilesetData = response.output;
+                        let inputData = {
+                            jsonData: tilesetData,
+                            jsonFile: this.getProjectResPath() + "/json/tilesets/" + tilesetData.name + ".json"
+                        };
+                        (window.parent as any).appEvent.publish('dlg-save-tileset-file', inputData);
+
                     } else {
                         console.log('Give up updating tileset');
                     }

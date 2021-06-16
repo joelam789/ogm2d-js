@@ -410,6 +410,12 @@ export class EditTilesetDlg {
         */
     }
 
+    get currentTileset() {
+        let tileset = JSON.parse(JSON.stringify(this.tileset));
+        if (this.listControl) tileset.columnCount = parseInt(this.listControl.columnCount.toString(), 10);
+        return tileset;
+    }
+
     openTileset(tilesetName: string) {
         let url = this.getProjectResPath() + "/json/tilesets/" + tilesetName + ".json";
         HttpClient.getJSON(url, "", (json) => {

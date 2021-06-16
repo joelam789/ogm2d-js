@@ -187,6 +187,12 @@ export class Ide {
             })
         }));
 
+        this.subscribers.push(this.eventChannel.subscribe("dlg-save-tileset-file", (data) => {
+            Ipc.saveTilesetFile(data, (newpath) => {
+                if (newpath) this.editorFrame.contentWindow.appEvent.publish('dlg-save-tileset-file-return', newpath);
+            })
+        }));
+
         this.subscribers.push(this.eventChannel.subscribe("dlg-get-tilemap-list", () => {
             console.log("Try to get tilemap list for Dialog...");
             this.getTilemapListToSelect();
