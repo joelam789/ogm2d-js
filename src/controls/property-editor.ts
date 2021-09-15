@@ -48,6 +48,10 @@ export class PropertyEditor {
                 onEndEdit: (index, row, changes) => {
                     this.eventChannel.publish('editor-update-ui', {source: this.editorId, data: {index: index, row: row, changes: changes}});
                 }
+                ,
+                onDblClickRow: (index,row) => {
+                    //console.log(index, row);
+                }
             });
             if (this.gui && this.rootName && this.dataSource && this.dataSource.length > 0) {
                 HttpClient.getJSON(this.dataSource, null, (json) => {

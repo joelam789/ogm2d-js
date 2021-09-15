@@ -4,7 +4,10 @@
             "group": "Base", 
             "name": "name", 
             "value": "Name",
-            "editor": null
+            "editor": {
+				"type": "textbox",
+                "options": { "readonly": true }
+			}
         },
         {
             "group": "Base",
