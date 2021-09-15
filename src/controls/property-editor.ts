@@ -23,8 +23,8 @@ export class PropertyEditor {
     defaultSignal: string = "editor-loaded";
 
     columnSetting = [[
-        {field:'name', title:'Name' , width:"49%", resizable:true, sortable:true },
-        {field:'value', title:'Value' , width:"49%", resizable:true }
+        {field:'name', title:'Name' , width:"80", resizable:true, sortable:true },
+        {field:'value', title:'Value' , width:"80", resizable:true }
     ]];
 
     subscribers: Array<Subscription> = [];
@@ -50,7 +50,7 @@ export class PropertyEditor {
                 }
                 ,
                 onDblClickRow: (index,row) => {
-                    //console.log(index, row);
+                    console.log(index, row);
                 }
             });
             if (this.gui && this.rootName && this.dataSource && this.dataSource.length > 0) {
