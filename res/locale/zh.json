@@ -108,6 +108,7 @@
         "create-what": "创建什么",
 		"new-sprite": "创建新精灵",
 		"sprite-name": "精灵名称",
+		"change-sprite-name": "更改精灵名称",
 		"sprite-image": "精灵图片",
 		"area-left": "图像左端",
 		"area-top": "图像上端",

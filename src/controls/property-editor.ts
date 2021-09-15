@@ -50,7 +50,8 @@ export class PropertyEditor {
                 }
                 ,
                 onDblClickRow: (index,row) => {
-                    console.log(index, row);
+                    //console.log(index, row);
+                    this.eventChannel.publish('editor-dblclick-ui', {source: this.editorId, data: {index: index, row: row}});
                 }
             });
             if (this.gui && this.rootName && this.dataSource && this.dataSource.length > 0) {

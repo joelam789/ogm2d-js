@@ -109,6 +109,7 @@
         "create-what": "Create what",
 		"new-sprite": "Create new sprite",
 		"sprite-name": "Sprite Name",
+		"change-sprite-name": "Change sprite name",
 		"sprite-image": "Sprite Image",
 		"area-left": "Area Left",
 		"area-top": "Area Top",

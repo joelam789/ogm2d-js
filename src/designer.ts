@@ -9,6 +9,7 @@ import { I18N } from 'aurelia-i18n';
 import { HttpClient } from "./http-client";
 import { RuntimeGenerator } from "./generator";
 import { CommonConfirmDlg } from './popups/common-confirm';
+import { CreateNewSpriteNameDlg } from './popups/new-sprite-name';
 
 import { App } from "./app";
 import { Ipc } from "./ipc";
@@ -154,7 +155,8 @@ export class Designer {
                                 if (fieldValue == "true") activeObject[fieldName] = true;
                                 else if (fieldValue == "false") activeObject[fieldName] = false;
                             }
-                            console.log(activeObject[fieldName], typeof fieldValue, fieldValue);
+                            //console.log(activeObject[fieldName], typeof fieldValue, fieldValue);
+                            //if (fieldName == 'name') console.warn(fieldValue);
                         } else {
                             //let value = activeObject.get(fieldName);
                             //if (value != undefined) {
@@ -170,6 +172,26 @@ export class Designer {
                         }
                         canvas.requestRenderAll();
                     }
+                }
+            }
+        }));
+
+        this.subscribers.push(this.eventChannel.subscribe("editor-dblclick-ui", (edt) => {
+            if (edt.source == 'editor-property') {
+                //console.log(edt.data);
+                if (edt.data.index == 0) {
+                    console.log(edt.data.row);
+
+                    this.dialogService.open({viewModel: CreateNewSpriteNameDlg, model: edt.data.row.value})
+                    .whenClosed((response) => {
+                        if (!response.wasCancelled && response.output != undefined) {
+                            console.log(response.output);
+                            let newSpriteName = response.output;
+
+                        } else {
+                            console.log('Give up changing sprite name');
+                        }
+                    });
                 }
             }
         }));
