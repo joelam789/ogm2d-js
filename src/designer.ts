@@ -182,12 +182,20 @@ export class Designer {
                 if (edt.data.index == 0) {
                     console.log(edt.data.row);
 
+                    let activeObject = null;
+                    let canvas = this._canvasMap.get(this._currentCanvasTitle);
+                    if (canvas) activeObject = canvas.getActiveObject();
+
                     this.dialogService.open({viewModel: CreateNewSpriteNameDlg, model: edt.data.row.value})
                     .whenClosed((response) => {
                         if (!response.wasCancelled && response.output != undefined) {
                             console.log(response.output);
                             let newSpriteName = response.output;
-
+                            edt.data.row.value = newSpriteName;
+                            if (activeObject) {
+                                activeObject.name = newSpriteName;
+                                this.requestEditorUpdate(activeObject, 'property', true);
+                            }
                         } else {
                             console.log('Give up changing sprite name');
                         }
